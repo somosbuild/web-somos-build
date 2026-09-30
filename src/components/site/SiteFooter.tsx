@@ -7,7 +7,7 @@ import { asset } from '@/lib/asset';
 import { Wrap } from './shared';
 
 const LINKS: { icon: string; label: string; href: string }[] = [
-  { icon: '20', label: 'Cómo llegar', href: '/nosotros/' },
+  { icon: '20', label: 'Cómo llegar', href: '/nosotros/#llegar' },
   { icon: '42', label: 'WhatsApp', href: CONTACT.whatsapp },
   { icon: '40', label: 'Instagram', href: CONTACT.instagram },
   { icon: '39', label: 'Escribinos', href: CONTACT.email },

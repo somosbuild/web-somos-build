@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
-import { ComingSoon } from '@/components/site/shared';
+import { MembershipScreen } from '@/components/membership/Membership';
 
 export const metadata: Metadata = { title: 'Membresía' };
 
 export default function Page() {
-  return <ComingSoon title="Membresía" phase="Fase 2" />;
+  return <MembershipScreen />;
 }

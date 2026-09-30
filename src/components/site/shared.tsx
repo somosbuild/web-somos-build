@@ -1,9 +1,10 @@
 'use client';
 
-import { Children, type CSSProperties, type ReactNode } from 'react';
+import { Children, useEffect, useState, type CSSProperties, type ReactNode } from 'react';
+import Link from 'next/link';
 import s from './site.module.css';
 import { Badge, Button, Card, PillarTag } from '@/components/ds';
-import { DAYS, MEMBER, dayOf, pillarOf, type BuildEvent, type DayKey, type PillarKey } from '@/lib/data';
+import { DAYS, MEMBER, dayOf, onColorInk, pillarOf, type BrandColor, type BuildEvent, type DayKey, type PillarKey } from '@/lib/data';
 
 type Vars = CSSProperties & Record<`--${string}`, string | undefined>;
 const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(' ');
@@ -39,8 +40,8 @@ export function ImageSlot({ src, alt = '', placeholder, circle, style }: { src?:
 }
 
 /** Grid on desktop; horizontal scroll-snap row on mobile. */
-export function Carousel({ children, min = 280, minMobile, cols }: { children: ReactNode; min?: number; minMobile?: number; cols?: string }) {
-  const v: Vars = { '--min': `${min}px`, '--min-m': minMobile ? `${minMobile}px` : undefined, '--cols': cols };
+export function Carousel({ children, min = 280, minMobile, cols, gap = 16 }: { children: ReactNode; min?: number; minMobile?: number; cols?: string; gap?: number }) {
+  const v: Vars = { '--min': `${min}px`, '--min-m': minMobile ? `${minMobile}px` : undefined, '--cols': cols, '--gap': `${gap}px` };
   return <div className={s.carousel} style={v}>
     {Children.map(children, c => <div className={s.carouselItem}>{c}</div>)}
   </div>;
@@ -76,10 +77,72 @@ export function EventCard({ e, onOpen, onReserve, compactMobile }: { e: BuildEve
   </Card>;
 }
 
-export function ComingSoon({ title, phase }: { title: string; phase: string }) {
-  return <Wrap className={s.soon}>
-    <span className={s.soonPhase}>{phase} · en diseño</span>
-    <h1 className={s.soonTitle}>{title}</h1>
-    <p className={s.soonText}>Esta página llega en la {phase} del brief v3.</p>
-  </Wrap>;
+
+export function SectionHead({ title, link, href, linkDesktopOnly }: { title: ReactNode; link?: string; href?: string; linkDesktopOnly?: boolean }) {
+  return <div className={s.head}>
+    <H2>{title}</H2>
+    {link && href && <Link href={href} className={cx(s.headLink, linkDesktopOnly && 'desktop-only')}>{link} →</Link>}
+  </div>;
 }
+
+/** Bold, orange emphasis inside a section title. */
+export const Em = ({ children }: { children: ReactNode }) => <b className={s.headEm}>{children}</b>;
+
+export function Eyebrow({ children, color }: { children: ReactNode; color?: string }) {
+  return <span className={s.eyebrow} style={{ '--c': color } as Vars}>{children}</span>;
+}
+
+export function PageTitle({ children, sub }: { children: ReactNode; sub?: string }) {
+  return <div className={s.pageTitle}>
+    <h1 className={s.pageH1}>{children}</h1>
+    {sub && <p className={s.pageSub}>{sub}</p>}
+  </div>;
+}
+
+export function Accordion({ items }: { items: [string, ReactNode][] }) {
+  const [open, setOpen] = useState(0);
+  return <div className={s.acc}>
+    {items.map(([q, a], i) => {
+      const on = open === i;
+      return <div key={q} className={cx(s.accItem, on && s.accOn)}>
+        <button onClick={() => setOpen(on ? -1 : i)} aria-expanded={on} className={s.accBtn}>{q}<span className={s.accPlus} aria-hidden="true">+</span></button>
+        <div className={s.accPanel}><div className={s.accInner} inert={!on}><div className={s.accBody}>{a}</div></div></div>
+      </div>;
+    })}
+  </div>;
+}
+
+/** Id of the last section whose top has scrolled past the sticky tabs. */
+export function useSpy(ids: string[]) {
+  const [active, setActive] = useState(ids[0]);
+  const key = ids.join();
+  useEffect(() => {
+    const f = () => {
+      const limit = window.matchMedia('(max-width: 767px)').matches ? 170 : 200;
+      let cur = ids[0];
+      for (const id of ids) { const el = document.getElementById(id); if (el && el.getBoundingClientRect().top < limit) cur = id; }
+      setActive(cur);
+    };
+    window.addEventListener('scroll', f, { passive: true });
+    f();
+    return () => window.removeEventListener('scroll', f);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key]);
+  return active;
+}
+
+export const scrollToId = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+
+/** Sticky pill tabs that jump to page sections (class `anchor` sets the landing offset). */
+export function StickyTabs({ items }: { items: { id: string; label: string; color?: BrandColor }[] }) {
+  const active = useSpy(items.map(i => i.id));
+  return <div className={s.stickyTabs}>
+    <Wrap className={s.stickyTabsInner}>
+      {items.map(i => <button key={i.id} aria-current={active === i.id ? 'true' : undefined} onClick={() => scrollToId(i.id)}
+        className={cx(s.stickyTab, active === i.id && s.stickyTabOn)}
+        style={i.color ? { '--c': `var(--build-${i.color})`, '--c-fg': onColorInk(i.color) ? 'var(--build-ink)' : '#fff' } as Vars : undefined}>{i.label}</button>)}
+    </Wrap>
+  </div>;
+}
+
+export const anchorClass = s.anchor;

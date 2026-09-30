@@ -15,6 +15,8 @@ interface SiteState {
   setMenuOpen: (v: boolean) => void;
   /** Agenda's mobile filter sheet hides the bottom bar while open. */
   setSheetLock: (v: boolean) => void;
+  /** Show a confirmation toast. */
+  say: (t: string) => void;
 }
 
 const Ctx = createContext<SiteState | null>(null);
@@ -53,11 +55,13 @@ export function SiteProvider({ children }: { children: ReactNode }) {
     say('¡Listo, ' + name.trim().split(' ')[0] + '! Tu cupo para ' + e.title + ' está reservado.');
   };
 
-  const value: SiteState = { openEvent: setDetail, reserveEvent, menuOpen, setMenuOpen, setSheetLock };
+  const value: SiteState = { openEvent: setDetail, reserveEvent, menuOpen, setMenuOpen, setSheetLock, say };
+  // Activity pages carry their own sticky reserve bar on mobile.
+  const onActivityPage = /^\/actividades\/[^/]+\/?$/.test(pathname);
 
   return <Ctx.Provider value={value}>
     {children}
-    <MobileBar hidden={menuOpen || !!detail || sheetLock || !!reserve} />
+    <MobileBar hidden={menuOpen || !!detail || sheetLock || !!reserve || onActivityPage} />
     {detail && <EventDetail e={detail} onClose={() => setDetail(null)} onReserve={reserveEvent} />}
     {reserve && <ReserveDialog key={reserve.id} event={reserve} onClose={() => setReserve(null)} onDone={done} />}
     {toast && <div className={s.toastHost}>

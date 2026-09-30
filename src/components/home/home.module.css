@@ -1,12 +1,6 @@
 /* Home sections — values copied from project/ui_kits/website/Home.jsx. */
 .section { padding-bottom: 88px; }
 @media (max-width: 767px) { .section { padding-bottom: 56px; } }
-.headEm { color: var(--text-heading); }
-
-/* SectionHead */
-.head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 28px; flex-wrap: wrap; }
-.headLink, .headLink:hover { font: 700 15px var(--font-sans); color: var(--text-link); white-space: nowrap; }
-@media (max-width: 767px) { .head { margin-bottom: 20px; } }
 
 /* Hero */
 .hero {

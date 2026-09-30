@@ -1,4 +1,4 @@
-# Build — sitio web (Fase 1)
+# Build — sitio web (Fases 1–3)
 
 Implementación en producción de `project/ui_kits/website/` (handoff de Claude Design).
 Next.js 16 (App Router, TypeScript) con export estático: el build genera HTML plano en `out/`, que se puede hospedar en cualquier lado (Netlify, Vercel, Cloudflare Pages, GitHub Pages, S3).
@@ -16,15 +16,17 @@ Si se hospeda bajo un sub-path (p. ej. GitHub Pages `/build`), construir con `NE
 
 ## Rutas
 
-| Ruta | Estado |
+| Ruta | Contenido |
 |---|---|
 | `/` | Home: hero, esta semana, pilares, espacio, membresía, testimonios, cumpleaños |
-| `/agenda/` | Agenda con filtros (día, etapa, pilar), vista tarjetas/semana, sheet de filtros en móvil |
-| `/agenda/?pillar=joy` · `?view=week` · `?sheet=1` | Mismos estados por URL que el prototipo |
-| `/actividades/`, `/membresia/`, `/cumpleanos/` | Placeholder Fase 2 |
-| `/nosotros/` | Placeholder Fase 3 |
+| `/agenda/` | Agenda con filtros (día, etapa, pilar), vista tarjetas/semana, sheet de filtros en móvil. `?pillar=joy` · `?view=week` · `?sheet=1` |
+| `/actividades/` | Catálogo por pilar con pestañas fijas. `?pillar=joy` baja a ese pilar |
+| `/actividades/<id>/` | Página de actividad (una por actividad, generada en el build): qué es, facilitador, cómo es una sesión, fechas, FAQ, relacionadas |
+| `/membresia/` | Planes, tabla comparativa, políticas |
+| `/cumpleanos/` | Paquetes, cómo funciona, galería, formulario de cotización |
+| `/nosotros/` | Quiénes somos, método, espacio, seguridad, facilitadores, familias, cómo llegar. Anclas: `#quienes` `#metodo` `#espacio` `#seguridad` `#facilitadores` `#familias` `#llegar` |
 
-El detalle de actividad (panel lateral en desktop, bottom sheet en móvil), el diálogo de reserva y el toast son globales (`SiteProvider`). **La reserva es simulada**: no hay backend y confirma con un toast.
+El detalle de actividad (panel lateral en desktop, bottom sheet en móvil), el diálogo de reserva y el toast son globales (`SiteProvider`). **Reserva, elección de plan y cotización de cumpleaños son simuladas**: no hay backend y confirman con un toast.
 
 ## Estructura
 
@@ -35,6 +37,8 @@ src/
   components/site/     header, footer, barra móvil, EventCard, DayStrip, Carousel, overlays
   components/home/     secciones del Home
   components/agenda/   pantalla de Agenda
+  components/activities/ catálogo y página de actividad
+  components/membership/, birthdays/, about/   Membresía, Cumpleaños, Nosotros
   lib/data.ts          contenido de ejemplo (actividades, pilares, zonas, testimonios, contacto)
 public/brand/          logo, iconos UI, shapes y patrón (PNG usados como máscaras CSS)
 ```
@@ -46,8 +50,9 @@ public/brand/          logo, iconos UI, shapes y patrón (PNG usados como másca
 - **Fotos:** `<ImageSlot>` reemplaza al `<image-slot>` del prototipo. Muestra el placeholder hasta recibir `src`.
 - **Fuentes:** solo los pesos que se usan (Recoleta 400/700, Gilroy 400–700, Lilita One), subseteadas a Latin y en woff2 (~150 KB en total, contra ~1.2 MB de los originales). Comando: `pyftsubset <font> --unicodes="U+0000-00FF,U+0131,U+0152-0153,U+2013-2014,U+2018-201E,U+2022,U+2026,U+20A1,U+2190-2193,U+2212" --flavor=woff2 --layout-features='*'`.
 - **Accesibilidad añadida:** Escape cierra los overlays, `aria-current` en la navegación, `aria-pressed` en los chips, foco visible en los controles.
-- Corregido un desborde del grid de testimonios del prototipo (las tarjetas salían del contenedor).
+- URLs reales en vez de `?screen=`: `/actividades/sandbox/`, `/nosotros/#llegar` (compartibles e indexables).
+- Las anclas usan `scroll-margin-top` en lugar de calcular offsets en JS.
 
 ## Pendiente del cliente
 
-Precios (`₡[x]`), horario, links de WhatsApp/Instagram/correo (`CONTACT` en `lib/data.ts`), fotos reales, testimonios y facilitadores reales. **Revisar la licencia de Gilroy** (Fontspring EULA en `project/assets/fonts/gilroy/License.txt`): el uso como webfont depende de la licencia comprada.
+Precios (`₡[x]`) de actividades, planes y paquetes; horario, local y parqueo; teléfono, correo y links de WhatsApp/Instagram/Waze/Maps (`CONTACT` y `LOCATION` en `lib/data.ts`); historia de los fundadores; fotos, testimonios y facilitadores reales. **Revisar la licencia de Gilroy** (Fontspring EULA en `project/assets/fonts/gilroy/License.txt`): el uso como webfont depende de la licencia comprada.

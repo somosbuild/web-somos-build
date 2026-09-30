@@ -1,0 +1,76 @@
+/* Cumpleaños — values copied from project/ui_kits/website/Birthdays.jsx. */
+.page { padding-bottom: 96px; }
+.hero { padding-top: 56px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 56px; align-items: center; }
+.heroCopy { display: flex; flex-direction: column; gap: 18px; }
+.title { margin: 0; font: 400 64px/1.03 var(--font-display); color: var(--text-heading); text-wrap: pretty; }
+.lead { margin: 0; font: 500 19px/1.5 var(--font-sans); color: var(--text-muted); max-width: 460px; }
+.ctas { display: flex; gap: 12px; }
+.frame { position: relative; background: var(--build-celeste); border-radius: var(--radius-xl); padding: 18px; aspect-ratio: 5 / 4; }
+.framePhoto { position: absolute; inset: 18px; border-radius: 28px; overflow: hidden; }
+.shapeA { position: absolute; left: -20px; top: 50px; pointer-events: none; }
+.shapeB { position: absolute; right: 36px; bottom: -26px; pointer-events: none; }
+
+.block { padding-top: 88px; }
+.h2Gap { margin-bottom: 28px; }
+
+.pkg { width: 100%; background: var(--build-white); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-soft); display: flex; flex-direction: column; }
+.pkgFeatured { box-shadow: var(--shadow-lift); }
+.pkgHead { background: var(--bg); color: var(--fg); padding: 22px 22px 20px; display: flex; flex-direction: column; gap: 6px; }
+.pkgName { margin: 0; font: 700 28px/1 var(--font-display); }
+.pkgAges { font: 600 15px var(--font-sans); }
+.pkgBody { padding: 22px; display: flex; flex-direction: column; gap: 14px; flex: 1; }
+.badges { display: flex; gap: 8px; flex-wrap: wrap; }
+.incl { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px; }
+.incl li { display: flex; gap: 10px; align-items: flex-start; font: 500 15px/1.35 var(--font-sans); color: var(--build-ink); }
+.inclIcon { margin-top: 2px; }
+.pkgPrice { margin-top: auto; padding-top: 8px; display: flex; align-items: baseline; gap: 6px; }
+.pkgFrom { font: 600 14px var(--font-sans); color: var(--text-muted); }
+.pkgAmount { font: 700 28px var(--font-display); color: var(--build-ink); }
+
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.step { display: flex; flex-direction: column; gap: 14px; align-items: flex-start; background: var(--build-white); border-radius: var(--radius-lg); padding: 26px; }
+.stepIcon { width: 64px; height: 64px; flex: none; border-radius: 18px; background: var(--bg); display: flex; align-items: center; justify-content: center; }
+.stepText { display: flex; flex-direction: column; gap: 4px; }
+.stepTitle { font: 700 24px/1.1 var(--font-display); color: var(--build-ink); }
+.stepDesc { font: 400 15px/1.45 var(--font-sans); color: var(--text-muted); }
+
+.gallery { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: 220px; gap: 16px; }
+.galleryItem { position: relative; border-radius: 24px; overflow: hidden; background: var(--build-greige); }
+.galleryBig { grid-column: span 2; grid-row: span 2; }
+
+.quote {
+  background: var(--build-white); border-radius: var(--radius-xl); box-shadow: var(--shadow-soft); padding: 48px 56px;
+  display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 56px;
+}
+.quoteIntro { display: flex; flex-direction: column; gap: 14px; }
+.quoteText { margin: 0; font: 500 16px/1.5 var(--font-sans); color: var(--text-muted); }
+.quoteShapes { display: flex; gap: 12px; margin-top: auto; align-items: flex-end; }
+.form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.span2 { grid-column: span 2; }
+.formActions { display: flex; gap: 12px; align-items: center; }
+.waLink { font: 700 15px var(--font-sans); text-align: center; }
+
+@media (max-width: 767px) {
+  .page { padding-bottom: 40px; }
+  .hero { padding-top: 24px; grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .title { font-size: 42px; }
+  .lead { font-size: 16px; }
+  .ctas { flex-direction: column; }
+  .frame { border-radius: 28px; padding: 12px; }
+  .framePhoto { inset: 12px; border-radius: 20px; }
+  .shapeA { left: -8px; top: 30px; }
+  .shapeB { right: 20px; bottom: -18px; }
+  .block { padding-top: 48px; }
+  .h2Gap { margin-bottom: 18px; }
+  .steps { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .step { flex-direction: row; align-items: center; padding: 16px; }
+  .stepIcon { width: 52px; height: 52px; }
+  .stepTitle { font-size: 20px; }
+  .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 150px; gap: 10px; }
+  .galleryItem { border-radius: 18px; }
+  .galleryBig { grid-column: auto; }
+  .quote { border-radius: 28px; padding: 26px 20px; grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .form { grid-template-columns: minmax(0, 1fr); }
+  .span2 { grid-column: auto; }
+  .formActions { flex-direction: column; align-items: stretch; }
+}

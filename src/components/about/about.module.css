@@ -1,0 +1,103 @@
+/* Nosotros — values copied from project/ui_kits/website/About.jsx. */
+.page { padding-bottom: 96px; }
+.intro { padding-top: 48px; padding-bottom: 28px; }
+.body { padding-top: 64px; }
+.pad { padding-top: 96px; }
+
+.who { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 56px; align-items: center; }
+.whoText { display: flex; flex-direction: column; gap: 18px; }
+.p { margin: 0; font: 400 18px/1.6 var(--font-sans); color: var(--text-body); }
+.pMuted { color: var(--text-muted); }
+.photoSquare { position: relative; aspect-ratio: 1 / 1; border-radius: var(--radius-xl); overflow: hidden; background: var(--build-greige); }
+
+.withYou {
+  position: relative; overflow: hidden; background: var(--build-orange); color: #fff; border-radius: var(--radius-xl);
+  padding: 64px; display: flex; flex-direction: column; gap: 16px; align-items: flex-start;
+}
+.withYouShape { position: absolute; right: 40px; bottom: -30px; }
+.withYouTitle { position: relative; margin: 0; font: 400 64px/1.03 var(--font-display); color: var(--build-beige); }
+.withYouText { position: relative; margin: 0; font: 500 19px/1.5 var(--font-sans); max-width: 560px; }
+.withYouTag.withYouTag { position: relative; background: var(--build-beige); color: var(--build-orange); }
+
+.pillars { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.pillar {
+  background: var(--bg); color: var(--fg); border-radius: var(--radius-lg); padding: 32px;
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 28px; align-items: start;
+}
+.pillarMain { grid-column: span 2; grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr); }
+.pillarCol { display: flex; flex-direction: column; gap: 10px; }
+.pillarName { margin: 0; font: 700 34px/1 var(--font-display); }
+.pillarMain .pillarName { font-size: 48px; }
+.pillarTag { font: 400 13px var(--font-descriptor); letter-spacing: 0.06em; }
+.pillarText { font: 500 17px/1.45 var(--font-sans); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.chip { font: 600 13px/1 var(--font-sans); padding: 7px 11px; border-radius: 999px; background: rgba(252, 243, 234, 0.9); color: var(--build-ink); }
+.pillarExtra { font: 500 16px/1.5 var(--font-sans); }
+
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.card { background: var(--build-white); border-radius: var(--radius-lg); box-shadow: var(--shadow-soft); padding: 28px; display: flex; flex-direction: column; gap: 10px; }
+.tile { width: 60px; height: 60px; flex: none; border-radius: 18px; background: var(--bg); display: flex; align-items: center; justify-content: center; }
+.methodTitle { margin: 6px 0 0; font: 700 26px/1.1 var(--font-display); color: var(--build-ink); }
+.methodDesc { font: 400 16px/1.5 var(--font-sans); color: var(--text-muted); }
+
+.space { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; }
+.spaceText { display: flex; flex-direction: column; gap: 20px; }
+.lead { margin: 0; font: 400 18px/1.55 var(--font-sans); color: var(--text-muted); }
+.spaceGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.spaceCard { padding: 20px; }
+.spaceTile { width: 52px; height: 52px; border-radius: 16px; }
+.spaceTitle { font: 700 20px/1.15 var(--font-display); color: var(--build-ink); }
+.small { font: 400 14px/1.45 var(--font-sans); color: var(--text-muted); }
+.spacePhoto { position: relative; border-radius: var(--radius-xl); overflow: hidden; min-height: 520px; background: var(--build-celeste); }
+
+.safety { background: var(--build-celeste); border-radius: var(--radius-xl); padding: 56px; display: flex; flex-direction: column; gap: 32px; }
+.safetyGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.safetyItem { background: var(--build-white); border-radius: var(--radius-lg); padding: 22px; display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+.safetyTile { width: 48px; height: 48px; border-radius: 14px; }
+.safetyText { display: flex; flex-direction: column; gap: 6px; }
+.safetyTitle { font: 700 19px/1.15 var(--font-display); color: var(--build-ink); }
+
+.facs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+
+.reach { padding-top: 8px; display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 40px; align-items: stretch; }
+.map { position: relative; min-height: 440px; border-radius: var(--radius-xl); overflow: hidden; background: var(--build-greige); }
+.reachInfo { display: flex; flex-direction: column; gap: 18px; }
+.row { display: flex; gap: 14px; align-items: center; }
+.rowIcon { width: 44px; height: 44px; flex: none; border-radius: 14px; background: var(--build-white); display: flex; align-items: center; justify-content: center; }
+.rowText { display: flex; flex-direction: column; }
+.rowLabel { font: 600 12px var(--font-sans); letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-subtle); }
+.rowValue { font: 600 16px var(--font-sans); color: var(--build-ink); }
+.reachCtas { display: flex; gap: 10px; margin-top: 6px; }
+
+@media (max-width: 767px) {
+  .page { padding-bottom: 40px; }
+  .intro { padding-top: 24px; padding-bottom: 18px; }
+  .body { padding-top: 32px; }
+  .pad { padding-top: 52px; }
+  .who { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .p { font-size: 16px; }
+  .photoSquare { border-radius: 28px; }
+  .withYou { border-radius: 28px; padding: 36px 22px; }
+  .withYouShape { right: -20px; bottom: -20px; }
+  .withYouTitle { font-size: 40px; }
+  .withYouText { font-size: 16px; }
+  .pillars { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .pillar, .pillarMain { grid-column: auto; grid-template-columns: minmax(0, 1fr); padding: 22px; gap: 14px; }
+  .pillarName, .pillarMain .pillarName { font-size: 30px; }
+  .pillarText { font-size: 15px; }
+  .grid3 { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .card { padding: 22px; }
+  .methodTitle { font-size: 22px; }
+  .space { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .spaceGrid { gap: 10px; }
+  .spaceCard { padding: 16px; }
+  .spaceTitle { font-size: 18px; }
+  .spacePhoto { border-radius: 28px; min-height: 320px; }
+  .safety { border-radius: 28px; padding: 30px 20px; gap: 20px; }
+  .safetyGrid { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .safetyItem { flex-direction: row; padding: 18px; }
+  .facs { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .reach { padding-top: 0; grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .map { min-height: 260px; border-radius: 28px; }
+  .reachCtas { flex-direction: column; }
+}

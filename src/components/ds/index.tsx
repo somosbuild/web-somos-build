@@ -47,9 +47,10 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   fullWidth?: boolean;
   /** Full width only below 768px. */
   fullWidthMobile?: boolean;
+  iconLeft?: ReactNode;
 }
-export function Button({ variant = 'primary', size = 'md', fullWidth, fullWidthMobile, className, type = 'button', ...rest }: ButtonProps) {
-  return <button type={type} {...rest} className={cx(s.btn, s[size], s[variant], fullWidth && s.full, fullWidthMobile && s.fullMobile, className)} />;
+export function Button({ variant = 'primary', size = 'md', fullWidth, fullWidthMobile, iconLeft, className, type = 'button', children, ...rest }: ButtonProps) {
+  return <button type={type} {...rest} className={cx(s.btn, s[size], s[variant], fullWidth && s.full, fullWidthMobile && s.fullMobile, className)}>{iconLeft}{children}</button>;
 }
 
 export function IconButton({ label, size = 44, children, className, style, ...rest }: ButtonHTMLAttributes<HTMLButtonElement> & { label: string; size?: number }) {
@@ -60,9 +61,9 @@ const BADGE: Record<string, [string, string]> = {
   orange: ['var(--build-orange)', '#fff'], yellow: ['var(--build-yellow)', 'var(--build-ink)'], olive: ['var(--build-olive)', '#fff'],
   celeste: ['var(--build-celeste)', 'var(--build-ink)'], beige: ['var(--build-beige)', 'var(--build-ink)'], greige: ['var(--build-greige)', 'var(--build-ink)'],
 };
-export function Badge({ color = 'orange', children }: { color?: BrandColor | 'beige' | 'greige'; children: ReactNode }) {
+export function Badge({ color = 'orange', children, className }: { color?: BrandColor | 'beige' | 'greige'; children: ReactNode; className?: string }) {
   const [bg, fg] = BADGE[color];
-  return <span className={s.badge} style={{ '--bg': bg, '--fg': fg } as Vars}>{children}</span>;
+  return <span className={cx(s.badge, className)} style={{ '--bg': bg, '--fg': fg } as Vars}>{children}</span>;
 }
 
 /** The "BUILDING ___ TOGETHER" descriptor bar as a tag. Square corners, Lilita One. */
@@ -123,18 +124,22 @@ export function Toast({ tone = 'brand', icon, children, onClose }: { tone?: keyo
 
 /* ---------- Forms ---------- */
 
-export function Input({ label, ...rest }: InputHTMLAttributes<HTMLInputElement> & { label?: string }) {
-  return <label className={s.field}>
+export function Input({ label, iconLeft, className, ...rest }: InputHTMLAttributes<HTMLInputElement> & { label?: string; iconLeft?: ReactNode }) {
+  return <label className={cx(s.field, className)}>
     {label && <span className={s.label}>{label}</span>}
-    <span className={s.inputWrap}><input {...rest} className={s.input} /></span>
+    <span className={s.inputWrap}>{iconLeft}<input {...rest} className={s.input} /></span>
   </label>;
 }
 
-export function Select({ label, options, ...rest }: SelectHTMLAttributes<HTMLSelectElement> & { label?: string; options: string[] }) {
-  return <label className={s.field}>
+type Option = string | { value: string; label: string };
+export function Select({ label, options, placeholder, className, ...rest }: SelectHTMLAttributes<HTMLSelectElement> & { label?: string; options: Option[]; placeholder?: string }) {
+  return <label className={cx(s.field, className)}>
     {label && <span className={s.label}>{label}</span>}
     <span className={s.selectWrap}>
-      <select {...rest} className={s.select}>{options.map(o => <option key={o} value={o}>{o}</option>)}</select>
+      <select {...rest} className={s.select}>
+        {placeholder && <option value="">{placeholder}</option>}
+        {options.map(o => typeof o === 'string' ? <option key={o} value={o}>{o}</option> : <option key={o.value} value={o.value}>{o.label}</option>)}
+      </select>
       <span aria-hidden="true" className={s.selectChevron} />
     </span>
   </label>;

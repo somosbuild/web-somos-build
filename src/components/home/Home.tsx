@@ -1,23 +1,15 @@
 'use client';
 
-import { useState, type CSSProperties, type ReactNode } from 'react';
-import Link from 'next/link';
+import { useState, type CSSProperties } from 'react';
 import { useRouter } from 'next/navigation';
 import s from './home.module.css';
 import { Button, Icon, Logo, Shape } from '@/components/ds';
-import { Carousel, DayStrip, EventCard, H2, ImageSlot, Wrap } from '@/components/site/shared';
+import { Carousel, DayStrip, Em, EventCard, H2, ImageSlot, SectionHead, Wrap } from '@/components/site/shared';
 import { useSite } from '@/components/site/SiteProvider';
 import { EVENTS, PILLARS, TESTIMONIALS, ZONES, onColorInk, type DayKey, type Pillar } from '@/lib/data';
 
 type Vars = CSSProperties & Record<`--${string}`, string>;
 const cx = (...c: (string | false | undefined)[]) => c.filter(Boolean).join(' ');
-
-function SectionHead({ title, link, href, linkDesktopOnly }: { title: ReactNode; link?: string; href?: string; linkDesktopOnly?: boolean }) {
-  return <div className={s.head}>
-    <H2>{title}</H2>
-    {link && href && <Link href={href} className={cx(s.headLink, linkDesktopOnly && 'desktop-only')}>{link} →</Link>}
-  </div>;
-}
 
 function Hero() {
   const router = useRouter();
@@ -47,7 +39,7 @@ function ThisWeek() {
   const [day, setDay] = useState<DayKey | 'todos'>('todos');
   const list = EVENTS.filter(e => day === 'todos' || e.day === day).slice(0, 6);
   return <Wrap className={s.section}>
-    <SectionHead title={<>Esta semana <b className={s.headEm}>en Build</b></>} link="Ver agenda completa" href="/agenda/" linkDesktopOnly />
+    <SectionHead title={<>Esta semana <Em>en Build</Em></>} link="Ver agenda completa" href="/agenda/" linkDesktopOnly />
     <div className={s.dayRow}><DayStrip value={day} onChange={setDay} /></div>
     {list.length
       ? <Carousel min={300} minMobile={290}>{list.map(e => <EventCard key={e.id} e={e} onOpen={openEvent} onReserve={reserveEvent} />)}</Carousel>
@@ -76,14 +68,14 @@ function PillarCard({ p, featured }: { p: Pillar; featured: boolean }) {
 
 function Pillars() {
   return <Wrap className={s.section}>
-    <SectionHead title={<>Nuestros <b className={s.headEm}>pilares</b></>} />
+    <SectionHead title={<>Nuestros <Em>pilares</Em></>} />
     <div className={s.pillars}>{PILLARS.map((p, i) => <PillarCard key={p.k} p={p} featured={i === 0} />)}</div>
   </Wrap>;
 }
 
 function Spaces() {
   return <Wrap className={s.section}>
-    <SectionHead title={<>Un espacio pensado <b className={s.headEm}>para cada etapa</b></>} link="Conocé el espacio" href="/nosotros/" />
+    <SectionHead title={<>Un espacio pensado <Em>para cada etapa</Em></>} link="Conocé el espacio" href="/nosotros/#espacio" />
     <Carousel min={200} minMobile={250} cols="repeat(5,minmax(0,1fr))">
       {ZONES.map(z => <div key={z.k} className={s.zone}>
         <div className={s.zonePhoto}>
@@ -121,9 +113,9 @@ function MembershipTeaser() {
 
 const QUOTE_COLORS = ['orange', 'celeste', 'olive'];
 
-function Testimonials() {
-  return <Wrap className={s.section}>
-    <SectionHead title={<>Familias <b className={s.headEm}>Build</b></>} />
+export function Testimonials({ className }: { className?: string }) {
+  return <Wrap className={cx(s.section, className)}>
+    <SectionHead title={<>Familias <Em>Build</Em></>} />
     <Carousel min={280} minMobile={290} cols="repeat(3,minmax(0,1fr))">
       {TESTIMONIALS.map((t, i) => <figure key={t.id} className={s.quote}>
         <Shape name="02" size={28} color={`var(--build-${QUOTE_COLORS[i]})`} />

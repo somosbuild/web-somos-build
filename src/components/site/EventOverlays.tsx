@@ -38,7 +38,7 @@ export function EventDetail({ e, onClose, onReserve }: { e: BuildEvent; onClose:
         <div className={s.note}>Actividad con papás o cuidadores presentes.</div>
         <div className={s.detailCta}>
           <Button size="lg" fullWidth variant={e.spots ? 'primary' : 'secondary'} onClick={() => onReserve(e)}>{e.spots ? `Reservar · ${e.spots} cupos` : 'Unirme a la lista de espera'}</Button>
-          <Link href="/actividades/" onClick={onClose} className={s.detailLink}>Ver página de la actividad →</Link>
+          <Link href={`/actividades/${e.id}/`} onClick={onClose} className={s.detailLink}>Ver página de la actividad →</Link>
         </div>
       </div>
     </div>

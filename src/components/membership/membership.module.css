@@ -1,0 +1,66 @@
+/* Membresía — values copied from project/ui_kits/website/Membership.jsx. */
+.page { padding-bottom: 96px; }
+.heroWrap { padding-top: 56px; }
+.hero {
+  position: relative; overflow: hidden; background: var(--build-yellow); border-radius: var(--radius-xl);
+  padding: 64px; display: flex; flex-direction: column; gap: 16px;
+}
+.heroShapeA { position: absolute; right: 60px; top: 40px; }
+.heroShapeB { position: absolute; right: 200px; bottom: -30px; transform: rotate(90deg); }
+.heroTitle { position: relative; margin: 0; font: 400 64px/1.03 var(--font-display); color: var(--build-ink); max-width: 640px; text-wrap: pretty; }
+.heroText { position: relative; margin: 0; font: 500 19px/1.5 var(--font-sans); color: var(--build-ink); max-width: 520px; }
+
+.block { padding-top: 72px; }
+.h2Gap { margin-bottom: 28px; }
+
+.plan {
+  width: 100%; display: flex; flex-direction: column; background: var(--build-white); border-radius: var(--radius-lg);
+  overflow: hidden; box-shadow: var(--shadow-soft);
+}
+.planFeatured { box-shadow: var(--shadow-lift); outline: 3px solid var(--build-orange); outline-offset: -3px; }
+.planHead { background: var(--bg); color: var(--fg); padding: 26px; display: flex; flex-direction: column; gap: 8px; position: relative; }
+.planBadge { position: absolute; top: 18px; right: 18px; }
+.planName { font: 700 32px/1 var(--font-display); }
+.planFor { font: 500 15px/1.4 var(--font-sans); max-width: 240px; }
+.planPrice { margin-top: 8px; display: flex; align-items: baseline; gap: 6px; }
+.planAmount { font: 700 34px var(--font-display); }
+.planPer { font: 600 14px var(--font-sans); }
+.planBody { padding: 10px 26px 26px; display: flex; flex-direction: column; flex: 1; }
+.planRow { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 2px solid var(--build-beige); }
+.planLabel { font: 500 15px var(--font-sans); color: var(--text-muted); }
+.planValue { font: 700 15px var(--font-sans); color: var(--build-ink); text-align: right; }
+.planCta { margin-top: 20px; }
+.dash { font: 700 16px var(--font-sans); color: var(--text-subtle); }
+
+.tableScroll { overflow-x: auto; }
+.table {
+  width: 100%; border-collapse: separate; border-spacing: 0; background: var(--build-white); border-radius: var(--radius-lg);
+  overflow: hidden; font: 500 15px/1.4 var(--font-sans); color: var(--build-ink);
+}
+.table th { text-align: left; padding: 18px 16px; font: 700 20px var(--font-display); border-top: 6px solid var(--c); }
+.table th:first-child { padding: 18px 20px; font: 700 13px var(--font-sans); letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-subtle); border-top: 0; }
+.table td { padding: 14px 16px; font-weight: 600; }
+.table td:first-child { padding: 14px 20px; color: var(--text-muted); }
+.table tbody tr:nth-child(odd) { background: rgba(252, 243, 234, 0.6); }
+
+.policies { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 56px; align-items: start; }
+.policiesIntro { display: flex; flex-direction: column; gap: 12px; }
+.policiesText { margin: 0; font: 500 16px/1.5 var(--font-sans); color: var(--text-muted); }
+
+@media (max-width: 767px) {
+  .page { padding-bottom: 40px; }
+  .heroWrap { padding-top: 24px; }
+  .hero { border-radius: 28px; padding: 32px 22px; }
+  .heroShapeA { right: -14px; top: -10px; }
+  .heroShapeB { right: 40px; bottom: -26px; }
+  .heroTitle { font-size: 40px; }
+  .heroText { font-size: 16px; }
+  .block { padding-top: 40px; }
+  .h2Gap { margin-bottom: 18px; }
+  .planHead { padding: 22px 20px; }
+  .planName { font-size: 28px; }
+  .planBody { padding: 8px 20px 20px; }
+  .table { min-width: 560px; }
+  .tableScroll { margin: 0 -4px; }
+  .policies { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+}

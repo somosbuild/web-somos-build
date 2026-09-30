@@ -85,6 +85,7 @@
   :root { --header-h: 64px; }
 }
 
+*, *::before, *::after { box-sizing: border-box; }
 html, body { overflow-x: clip; }
 body {
   margin: 0;

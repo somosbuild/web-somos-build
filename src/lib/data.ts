@@ -113,3 +113,68 @@ export const dayOf = (k: DayKey) => DAYS.find(d => d.k === k)!;
 export const isPillar = (k: string | null): k is PillarKey => !!k && PILLARS.some(p => p.k === k);
 /** Yellow and celeste grounds take ink text; the rest take white. */
 export const onColorInk = (c: BrandColor) => c === 'yellow' || c === 'celeste';
+
+/* ---------- Fase 2–3 content (project/ui_kits/website/data2.js) ---------- */
+
+export interface Facilitator { name: string; short: string; role: string }
+export const FAC: Record<string, Facilitator> = {
+  'Laura V.': { name: 'Laura Vargas', short: 'Laura V.', role: 'Psicóloga perinatal' },
+  'Ana M.': { name: 'Ana Montero', short: 'Ana M.', role: 'Especialista en estimulación temprana' },
+  'Diego R.': { name: 'Diego Rojas', short: 'Diego R.', role: 'Educador infantil' },
+  'Sofía P.': { name: 'Sofía Pérez', short: 'Sofía P.', role: 'Masajista infantil certificada' },
+  'Dr. Mora': { name: 'Dr. Andrés Mora', short: 'Dr. Mora', role: 'Pediatra · instructor de RCP' },
+  'Carla J.': { name: 'Carla Jiménez', short: 'Carla J.', role: 'Música y educadora' },
+  'Equipo Build': { name: 'Equipo Build', short: 'Equipo Build', role: 'Anfitriones del espacio' },
+  'Invitada': { name: 'Especialista invitada', short: 'Invitada', role: 'Cambia cada mes' },
+};
+
+/** [icon, title, description] — how a session runs, per pillar. */
+export const STEPS: Record<PillarKey, [string, string, string][]> = {
+  community: [['07', 'Llegada y bienvenida', 'Café, presentaciones y un espacio para acomodarse.'], ['05', 'Tema del día', 'La facilitadora abre la conversación.'], ['06', 'Compartir', 'Cada familia cuenta lo que vive, sin juicios.'], ['49', 'Cierre', 'Una idea para llevar a casa y contactos del grupo.']],
+  skills: [['04', 'Bienvenida', 'Presentación y objetivos de la sesión.'], ['36', 'Aprender', 'Explicación práctica y demostración.'], ['18', 'Practicar', 'Vos lo hacés, con acompañamiento.'], ['43', 'Cierre', 'Material de apoyo y dudas.']],
+  joy: [['23', 'Llegada', 'Canción de bienvenida y exploración libre.'], ['21', 'Juego guiado', 'Estaciones por edad con materiales seleccionados.'], ['33', 'Movimiento', 'Música, ritmo y juego en conjunto.'], ['28', 'Calma', 'Cierre tranquilo antes de despedirnos.']],
+  family: [['01', 'Bienvenida', 'Nos acomodamos en familia.'], ['13', 'Conexión', 'Actividad guiada para papás y peques.'], ['49', 'Tiempo juntos', 'Espacio libre para disfrutar.'], ['09', 'Cierre', 'Un recuerdo del día.']],
+};
+
+export const FAQ: [string, string][] = [
+  ['¿Tengo que quedarme durante la actividad?', 'Sí. Todas las actividades en Build son con papás o cuidadores presentes. No es un servicio de cuidado.'],
+  ['¿Puedo cancelar mi reserva?', 'Podés cancelar hasta 12 horas antes sin costo. Después de ese plazo el cupo se descuenta.'],
+  ['¿Está incluida en la membresía?', 'Depende de la actividad y de tu plan. En cada tarjeta indicamos el precio o si está incluida.'],
+  ['¿Puedo llevar a hermanos?', 'Escribinos por WhatsApp y lo coordinamos según la capacidad de la sesión.'],
+];
+
+export interface Plan { k: string; name: string; for: string; color: BrandColor; price: string; perMonth: string; discount: string; priority: boolean; cafe: string; events: boolean; featured?: boolean }
+export const PLANS: Plan[] = [
+  { k: 'explora', name: 'Explora', for: 'Para conocer Build y venir de vez en cuando', color: 'celeste', price: '₡[x]', perMonth: '4 actividades', discount: '10% en talleres', priority: false, cafe: '5% en el café', events: false },
+  { k: 'comunidad', name: 'Comunidad', for: 'Para familias que vienen cada semana', color: 'orange', price: '₡[x]', perMonth: '10 actividades', discount: '15% en talleres', priority: true, cafe: '10% en el café', events: true, featured: true },
+  { k: 'familia', name: 'Familia Build', for: 'Para toda la familia, sin límites', color: 'yellow', price: '₡[x]', perMonth: 'Ilimitadas', discount: '20% en talleres y cumpleaños', priority: true, cafe: '15% en el café', events: true },
+];
+
+export const POLICIES: [string, string][] = [
+  ['Congelamiento', 'Podés congelar tu membresía hasta 30 días por año, por ejemplo durante un viaje o después de un parto. Avisanos con 3 días de anticipación.'],
+  ['Cancelación', 'La membresía se renueva cada mes. Podés cancelarla cuando querás, avisando antes de la fecha de renovación.'],
+  ['Reservas y ausencias', 'Si no podés venir, cancelá con 12 horas de anticipación para liberar el cupo a otra familia.'],
+];
+
+export interface Package { k: string; name: string; ages: string; cap: string; dur: string; color: BrandColor; incl: string[]; price: string; featured?: boolean }
+export const PACKAGES: Package[] = [
+  { k: 'mini', name: 'Mini Build', ages: '1 a 2 años', cap: 'Hasta 12 niños', dur: '2 horas', color: 'celeste', incl: ['Sala flexible exclusiva', 'Juego sensorial guiado', 'Decoración Build', 'Anfitrión Build'], price: '₡[x]' },
+  { k: 'party', name: 'Build Party', ages: '2 a 4 años', cap: 'Hasta 20 niños', dur: '2,5 horas', color: 'orange', incl: ['Sala + área de juego', 'Actividad guiada a elección', 'Sandbox', 'Decoración y mesa de pastel', '2 anfitriones Build'], price: '₡[x]', featured: true },
+  { k: 'max', name: 'Build Max', ages: '3 a 5 años', cap: 'Hasta 25 niños', dur: '3 horas', color: 'yellow', incl: ['Todo el espacio', 'Little Builders: reto de construcción', 'Música en vivo', 'Menú del café para adultos', '3 anfitriones Build'], price: '₡[x]' },
+];
+
+const DEVELOPS: Record<PillarKey, string> = {
+  community: 'Desarrolla red de apoyo, confianza y la tranquilidad de saber que no estás solo.',
+  skills: 'Desarrolla herramientas prácticas para vos y habilidades nuevas para tu peque.',
+  joy: 'Desarrolla curiosidad, coordinación y el gusto por jugar juntos.',
+  family: 'Desarrolla vínculo, calma y tiempo de calidad en familia.',
+};
+/** "Qué es y qué desarrolla" paragraphs for an activity page. */
+export const aboutOf = (e: BuildEvent) => [
+  e.desc,
+  `Está pensada para ${e.stage === 'Papás' ? 'papás, mamás y cuidadores' : e.stage === 'Familia' ? 'toda la familia' : 'familias en la etapa ' + e.stage}, y se vive siempre con vos presente.`,
+  DEVELOPS[e.pillar],
+];
+
+// Pending from the client (shown as placeholders on /nosotros).
+export const LOCATION = { local: '[local]', parking: 'Parqueo de City Place · [condiciones]', phone: '[+506 0000 0000]', email: '[hola@build.cr]', waze: '#', maps: '#' };

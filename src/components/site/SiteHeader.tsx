@@ -20,7 +20,7 @@ export function SiteHeader() {
   const pathname = usePathname();
   const router = useRouter();
   const { menuOpen, setMenuOpen } = useSite();
-  const isOn = (href: string) => pathname === href || pathname + '/' === href;
+  const isOn = (href: string) => (pathname.endsWith('/') ? pathname : pathname + '/').startsWith(href);
   const go = (href: string) => { setMenuOpen(false); router.push(href); };
 
   return <>
@@ -40,7 +40,7 @@ export function SiteHeader() {
       </nav>
       <div className={s.menuCtas}>
         <Button size="lg" fullWidth onClick={() => go('/agenda/')}>Reservar</Button>
-        <Button size="lg" variant="secondary" fullWidth onClick={() => go('/nosotros/')}>Cómo llegar</Button>
+        <Button size="lg" variant="secondary" fullWidth onClick={() => go('/nosotros/#llegar')}>Cómo llegar</Button>
       </div>
       <div className={s.menuShapes}>
         <Shape name="04" size={46} color="var(--build-orange)" /><Shape name="03" size={40} color="var(--build-yellow)" /><Shape name="01" size={40} color="var(--build-olive)" /><Shape name="02" size={40} color="var(--build-celeste)" />
