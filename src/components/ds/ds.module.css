@@ -1,0 +1,172 @@
+/* Build Design System primitives — values copied from project/components/**. */
+
+/* ---------- Icon / Shape (PNG masks, recolourable) ---------- */
+.mask {
+  display: inline-block;
+  flex: none;
+  width: var(--s);
+  height: var(--s);
+  background-color: var(--c, currentColor);
+  -webkit-mask: var(--m) center / contain no-repeat;
+  mask: var(--m) center / contain no-repeat;
+}
+@media (max-width: 767px) {
+  .mask { width: var(--s-m, var(--s)); height: var(--s-m, var(--s)); }
+}
+
+/* ---------- Logo ---------- */
+.logo { display: block; width: var(--w); height: auto; }
+@media (max-width: 767px) { .logo { width: var(--w-m, var(--w)); } }
+
+/* ---------- Button ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  height: var(--h); padding: 0 var(--px);
+  border-radius: var(--radius-pill); border: 2px solid var(--bd);
+  background: var(--bg); color: var(--fg);
+  font: 700 var(--fs) / 1 var(--font-sans); white-space: nowrap; cursor: pointer;
+  box-shadow: var(--sh);
+  transition: transform var(--dur-fast) var(--ease-build), box-shadow var(--dur-fast), filter var(--dur-fast), background var(--dur-fast);
+}
+.sm { --h: 36px; --px: 16px; --fs: 14px; }
+.md { --h: 48px; --px: 24px; --fs: 16px; }
+.lg { --h: 58px; --px: 32px; --fs: 18px; }
+.primary { --bg: var(--build-orange); --fg: var(--build-white); --bd: transparent; --sh: var(--shadow-block); }
+.sunny { --bg: var(--build-yellow); --fg: var(--build-ink); --bd: transparent; --sh: var(--shadow-block); }
+.secondary { --bg: var(--build-white); --fg: var(--build-ink); --bd: var(--build-ink); --sh: var(--shadow-block); }
+.ghost { --bg: transparent; --fg: var(--build-orange-deep); --bd: transparent; --sh: none; }
+@media (hover: hover) {
+  .btn:not(:disabled):not(.ghost):hover { transform: translateY(-1px); }
+  .primary:not(:disabled):hover, .sunny:not(:disabled):hover { filter: brightness(1.04) saturate(1.05); }
+  .ghost:not(:disabled):hover { background: rgba(253, 126, 40, 0.1); }
+}
+.btn:not(:disabled):active { transform: translateY(3px); box-shadow: none; }
+.btn:disabled { cursor: not-allowed; opacity: 0.45; box-shadow: none; }
+.full { width: 100%; }
+@media (max-width: 767px) { .fullMobile { width: 100%; } }
+
+/* ---------- IconButton ---------- */
+.iconBtn {
+  width: var(--s); height: var(--s); flex: none; border-radius: 50%;
+  border: 2px solid transparent; background: var(--bg); color: var(--fg);
+  display: inline-flex; align-items: center; justify-content: center; cursor: pointer; padding: 0;
+  transition: transform var(--dur-fast) var(--ease-build);
+}
+.iconBtn:active { transform: scale(0.92); }
+.iconSoft { --bg: var(--build-white); --fg: var(--build-ink); border-color: var(--build-greige); }
+
+/* ---------- Badge ---------- */
+.badge {
+  display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 12px;
+  border-radius: var(--radius-pill); background: var(--bg); color: var(--fg);
+  font: 600 13px/1 var(--font-sans); white-space: nowrap;
+}
+
+/* ---------- PillarTag (descriptor bar) ---------- */
+.pillarTag {
+  display: inline-block; background: var(--bg); color: var(--build-white);
+  font: 400 var(--fs) / 1.25 var(--font-descriptor); letter-spacing: var(--tracking-descriptor);
+  padding: calc(var(--fs) * 0.25) calc(var(--fs) * 0.7);
+  text-transform: uppercase; white-space: nowrap;
+}
+
+/* ---------- Card ---------- */
+.card {
+  background: var(--build-white); color: var(--text-body);
+  border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-soft);
+  display: flex; flex-direction: column;
+  transition: transform var(--dur-base) var(--ease-build), box-shadow var(--dur-base);
+}
+.cardInteractive { cursor: pointer; }
+@media (hover: hover) {
+  .cardInteractive:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
+}
+.cardBody { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+
+/* ---------- Tabs ---------- */
+.tabs {
+  display: inline-flex; gap: 4px; padding: 5px; border-radius: 999px;
+  background: var(--build-white); box-shadow: inset 0 0 0 2px var(--build-greige);
+}
+.tab {
+  height: 38px; padding: 0 18px; border-radius: 999px; border: 0; cursor: pointer;
+  background: transparent; color: var(--text-body); font: 700 14px var(--font-sans);
+  transition: background var(--dur-base) var(--ease-soft);
+}
+.tabOn { background: var(--build-orange); color: #fff; }
+
+/* ---------- Dialog ---------- */
+.scrim {
+  position: fixed; inset: 0; background: var(--scrim);
+  display: flex; align-items: center; justify-content: center; padding: 24px; z-index: 100;
+}
+.dialog {
+  width: var(--w); max-width: 100%; background: var(--build-white);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-lift); overflow: hidden;
+}
+.dialogAccent { height: 10px; background: var(--accent); }
+.dialogBody { padding: 26px 28px 24px; display: flex; flex-direction: column; gap: 12px; }
+.dialogTitle { margin: 0; font: 700 28px/1.1 var(--font-display); color: var(--text-heading); }
+.dialogContent { font: 400 16px/1.55 var(--font-sans); color: var(--text-body); }
+.dialogActions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; }
+
+/* ---------- Toast ---------- */
+.toast {
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px 12px 12px;
+  border-radius: var(--radius-md); background: var(--build-ink); color: var(--build-beige);
+  box-shadow: var(--shadow-lift); font: 600 15px/1.35 var(--font-sans); max-width: 420px;
+}
+.toastIcon {
+  width: 34px; height: 34px; flex: none; border-radius: 10px; background: var(--tone);
+  display: inline-flex; align-items: center; justify-content: center; color: var(--build-beige);
+}
+.toastText { flex: 1; }
+.toastClose {
+  background: none; border: 0; color: var(--build-ink-3);
+  font: 700 18px var(--font-sans); cursor: pointer; padding: 4px;
+}
+
+/* ---------- Forms ---------- */
+.field { display: flex; flex-direction: column; gap: 6px; }
+.label { font: 600 14px/1.2 var(--font-sans); color: var(--text-body); }
+.inputWrap {
+  display: flex; align-items: center; gap: 10px; height: 50px; padding: 0 18px;
+  border-radius: var(--radius-md); background: var(--build-white);
+  border: 2px solid var(--build-greige); transition: all var(--dur-fast);
+}
+.inputWrap:focus-within { border-color: var(--build-orange); box-shadow: 0 0 0 4px rgba(253, 126, 40, 0.15); }
+.input {
+  flex: 1; min-width: 0; border: 0; outline: 0; background: transparent;
+  font: 500 16px var(--font-sans); color: var(--text-body);
+}
+.input:focus-visible { outline: 0; }
+.selectWrap { position: relative; display: flex; }
+.select {
+  appearance: none; -webkit-appearance: none; width: 100%; height: 50px; padding: 0 44px 0 18px;
+  border-radius: var(--radius-md); border: 2px solid var(--build-greige); background: var(--build-white);
+  font: 500 16px var(--font-sans); color: var(--text-body); cursor: pointer; outline: none;
+}
+.select:focus-visible { border-color: var(--build-orange); box-shadow: 0 0 0 4px rgba(253, 126, 40, 0.15); }
+.selectChevron {
+  position: absolute; right: 18px; top: 50%; width: 10px; height: 10px;
+  border-right: 2.5px solid var(--build-orange); border-bottom: 2.5px solid var(--build-orange);
+  transform: translateY(-70%) rotate(45deg); pointer-events: none;
+}
+.check {
+  position: relative; display: inline-flex; align-items: center; gap: 10px; cursor: pointer;
+  font: 500 16px var(--font-sans); color: var(--text-body);
+}
+.checkInput { position: absolute; opacity: 0; width: 0; height: 0; }
+.checkBox {
+  width: 24px; height: 24px; border-radius: 7px; flex: none;
+  border: 2px solid var(--build-ink-3); background: var(--build-white);
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: all var(--dur-fast) var(--ease-build);
+}
+.checkInput:checked + .checkBox { border-color: var(--c); background: var(--c); }
+.checkInput:focus-visible + .checkBox { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+.checkMark {
+  width: 6px; height: 11px; border-right: 2.5px solid #fff; border-bottom: 2.5px solid #fff;
+  transform: translateY(-1px) rotate(45deg); display: none;
+}
+.checkInput:checked + .checkBox .checkMark { display: block; }

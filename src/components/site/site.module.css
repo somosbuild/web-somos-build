@@ -1,0 +1,171 @@
+/* Shared site pieces — values copied from project/ui_kits/website/{shared,Header,ReserveDialog}.jsx.
+   Mobile = max-width 767px (prototype's useIsMobile breakpoint). */
+
+/* ---------- Wrap / H2 ---------- */
+.wrap { max-width: var(--container-max); margin: 0 auto; padding-left: 32px; padding-right: 32px; box-sizing: border-box; }
+@media (max-width: 767px) { .wrap { padding-left: 20px; padding-right: 20px; } }
+.h2 { margin: 0; font: 400 44px/1.1 var(--font-display); color: var(--build-ink); text-wrap: pretty; }
+@media (max-width: 767px) { .h2 { font-size: 34px; } }
+
+/* ---------- Image placeholder ---------- */
+.slot { position: absolute; inset: 0; overflow: hidden; background: rgba(127, 127, 127, 0.08); color: var(--build-ink); }
+.slotImg { width: 100%; height: 100%; object-fit: cover; display: block; }
+.slotEmpty {
+  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  text-align: center; padding: 12px; box-sizing: border-box; font: 500 13px/1.3 var(--font-sans);
+}
+.slotEmpty > * { opacity: 0.6; }
+.slotRing { position: absolute; inset: 0; border: 1.5px dashed currentColor; opacity: 0.22; border-radius: inherit; pointer-events: none; }
+.slotCircle { border-radius: 50%; }
+.slotCircle .slotEmpty span { display: none; }
+
+/* ---------- Carousel (grid on desktop, scroll-snap row on mobile) ---------- */
+.carousel { display: grid; grid-template-columns: var(--cols, repeat(auto-fill, minmax(var(--min), 1fr))); gap: 16px; }
+.carouselItem { display: flex; min-width: 0; }
+@media (max-width: 767px) {
+  .carousel {
+    display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory;
+    margin: 0 -20px; padding: 4px 20px 12px; scrollbar-width: none;
+  }
+  .carouselItem { flex: 0 0 var(--min-m, var(--min)); scroll-snap-align: start; }
+}
+
+/* ---------- DayStrip ---------- */
+.dayStrip { display: flex; gap: 8px; }
+.dayBtn {
+  flex: 1; min-width: 0; height: 64px; border-radius: 18px; border: 2px solid var(--build-greige);
+  background: var(--build-white); color: var(--build-ink); cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 0 10px;
+  transition: all var(--dur-fast);
+}
+.dayBtnOn { border-color: var(--build-orange); background: var(--build-orange); color: #fff; }
+.dayTop { font: 600 12px var(--font-sans); letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.75; }
+.dayBtnOn .dayTop { opacity: 1; }
+.dayBottom { font: 700 20px/1 var(--font-display); }
+@media (max-width: 767px) {
+  .dayStrip { overflow-x: auto; scrollbar-width: none; margin: 0 -20px; padding: 0 20px; }
+  .dayBtn { flex: 0 0 auto; min-width: 56px; }
+}
+
+/* ---------- EventCard ---------- */
+.evCard { width: 100%; }
+.evMedia { height: 170px; position: relative; }
+@media (max-width: 767px) { .evCompact .evMedia { height: 140px; } }
+.evRow { display: flex; gap: 8px; flex-wrap: wrap; }
+.evTitle { font: 700 23px/1.1 var(--font-display); color: var(--build-ink); }
+.selfStart { align-self: flex-start; }
+.evMeta { display: flex; flex-wrap: wrap; gap: 4px 14px; font: 500 14px var(--font-sans); color: var(--text-muted); }
+.evMember { color: var(--build-olive-deep); font-weight: 700; }
+.evFoot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: auto; padding-top: 6px; }
+.spots { font: 600 14px var(--font-sans); color: var(--build-olive-deep); }
+.spotsFull { color: var(--text-subtle); }
+
+/* ---------- Header ---------- */
+.header { position: sticky; top: 0; z-index: 40; background: var(--build-beige); border-bottom: 2px solid var(--build-greige); }
+.headerInner { display: flex; align-items: center; gap: 28px; height: var(--header-h); }
+.headerLogo { display: block; }
+.nav { display: flex; gap: 26px; margin-left: auto; }
+.navLink, .navLink:hover { font: 600 15px var(--font-sans); color: var(--text-body); text-decoration: none; white-space: nowrap; }
+.navLinkOn, .navLinkOn:hover { color: var(--build-orange-deep); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px; }
+.burger { margin-left: auto; background: none; border: 0; padding: 0; cursor: pointer; }
+.burgerBox { position: relative; width: 44px; height: 44px; display: block; }
+.burgerBar {
+  position: absolute; left: 12px; right: 12px; height: 2.5px; border-radius: 2px; background: var(--build-ink); top: 50%;
+  transition: transform var(--dur-base) var(--ease-build), opacity var(--dur-fast);
+}
+@media (max-width: 767px) { .nav, .headerCta { display: none; } }
+@media (min-width: 768px) { .burger, .menu { display: none !important; } }
+
+.menu {
+  position: fixed; inset: 66px 0 0 0; z-index: 39; background: var(--build-beige);
+  padding: 16px 20px 28px; display: flex; flex-direction: column; overflow-y: auto;
+}
+.menuLink, .menuLink:hover {
+  font: 400 34px/1.1 var(--font-display); color: var(--build-ink); text-decoration: none;
+  padding: 10px 0; border-bottom: 2px solid var(--build-greige); display: block;
+}
+.menuLinkOn, .menuLinkOn:hover { color: var(--build-orange); }
+.menuCtas { display: flex; flex-direction: column; gap: 10px; margin-top: 28px; }
+.menuShapes { margin-top: auto; padding-top: 32px; display: flex; gap: 14px; align-items: flex-end; }
+
+/* ---------- Mobile bar + WhatsApp FAB ---------- */
+.fab {
+  position: fixed; right: 16px; bottom: 92px; z-index: 35; width: 56px; height: 56px; border-radius: 50%;
+  background: var(--build-celeste-deep); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-lift);
+}
+.mobileBar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 36; background: var(--build-beige);
+  border-top: 2px solid var(--build-greige); padding: 10px 16px calc(12px + env(safe-area-inset-bottom));
+  display: flex; gap: 10px;
+}
+@media (min-width: 768px) { .fab, .mobileBar { display: none; } }
+
+/* ---------- Footer ---------- */
+.footer { background: var(--build-orange); color: var(--build-white); }
+.footerPattern { height: 90px; background: var(--pattern) center / cover; }
+.footerInner { padding-top: 48px; padding-bottom: 48px; display: flex; gap: 48px; align-items: flex-start; }
+.footerMark { width: 96px; height: auto; }
+.footerBrand { display: flex; flex-direction: column; gap: 8px; }
+.footerWord { font: 700 40px/1 var(--font-display); color: var(--build-beige); }
+.footerDescriptor { font: 400 15px var(--font-descriptor); letter-spacing: 0.06em; }
+.footerAddress { font: 500 15px/1.5 var(--font-sans); margin-top: 10px; }
+.footerLinks { margin-left: auto; display: flex; flex-direction: column; gap: 12px; font: 600 15px var(--font-sans); }
+.footerLink, .footerLink:hover { display: flex; gap: 10px; align-items: center; color: var(--build-white); text-decoration: none; }
+@media (max-width: 767px) {
+  .footer { padding-bottom: 76px; }
+  .footerPattern { height: 64px; }
+  .footerInner { padding-top: 36px; padding-bottom: 40px; flex-direction: column; gap: 28px; }
+  .footerMark { width: 72px; }
+  .footerLinks { margin-left: 0; }
+}
+
+/* ---------- Toast host ---------- */
+.toastHost { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 200; }
+@media (max-width: 767px) { .toastHost { bottom: 90px; left: 16px; right: 16px; transform: none; } }
+
+/* ---------- Event detail (side panel desktop / bottom sheet mobile) ---------- */
+.detailScrim { position: fixed; inset: 0; z-index: 70; background: var(--scrim); display: flex; align-items: stretch; justify-content: flex-end; }
+.detail {
+  width: 460px; height: 100%; overflow-y: auto; background: var(--build-beige); box-shadow: var(--shadow-lift);
+  display: flex; flex-direction: column;
+}
+.detailMedia { position: relative; height: 260px; flex: none; background: var(--bg); }
+.detailClose { position: absolute; top: 14px; right: 14px; }
+.detailX { font: 700 22px/1 var(--font-sans); }
+.detailBody { padding: 26px 28px 32px; display: flex; flex-direction: column; gap: 18px; }
+.detailTitle { margin: 0; font: 700 34px/1.08 var(--font-display); color: var(--text-heading); }
+.detailDesc { margin: 0; font: 400 16px/1.55 var(--font-sans); color: var(--text-body); }
+.detailFacts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.fact { display: flex; gap: 12px; align-items: center; }
+.factIcon { width: 38px; height: 38px; flex: none; border-radius: 12px; background: var(--build-white); display: flex; align-items: center; justify-content: center; }
+.factText { display: flex; flex-direction: column; }
+.factLabel { font: 600 12px var(--font-sans); letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-subtle); }
+.factValue { font: 600 15px var(--font-sans); color: var(--build-ink); }
+.sectionLabel { font: 700 12px var(--font-sans); letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-subtle); margin-bottom: 8px; }
+.bring { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.bring li { display: flex; gap: 10px; align-items: center; font: 500 15px var(--font-sans); color: var(--build-ink); }
+.note { font: 500 14px/1.45 var(--font-sans); color: var(--text-muted); background: var(--build-white); border-radius: 16px; padding: 12px 14px; }
+.detailCta { display: flex; flex-direction: column; gap: 10px; background: var(--build-beige); padding-top: 6px; }
+.detailLink { font: 700 15px var(--font-sans); text-align: center; }
+@media (max-width: 767px) {
+  .detailScrim { align-items: flex-end; justify-content: stretch; }
+  .detail { width: 100%; height: auto; max-height: 90vh; border-radius: 24px 24px 0 0; box-shadow: none; }
+  .detailMedia { height: 200px; }
+  .detailBody { padding: 20px 20px 24px; }
+  .detailTitle { font-size: 30px; }
+  .detailCta { position: sticky; bottom: 0; }
+}
+
+/* ---------- Reserve dialog ---------- */
+.reserveBody { display: flex; flex-direction: column; gap: 16px; }
+.muted { color: var(--text-muted); }
+
+/* ---------- Coming soon ---------- */
+.soon { padding-top: 64px; padding-bottom: 96px; display: flex; flex-direction: column; gap: 16px; }
+.soonPhase { font: 700 13px var(--font-sans); letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-subtle); }
+.soonTitle { margin: 0; font: 400 56px/1.05 var(--font-display); color: var(--text-heading); }
+.soonText { margin: 0; font: 500 17px/1.5 var(--font-sans); color: var(--text-muted); max-width: 520px; }
+@media (max-width: 767px) {
+  .soon { padding-top: 32px; padding-bottom: 56px; }
+  .soonTitle { font-size: 40px; }
+}

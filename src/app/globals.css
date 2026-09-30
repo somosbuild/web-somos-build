@@ -1,0 +1,106 @@
+/* Build Design System tokens — ported from project/tokens/*.css.
+   Font families come from next/font (see src/app/fonts.ts). */
+:root {
+  /* Brand primaries (BrandBook Build) */
+  --build-beige: #fcf3ea;
+  --build-yellow: #ffb92c;
+  --build-orange: #fd7e28;
+  --build-olive: #c6b22e;
+  --build-celeste: #a6ccc5;
+  /* Secondaries — light tints, punctual accents only */
+  --build-peach: #fccc8b;
+  --build-orange-light: #f99450;
+  --build-olive-light: #dbc246;
+  --build-celeste-light: #c5d8d3;
+  --build-greige: #e2dbd5;
+  /* Ink — warm neutrals derived from the palette for text */
+  --build-ink: #3a2a1e;
+  --build-ink-2: #6b5646;
+  --build-ink-3: #9a8676;
+  --build-white: #ffffff;
+  /* Deep tones for text on light grounds (AA-safe variants) */
+  --build-orange-deep: #c2530c;
+  --build-olive-deep: #7a6c12;
+  --build-celeste-deep: #3f7169;
+  --build-yellow-deep: #9a6600;
+
+  /* Pillars */
+  --pillar-community: var(--build-orange);
+  --pillar-skills: var(--build-yellow);
+  --pillar-joy: var(--build-olive);
+  --pillar-family: var(--build-celeste);
+
+  /* Semantic */
+  --surface-page: var(--build-beige);
+  --surface-card: var(--build-white);
+  --surface-sunken: var(--build-greige);
+  --surface-brand: var(--build-orange);
+  --surface-sunny: var(--build-yellow);
+  --text-heading: var(--build-orange);
+  --text-body: var(--build-ink);
+  --text-muted: var(--build-ink-2);
+  --text-subtle: var(--build-ink-3);
+  --text-on-color: var(--build-white);
+  --text-on-color-soft: var(--build-beige);
+  --text-link: var(--build-orange-deep);
+  --border-soft: var(--build-greige);
+  --border-strong: var(--build-ink-3);
+  --focus-ring: var(--build-celeste);
+  --status-success: var(--build-olive);
+  --status-warning: var(--build-yellow);
+  --status-danger: #d9481c;
+  --status-info: var(--build-celeste);
+
+  /* Typography */
+  --font-display: var(--font-recoleta), Georgia, serif;
+  --font-sans: var(--font-gilroy), 'Helvetica Neue', Arial, sans-serif;
+  --font-descriptor: var(--font-lilita), var(--font-gilroy), sans-serif;
+  --fs-body: 16px;
+  --lh-body: 1.55;
+  --tracking-display: -0.01em;
+  --tracking-descriptor: 0.06em;
+  --tracking-label: 0.08em;
+
+  /* Spacing, radii, shadows, motion */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 40px;
+  --radius-pill: 999px;
+  --shadow-soft: 0 2px 0 rgba(58, 42, 30, 0.06), 0 8px 24px rgba(58, 42, 30, 0.06);
+  --shadow-lift: 0 4px 0 rgba(58, 42, 30, 0.08), 0 16px 40px rgba(58, 42, 30, 0.1);
+  --shadow-block: 0 5px 0 rgba(58, 42, 30, 0.18);
+  --scrim: rgba(58, 42, 30, 0.35);
+  --ease-build: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --ease-soft: cubic-bezier(0.25, 0.8, 0.3, 1);
+  --dur-fast: 140ms;
+  --dur-base: 220ms;
+  --dur-slow: 420ms;
+  --container-max: 1200px;
+
+  /* Site layout */
+  --header-h: 78px;
+}
+@media (max-width: 767px) {
+  :root { --header-h: 64px; }
+}
+
+html, body { overflow-x: clip; }
+body {
+  margin: 0;
+  background: var(--surface-page);
+  color: var(--text-body);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+}
+*::-webkit-scrollbar { display: none; }
+button { font-family: inherit; }
+a { color: var(--text-link); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+a:hover { color: var(--build-orange); }
+:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+
+/* Responsive visibility helpers (breakpoint matches the prototype's 767px) */
+@media (max-width: 767px) { .desktop-only { display: none !important; } }
+@media (min-width: 768px) { .mobile-only { display: none !important; } }
