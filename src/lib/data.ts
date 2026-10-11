@@ -97,8 +97,8 @@ export const ZONES: Zone[] = [
 export const ADDRESS = 'City Place, Santa Ana, San José';
 export const HOURS = 'Lunes a domingo · [horario]';
 
-// Contact links: pending from the client.
-export const CONTACT = { whatsapp: '#', instagram: '#', email: '#' };
+// Contact links: WhatsApp and email pending from the client.
+export const CONTACT = { whatsapp: '#', instagram: 'https://www.instagram.com/somos.build/', email: '#', phone: '+506 8992-6000' };
 
 export const NAV: { href: string; label: string }[] = [
   { href: '/agenda/', label: 'Agenda' },
@@ -177,4 +177,4 @@ export const aboutOf = (e: BuildEvent) => [
 ];
 
 // Pending from the client (shown as placeholders on /nosotros).
-export const LOCATION = { local: '[local]', parking: 'Parqueo de City Place · [condiciones]', phone: '[+506 0000 0000]', email: '[hola@build.cr]', waze: '#', maps: '#' };
+export const LOCATION = { local: '[local]', parking: 'Parqueo de City Place · [condiciones]', phone: '+506 8992-6000', email: '[hola@build.cr]', waze: '#', maps: '#' };

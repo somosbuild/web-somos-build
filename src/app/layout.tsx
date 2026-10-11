@@ -8,6 +8,8 @@ import { SiteFooter } from '@/components/site/SiteFooter';
 export const metadata: Metadata = {
   title: { default: 'Build — Family hub', template: '%s · Build' },
   description: 'Build es un family hub para papás en cada etapa, del embarazo a los primeros 5 años.',
+  // Rama de prueba (sitio-completo): no indexar hasta la apertura.
+  robots: { index: false, follow: false },
 };
 
 export const viewport: Viewport = { themeColor: '#fcf3ea' };
