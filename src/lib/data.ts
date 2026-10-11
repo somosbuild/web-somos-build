@@ -97,8 +97,8 @@ export const ZONES: Zone[] = [
 export const ADDRESS = 'City Place, Santa Ana, San José';
 export const HOURS = 'Lunes a domingo · [horario]';
 
-// Contact links: WhatsApp and email pending from the client.
-export const CONTACT = { whatsapp: '#', instagram: 'https://www.instagram.com/somos.build/', email: '#', phone: '+506 8992-6000' };
+// Contact links: email pending from the client.
+export const CONTACT = { whatsapp: 'https://wa.me/50689926000', instagram: 'https://www.instagram.com/somos.build/', email: '#', phone: '+506 8992-6000' };
 
 export const NAV: { href: string; label: string }[] = [
   { href: '/agenda/', label: 'Agenda' },

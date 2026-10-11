@@ -77,7 +77,7 @@ export function Landing() {
         </div>
         <div className={s.footerLinks}>
           <a href={CONTACT.instagram} target="_blank" rel="noopener noreferrer" className={s.footerLink}><Icon name="40" size={20} color="var(--build-orange)" />@somos.build</a>
-          <a href={`tel:${CONTACT.phone.replace(/[^+\d]/g, '')}`} className={s.footerLink}><Icon name="11" size={20} color="var(--build-orange)" />{CONTACT.phone}</a>
+          <a href={CONTACT.whatsapp} target="_blank" rel="noopener noreferrer" className={s.footerLink}><Icon name="42" size={20} color="var(--build-orange)" />WhatsApp {CONTACT.phone}</a>
         </div>
       </div>
     </footer>
