@@ -124,10 +124,11 @@ export function Toast({ tone = 'brand', icon, children, onClose }: { tone?: keyo
 
 /* ---------- Forms ---------- */
 
-export function Input({ label, iconLeft, className, ...rest }: InputHTMLAttributes<HTMLInputElement> & { label?: string; iconLeft?: ReactNode }) {
+export function Input({ label, iconLeft, error, className, ...rest }: InputHTMLAttributes<HTMLInputElement> & { label?: string; iconLeft?: ReactNode; error?: string }) {
   return <label className={cx(s.field, className)}>
     {label && <span className={s.label}>{label}</span>}
-    <span className={s.inputWrap}>{iconLeft}<input {...rest} className={s.input} /></span>
+    <span className={s.inputWrap}>{iconLeft}<input {...rest} aria-invalid={!!error || undefined} className={s.input} /></span>
+    {error && <span className={s.fieldError}>{error}</span>}
   </label>;
 }
 
@@ -149,5 +150,12 @@ export function Checkbox({ label, color = 'var(--build-orange)', ...rest }: Inpu
   return <label className={s.check} style={{ '--c': color } as Vars}>
     <input type="checkbox" {...rest} className={s.checkInput} />
     <span className={s.checkBox}><span className={s.checkMark} /></span>{label}
+  </label>;
+}
+
+export function Radio({ label, color = 'var(--build-orange)', ...rest }: InputHTMLAttributes<HTMLInputElement> & { label: ReactNode; color?: string }) {
+  return <label className={s.check} style={{ '--c': color } as Vars}>
+    <input type="radio" {...rest} className={s.checkInput} />
+    <span className={s.radioBox}><span className={s.radioDot} /></span>{label}
   </label>;
 }

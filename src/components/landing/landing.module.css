@@ -1,0 +1,110 @@
+/* Landing previa a la apertura — valores copiados de "Build Landing.dc.html" (Claude Design). */
+.page { min-height: 100vh; background: var(--build-beige); overflow-x: clip; }
+.row { display: flex; gap: 12px; flex-wrap: wrap; }
+.h2 { margin: 0; font: 400 clamp(34px, 4vw, 48px)/1.1 var(--font-display); color: var(--build-orange); text-wrap: balance; }
+.h2 strong, .heroTitle strong, .registroTitle strong { font-weight: 700; }
+
+/* Header */
+.header { position: sticky; top: 0; z-index: 20; background: var(--build-beige); border-bottom: 2px solid var(--build-greige); }
+.headerInner { max-width: 1200px; margin: 0 auto; padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.headerRight { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.headerNote { font: 600 25px/1.2 var(--font-sans); color: var(--build-ink-2); }
+
+/* Hero A */
+.heroSection { padding: clamp(16px, 3vw, 32px); }
+.heroFrame { position: relative; background: var(--build-yellow); border-radius: var(--radius-xl); padding: clamp(16px, 3vw, 32px); max-width: 1336px; margin: 0 auto; }
+.heroPhoto { position: relative; height: clamp(520px, 72vh, 720px); border-radius: var(--radius-lg); overflow: hidden; background: var(--build-peach); }
+.heroPhoto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.heroCard {
+  position: absolute; left: clamp(28px, 6vw, 80px); bottom: clamp(28px, 6vw, 80px); right: clamp(28px, 6vw, 80px);
+  max-width: 560px; background: var(--build-beige); border-radius: var(--radius-lg); box-shadow: var(--shadow-lift);
+  padding: clamp(24px, 4vw, 44px); display: flex; flex-direction: column; gap: 20px; z-index: 1;
+}
+.heroTitle { margin: 0; font: 400 clamp(36px, 5vw, 60px)/1.05 var(--font-display); color: var(--build-orange); letter-spacing: -0.01em; text-wrap: balance; }
+.heroText { margin: 0; font: 500 18px/1.55 var(--font-sans); color: var(--build-ink); text-wrap: pretty; }
+.deco { position: absolute; pointer-events: none; z-index: 2; }
+
+/* Qué es Build */
+.about {
+  max-width: 1200px; margin: 0 auto; padding: clamp(72px, 9vw, 120px) 32px clamp(40px, 5vw, 64px);
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: clamp(24px, 5vw, 72px); align-items: start;
+}
+.aboutText { display: flex; flex-direction: column; gap: 16px; }
+.lead { margin: 0; font: 500 20px/1.55 var(--font-sans); color: var(--build-ink); text-wrap: pretty; }
+.body { margin: 0; font: 500 17px/1.6 var(--font-sans); color: var(--build-ink-2); text-wrap: pretty; }
+
+/* Pilares */
+.pillars {
+  max-width: 1200px; margin: 0 auto; padding: 0 32px clamp(72px, 9vw, 120px);
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 16px;
+}
+.pillarCard { background: var(--build-white); border-radius: var(--radius-lg); box-shadow: var(--shadow-soft); padding: 28px; display: flex; flex-direction: column; gap: 16px; }
+.pillarLogo { height: 64px; background: center left / contain no-repeat; }
+.pillarText { margin: 0; font: 500 16px/1.5 var(--font-sans); color: var(--build-ink); text-wrap: pretty; }
+
+/* Registro */
+.registro { background: var(--build-orange); scroll-margin-top: 70px; }
+.registroInner {
+  max-width: 1200px; margin: 0 auto; padding: clamp(64px, 8vw, 112px) 32px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); gap: clamp(32px, 5vw, 72px); align-items: start;
+}
+.registroIntro { display: flex; flex-direction: column; gap: 20px; }
+.registroTitle { margin: 0; font: 400 clamp(36px, 4.4vw, 54px)/1.08 var(--font-display); color: var(--build-white); text-wrap: balance; }
+.registroText { margin: 0; max-width: 440px; font: 500 19px/1.55 var(--font-sans); color: var(--build-white); text-wrap: pretty; }
+.registroShapes { display: flex; gap: 12px; margin-top: 12px; }
+.formCard { background: var(--build-beige); border-radius: var(--radius-lg); box-shadow: var(--shadow-lift); padding: clamp(24px, 4vw, 40px); }
+.form { display: flex; flex-direction: column; gap: 20px; }
+.fieldset { border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.legend { padding: 0; margin-bottom: 10px; font: 600 14px/1.2 var(--font-sans); color: var(--build-ink); }
+.optional { font-weight: 500; color: var(--build-ink-2); }
+.radios { display: flex; flex-direction: column; gap: 12px; }
+.textareaField { display: flex; flex-direction: column; }
+.textareaField .legend { margin-bottom: 6px; }
+.textarea {
+  resize: vertical; min-height: 96px; padding: 14px 18px; border-radius: var(--radius-md); border: 2px solid var(--build-greige);
+  background: var(--build-white); font: 500 16px/1.5 var(--font-sans); color: var(--build-ink); outline: none;
+  transition: all var(--dur-fast);
+}
+.textarea::placeholder { color: var(--build-ink-3); }
+.textarea:focus { border-color: var(--build-orange); box-shadow: 0 0 0 4px rgba(253, 126, 40, 0.15); }
+.formError { margin: 0; font: 600 14px/1.4 var(--font-sans); color: var(--build-orange-deep); }
+.privacy { margin: 0; font: 500 13px/1.45 var(--font-sans); color: var(--build-ink-2); }
+.sent { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; padding: 24px 0; }
+.sentTitle { margin: 0; font: 700 32px/1.1 var(--font-display); color: var(--build-orange); }
+.sentText { margin: 0; font: 500 17px/1.55 var(--font-sans); color: var(--build-ink); text-wrap: pretty; }
+
+/* FAQ */
+.faq { max-width: 880px; margin: 0 auto; padding: clamp(72px, 9vw, 120px) 32px; scroll-margin-top: 70px; }
+.faqList { display: flex; flex-direction: column; gap: 12px; }
+.faqItem { background: var(--build-white); border-radius: var(--radius-lg); box-shadow: var(--shadow-soft); overflow: hidden; }
+.faqQ {
+  all: unset; box-sizing: border-box; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; padding: 22px 28px; font: 700 18px/1.35 var(--font-sans); color: var(--build-ink);
+}
+.faqQ:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: -3px; }
+@media (hover: hover) { .faqQ:hover { color: var(--build-orange-deep); } }
+.faqPlus {
+  flex: none; width: 32px; height: 32px; border-radius: 50%; background: var(--build-beige); display: grid; place-items: center;
+  font: 700 20px/1 var(--font-sans); color: var(--build-orange); transition: transform 220ms cubic-bezier(.34, 1.4, .64, 1);
+}
+.faqA { margin: 0; padding: 0 28px 24px; font: 500 16px/1.6 var(--font-sans); color: var(--build-ink-2); text-wrap: pretty; }
+
+/* Footer */
+.footer { background: var(--build-white); border-top: 2px solid var(--build-greige); }
+.footerInner { max-width: 1200px; margin: 0 auto; padding: 48px 32px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+.footerInfo { display: flex; flex-direction: column; gap: 4px; font: 600 15px/1.4 var(--font-sans); color: var(--build-ink); }
+.footerSoft { font-weight: 500; }
+.footerLinks { display: flex; flex-direction: column; gap: 8px; }
+.footerLink { display: inline-flex; align-items: center; gap: 8px; font: 600 15px/1.4 var(--font-sans); color: var(--build-orange-deep); text-decoration: none; }
+@media (hover: hover) { .footerLink:hover { color: var(--build-orange); } }
+
+@media (max-width: 767px) {
+  .headerInner { padding: 12px 16px; }
+  .headerNote { display: none; }
+  .heroSection { padding: 12px; }
+  .heroPhoto { height: 300px; }
+  .heroCard { position: relative; left: auto; right: auto; bottom: auto; margin-top: -48px; margin-inline: 8px; }
+  .about, .pillars, .registroInner, .faq, .footerInner { padding-left: 16px; padding-right: 16px; }
+  .faqQ { padding: 18px 20px; font-size: 17px; }
+  .faqA { padding: 0 20px 20px; }
+}

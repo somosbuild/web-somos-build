@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="utf-8"><meta name="robots" content="noindex"><title>Formularios</title></head>
+<body>
+  <!-- Netlify Forms detecta este formulario en el deploy. La landing envía por fetch a esta ruta. -->
+  <form name="registro" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input name="bot-field">
+    <input name="nombre">
+    <input name="correo" type="email">
+    <input name="etapa">
+    <textarea name="comentario"></textarea>
+  </form>
+</body>
+</html>
