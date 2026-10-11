@@ -10,6 +10,9 @@ import s from './landing.module.css';
 type Form = { nombre: string; correo: string; etapa: string; comentario: string };
 const EMPTY: Form = { nombre: '', correo: '', etapa: '', comentario: '' };
 
+// Mensaje prellenado para saber que la persona llegó desde la web.
+const WHATSAPP_HREF = `${CONTACT.whatsapp}?text=${encodeURIComponent('¡Hola! Vi la página de Build y quiero saber más.')}`;
+
 const scrollTo = (id: string) => {
   const el = document.getElementById(id);
   if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 70, behavior: 'smooth' });
@@ -81,6 +84,10 @@ export function Landing() {
         </div>
       </div>
     </footer>
+
+    <a href={WHATSAPP_HREF} target="_blank" rel="noopener noreferrer" aria-label="Escribinos por WhatsApp" className={s.fab}>
+      <Icon name="42" size={30} color="var(--build-beige)" />
+    </a>
   </div>;
 }
 

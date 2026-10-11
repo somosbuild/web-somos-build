@@ -108,3 +108,14 @@
   .faqQ { padding: 18px 20px; font-size: 17px; }
   .faqA { padding: 0 20px 20px; }
 }
+
+/* Botón flotante de WhatsApp */
+.fab {
+  position: fixed; right: 24px; bottom: 24px; z-index: 30; width: 60px; height: 60px; border-radius: 50%;
+  background: var(--build-celeste-deep); display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow-lift); transition: transform var(--dur-fast) var(--ease-build);
+}
+@media (hover: hover) { .fab:hover { transform: translateY(-3px); } }
+.fab:active { transform: scale(.92); }
+.fab:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px; }
+@media (max-width: 767px) { .fab { right: 16px; bottom: 16px; width: 56px; height: 56px; } }
