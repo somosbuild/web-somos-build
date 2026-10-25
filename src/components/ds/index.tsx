@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useId, type CSSProperties, type ButtonHTMLAttributes, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes } from 'react';
+import { useEffect, useId, type AnchorHTMLAttributes, type CSSProperties, type ButtonHTMLAttributes, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes } from 'react';
 import s from './ds.module.css';
 import { asset } from '@/lib/asset';
 import type { BrandColor, PillarKey } from '@/lib/data';
@@ -31,11 +31,11 @@ export function Shape({ name, size = 64, color = 'var(--build-orange)', ...p }: 
 }
 
 /** Main logo: 4 pillar icons + BUILD + Community descriptor. */
-export function Logo({ width, widthMobile, alt = 'Build' }: { width: number | string; widthMobile?: number | string; alt?: string }) {
+export function Logo({ width, widthMobile, alt = 'Build', pillar = 'community' }: { width: number | string; widthMobile?: number | string; alt?: string; pillar?: 'community' | 'skills' }) {
   const w = typeof width === 'number' ? px(width) : width;
   const wm = typeof widthMobile === 'number' ? px(widthMobile) : widthMobile;
   // eslint-disable-next-line @next/next/no-img-element
-  return <img className={s.logo} src={asset('/brand/logos/lockup-community.png')} alt={alt} width={1200} height={304} style={{ '--w': w, '--w-m': wm } as Vars} />;
+  return <img className={s.logo} src={asset(`/brand/logos/lockup-${pillar}.png`)} alt={alt} width={1200} height={304} style={{ '--w': w, '--w-m': wm } as Vars} />;
 }
 
 /* ---------- Core ---------- */
@@ -51,6 +51,11 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 export function Button({ variant = 'primary', size = 'md', fullWidth, fullWidthMobile, iconLeft, className, type = 'button', children, ...rest }: ButtonProps) {
   return <button type={type} {...rest} className={cx(s.btn, s[size], s[variant], fullWidth && s.full, fullWidthMobile && s.fullMobile, className)}>{iconLeft}{children}</button>;
+}
+
+/** Same look as Button, rendered as a link (never nest a <button> inside an <a>). */
+export function ButtonLink({ variant = 'primary', size = 'md', fullWidthMobile, className, ...rest }: AnchorHTMLAttributes<HTMLAnchorElement> & { variant?: ButtonVariant; size?: 'sm' | 'md' | 'lg'; fullWidthMobile?: boolean }) {
+  return <a {...rest} className={cx(s.btn, s[size], s[variant], fullWidthMobile && s.fullMobile, className)} />;
 }
 
 export function IconButton({ label, size = 44, children, className, style, ...rest }: ButtonHTMLAttributes<HTMLButtonElement> & { label: string; size?: number }) {
@@ -124,11 +129,11 @@ export function Toast({ tone = 'brand', icon, children, onClose }: { tone?: keyo
 
 /* ---------- Forms ---------- */
 
-export function Input({ label, iconLeft, error, className, ...rest }: InputHTMLAttributes<HTMLInputElement> & { label?: string; iconLeft?: ReactNode; error?: string }) {
+export function Input({ label, iconLeft, error, hint, className, ...rest }: InputHTMLAttributes<HTMLInputElement> & { label?: string; iconLeft?: ReactNode; error?: string; hint?: string }) {
   return <label className={cx(s.field, className)}>
     {label && <span className={s.label}>{label}</span>}
     <span className={s.inputWrap}>{iconLeft}<input {...rest} aria-invalid={!!error || undefined} className={s.input} /></span>
-    {error && <span className={s.fieldError}>{error}</span>}
+    {error ? <span className={s.fieldError}>{error}</span> : hint && <span className={s.fieldHint}>{hint}</span>}
   </label>;
 }
 

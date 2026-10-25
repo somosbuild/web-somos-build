@@ -6,6 +6,7 @@ import { asset } from '@/lib/asset';
 import { CONTACT } from '@/lib/data';
 import { ABOUT, ETAPAS, HERO, LANDING_FAQ, LANDING_PILLARS, OPENING } from '@/lib/landing';
 import s from './landing.module.css';
+import { BarraAnuncio, CampDestacado, CampSlideIn } from '@/components/camp/CampPromo';
 
 type Form = { nombre: string; correo: string; etapa: string; comentario: string };
 const EMPTY: Form = { nombre: '', correo: '', etapa: '', comentario: '' };
@@ -20,6 +21,7 @@ const scrollTo = (id: string) => {
 
 export function Landing() {
   return <div className={s.page}>
+    <BarraAnuncio />
     <header className={s.header}>
       <div className={s.headerInner}>
         <Logo width={150} widthMobile={120} />
@@ -51,6 +53,8 @@ export function Landing() {
           <div className={s.deco} style={{ bottom: -30, right: '14%' }}><Shape name="43" size={110} sizeMobile={72} color="var(--build-orange)" style={{ transform: 'rotate(8deg)' }} /></div>
         </div>
       </section>
+
+      <CampDestacado />
 
       <section className={s.about}>
         <h2 className={s.h2}>¿Qué es <strong>Build?</strong></h2>
@@ -88,6 +92,8 @@ export function Landing() {
     <a href={WHATSAPP_HREF} target="_blank" rel="noopener noreferrer" aria-label="Escribinos por WhatsApp" className={s.fab}>
       <Icon name="42" size={30} color="var(--build-beige)" />
     </a>
+    {/* Sits above the WhatsApp button (24px + 60px + 12px gap). */}
+    <CampSlideIn bottom={96} />
   </div>;
 }
 

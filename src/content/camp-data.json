@@ -1,0 +1,500 @@
+{
+  "_meta": {
+    "version": "2026-10-25",
+    "fuente": "plan-interno.md, actividades.md y actividades-diarias.md (22-oct-2026)",
+    "regla": "Fuente única de verdad del mercadeo del camp. Se edita acá, no en las piezas. Todo campo con pendiente: true se muestra con su placeholder.",
+    "borradores": "Textos redactados por diseño, pendientes de revisión: grupos[].objetivo_temporada, grupos[].por_que, semanas[].objetivo, semanas[].objetivos, semanas[2].lema y semanas[6].lema."
+  },
+
+  "camp": {
+    "nombre": "Build Summer Camp",
+    "nombre_corto": "Build Summer Camp",
+    "tagline": "Las vacaciones no se esperan, se construyen.",
+    "descripcion_corta": "Seis semanas, seis temas y una historia que sigue de lunes a viernes. Cada día mezcla estimulación, aprendizaje y STEM, con algo que se completa solo si volvés y un viernes en el que los niños enseñan lo que construyeron.",
+    "edades": { "min": 2, "max": 10 },
+    "nota_familia": "En la mañana los niños están con nuestro equipo. Los viernes en la tarde la familia viene a ver lo que construyeron.",
+    "palabras_prohibidas": ["guardería", "cuido", "dejalos con nosotros"]
+  },
+
+  "lugar": {
+    "nombre": "City Place",
+    "zona": "Santa Ana",
+    "zonas": [
+      { "id": "plazoleta-build", "nombre": "Plazoleta Build", "uso": "Llegada, recogida, base de Mini" },
+      { "id": "plazoleta-sardi", "nombre": "Plazoleta Sardi", "uso": "Talleres y merienda" },
+      { "id": "parque", "nombre": "El parque", "uso": "Movimiento y juego" }
+    ],
+    "plan_lluvia": "Exploradores y Constructores van a Studio Cinemas; Mini se queda en el local de Build con estaciones de mesa.",
+    "punto_recogida": "Plazoleta Build"
+  },
+
+  "horario": {
+    "dias": "Lunes a viernes",
+    "dias_corto": "L-V",
+    "inicio": "8:00",
+    "fin": "12:30",
+    "viernes_en_familia": {
+      "inicio": "15:00",
+      "fin": "17:30",
+      "descripcion": "Los niños muestran lo que hicieron y después hay una actividad para hacer juntos.",
+      "muestra": { "inicio": "15:00", "fin": "15:45", "precio": "Gratis para las familias del camp" },
+      "actividad_en_familia": { "inicio": "15:45", "fin": "17:30", "precio": "Por familia, abierta al público", "pendiente": true, "placeholder": "[PRECIO POR CONFIRMAR]" }
+    },
+    "dia_tipo": [
+      { "hora": "8:00", "que": "Llegada" },
+      { "hora": "8:30", "fin": "9:45", "que": "Bloque 1: trabajo en grupos" },
+      { "hora": "9:45", "fin": "10:15", "que": "Merienda" },
+      { "hora": "10:15", "fin": "12:00", "que": "Bloque 2: trabajo en grupos" },
+      { "hora": "12:00", "fin": "12:30", "que": "Almuerzo" },
+      { "hora": "12:30", "que": "Recogida" }
+    ]
+  },
+
+  "arco_semana": [
+    { "dia": "Lunes", "titulo": "Se abre la misión" },
+    { "dia": "Martes a jueves", "titulo": "Construimos", "texto": "Días de construcción y de desarrollo de la idea." },
+    { "dia": "Viernes", "titulo": "Showcase", "texto": "Mostramos lo que se logró." }
+  ],
+
+  "grupos": [
+    {
+      "id": "mini",
+      "nombre": "Build Mini",
+      "color": "celeste",
+      "edad": "2 a 3 años",
+      "edad_min": 2,
+      "edad_max": 3,
+      "cupo": 8,
+      "razon_adulto_nino": "1:4",
+      "enfoque": "Estimulación sensorial y motora, música, cuentos y descanso.",
+      "formato": "Zona fija y la misma rutina todos los días. El tema cambia los materiales, no la rutina.",
+      "firma": { "nombre": "La cocinita de tierra y agua", "texto": "Una cocinita de juguete al aire libre, con ollas y cucharas, para cocinar con tierra, agua y hojas. Es juego sensorial libre, lo que más concentra a esta edad." },
+      "adaptacion": "El lunes, el papá o la mamá se puede quedar los primeros 30 minutos.",
+      "panal": { "pendiente": true, "placeholder": "[POR CONFIRMAR SI SE ACEPTA PAÑAL]" },
+      "objetivo_temporada": "Explorar con los sentidos y el cuerpo, dentro de una rutina que les da seguridad.",
+      "por_que": "A esta edad se aprende tocando, moviéndose y repitiendo. Una rutina que no cambia les da la calma para explorar.",
+      "historia_temporada": null
+    },
+    {
+      "id": "exploradores",
+      "nombre": "Exploradores",
+      "color": "olive",
+      "edad": "4 a 6 años",
+      "edad_min": 4,
+      "edad_max": 6,
+      "cupo": 20,
+      "razon_adulto_nino": "1:8",
+      "enfoque": "Juego guiado, arte, ciencia sencilla y movimiento.",
+      "formato": "Cada día es una misión con un rol: ingenieros, duendes, exploradores, científicos, chefs, inventores.",
+      "firma": { "nombre": "La ciudad de cartón", "texto": "Casas a escala de ellos, en las que se pueden meter. La ciudad crece durante la semana y el viernes la recorren las familias." },
+      "objetivo_temporada": "Jugar a ser otros: roles, misiones y reglas que se comparten.",
+      "por_que": "El juego de roles pone a trabajar las funciones ejecutivas: recordar el plan, esperar el turno y ajustarse cuando el juego cambia.",
+      "historia_temporada": "mapa-perdido"
+    },
+    {
+      "id": "constructores",
+      "nombre": "Constructores",
+      "color": "yellow",
+      "edad": "7 a 10 años",
+      "edad_min": 7,
+      "edad_max": 10,
+      "cupo": 20,
+      "razon_adulto_nino": "1:8",
+      "enfoque": "STEM, retos por equipos y el proyecto de la semana.",
+      "formato": "Un reto diario de ingeniería con medición: cuánto aguanta, cuánto vuela, cuánto vende.",
+      "firma": { "nombre": "Herramientas reales", "texto": "Martillo, serrucho pequeño y taladro con supervisión, en una estación de 1 adulto cada 4 niños, con gafas y guantes." },
+      "objetivo_temporada": "Resolver retos reales en equipo, con medición y herramientas de verdad.",
+      "por_que": "Construir y medir ejercita el razonamiento espacial y matemático. Los retos con responsabilidad real construyen autonomía.",
+      "historia_temporada": ["build-co", "build-noticias"]
+    }
+  ],
+
+  "historias_temporada": [
+    {
+      "id": "mapa-perdido",
+      "nombre": "El mapa perdido de City Place",
+      "grupo": "exploradores",
+      "resumen": "Cada viernes el grupo recupera un pedazo del mapa. Al final los juntan y encuentran la llave de Build.",
+      "texto": "El personaje de Build perdió su mapa del centro. Cada viernes, al terminar la misión de la semana, el grupo recupera un pedazo. En la semana 6 juntan los 6 y el mapa los lleva a algo escondido: la llave de Build. Quien viene una semana se lleva su pedazo; quien viene más, arma más mapa."
+    },
+    {
+      "id": "build-co",
+      "nombre": "Build Co.",
+      "grupo": "constructores",
+      "resumen": "Fundan una empresa e inventan un producto que venden cada viernes.",
+      "texto": "En la semana 1 fundan su propia empresa: nombre, logo y roles (diseño, producción, ventas, finanzas). Cada semana inventan un producto del tema, lo costean y lo venden el viernes a las familias. Lo que recaudan va a una causa que ellos mismos votan.",
+      "causa": { "pendiente": true, "placeholder": "[CAUSA QUE VOTAN LOS NIÑOS]" }
+    },
+    {
+      "id": "build-noticias",
+      "nombre": "Build Noticias",
+      "grupo": "constructores",
+      "resumen": "Graban un noticiero semanal y al final estrenan su película en Studio Cinemas.",
+      "texto": "Un equipo que rota cada semana graba con una tablet un noticiero de 2 minutos: entrevistas, el reto de la semana, un corresponsal en el parque. Se proyecta los viernes y se manda a los papás. Con todo lo grabado se edita una película corta que se estrena en Studio Cinemas el 29 de enero."
+    }
+  ],
+
+  "mecanicas": [
+    { "id": "personaje", "nombre": "El personaje de Build", "texto": "Abre cada mañana: una canción en Mini, una carta-misión en Exploradores y un encargo de cliente en Constructores.", "nombre_personaje": "Tuca", "texto_corto": "Tuca es quien arranca nuestros días, con canciones, misiones y encargos." },
+    { "id": "pasaporte", "nombre": "Pasaporte City Place", "texto": "Un sello por cada taller y aliado. Más semanas, más colección." },
+    { "id": "insignias", "nombre": "Insignia de la semana", "texto": "Sticker grande en Mini, parche de tela en Exploradores y parche con rango (aprendiz, oficial, maestro) en Constructores." },
+    { "id": "muro", "nombre": "Muro Qué construimos", "texto": "Huellas de manos, dibujos, fotos y planos de lo que se hizo cada día." },
+    { "id": "whatsapp-12", "nombre": "El WhatsApp de las 12:00", "texto": "Todos los días, antes de la recogida, una foto y una pregunta para el carro.", "ejemplo": "Preguntale por el puente que aguantó 3 kilos." }
+  ],
+
+  "semanas": [
+    {
+      "n": 1,
+      "fechas": "7 al 11 de diciembre",
+      "fechas_corto": "7-11 dic",
+      "inicio": "2026-12-07",
+      "fin": "2026-12-11",
+      "tema": "Pequeños constructores",
+      "lema": "Manos a la obra: Vamos a construir",
+      "objetivo": "Planear y construir: de una idea a algo que se sostiene.",
+      "objetivos": {
+        "mini": "Motricidad gruesa y coordinación al cargar, apilar y empujar.",
+        "exploradores": "Pensamiento espacial: dentro, fuera, arriba, abajo, grande y pequeño.",
+        "constructores": "Diseñar, probar y mejorar una estructura en equipo."
+      },
+      "modo": "navidad",
+      "pilar": "skills",
+      "personaje": "Llega con casco y una caja de herramientas.",
+      "actividades": {
+        "mini": "Obra en construcción: bloques gigantes de espuma, cascos y excavadoras en arena.",
+        "exploradores": "Una ciudad de cartón donde se pueden meter: casas el lunes, calles el martes, tiendas el miércoles, ciudad abierta el viernes.",
+        "constructores": "Nace Build Co. y el reto de la semana: un puente de cartón y palitos que aguante a un papá parado encima."
+      },
+      "actividad_estrella": "El puente que aguanta a un papá.",
+      "se_lleva": { "mini": "Sticker de la semana", "exploradores": "Insignia y pedazo 1 del mapa", "constructores": "Insignia y el nombre de su empresa" },
+      "aliado": { "nombre": "Expo Design", "taller": "Un diseñador de verdad", "logo": { "pendiente": true, "placeholder": "[LOGO EXPO DESIGN]" } },
+      "viernes_en_familia": "Las familias recorren la ciudad de cartón y un papá voluntario se para en el puente.",
+      "actividad_en_familia": "Taller de construcción papá e hijo",
+      "pregunta_carro": "¿Cuánto peso aguantó el puente?",
+      "ideas_pinterest": [
+        { "titulo": "Ciudad de cartón", "url": "https://www.pinterest.com/search/pins/?q=cardboard%20city%20kids%20play" },
+        { "titulo": "Puente de palitos", "url": "https://www.pinterest.com/search/pins/?q=popsicle%20stick%20bridge%20challenge%20kids" }
+      ]
+    },
+    {
+      "n": 2,
+      "fechas": "14 al 18 de diciembre",
+      "fechas_corto": "14-18 dic",
+      "inicio": "2026-12-14",
+      "fin": "2026-12-18",
+      "tema": "Taller navideño",
+      "lema": "El taller de Santa necesita ayudantes",
+      "objetivo": "Trabajar en equipo y hacer algo para otros.",
+      "objetivos": {
+        "mini": "Exploración sensorial con texturas, olores y sonidos.",
+        "exploradores": "Juego de roles: cada uno tiene una tarea y todos dependen de todos.",
+        "constructores": "Circuitos simples y una línea de ensamble con roles."
+      },
+      "modo": "navidad",
+      "pilar": "joy",
+      "personaje": "El taller se atrasó y Santa necesita ayudantes.",
+      "actividades": {
+        "mini": "Pino sensorial, masa de galleta y campanas.",
+        "exploradores": "Taller de duendes: cada uno con su rol, un regalo envuelto para la familia y el villancico.",
+        "constructores": "Tarjetas con luces LED en línea de ensamble y un puesto de Build Co. en el mercado de Navidad."
+      },
+      "actividad_estrella": "Tarjetas navideñas que se encienden.",
+      "se_lleva": { "mini": "Sticker de pino", "exploradores": "Insignia, pedazo 2 del mapa y el regalo para la familia", "constructores": "Insignia y lo que vendió su empresa" },
+      "aliado": { "nombre": "Ikua", "taller": "Decoración de galletas", "logo": { "pendiente": true, "placeholder": "[LOGO IKUA]" } },
+      "viernes_en_familia": "Navidad en City Place: los Exploradores cantan y Build Co. vende en su puesto.",
+      "evento": "navidad-city-place",
+      "pregunta_carro": "¿Qué rol de duende te tocó?",
+      "ideas_pinterest": [
+        { "titulo": "Adornos de masa de sal", "url": "https://www.pinterest.com/search/pins/?q=salt%20dough%20christmas%20ornaments%20kids" },
+        { "titulo": "Tarjeta con LED", "url": "https://www.pinterest.com/search/pins/?q=paper%20circuit%20christmas%20card%20kids" }
+      ]
+    },
+    {
+      "n": 3,
+      "fechas": "4 al 8 de enero",
+      "fechas_corto": "4-8 ene",
+      "inicio": "2027-01-04",
+      "fin": "2027-01-08",
+      "tema": "Exploradores de la naturaleza",
+      "lema": "La naturaleza está en todo lado, abramos los ojos para descubrirla.",
+      "objetivo": "Observar con calma y cuidar lo que está vivo.",
+      "objetivos": {
+        "mini": "Juego sensorial con tierra, agua y semillas.",
+        "exploradores": "Observar, registrar y comparar lo que encuentran.",
+        "constructores": "Usar herramientas reales con seguridad en un proyecto que se queda."
+      },
+      "modo": "normal",
+      "pilar": "family",
+      "personaje": "Regresa de viaje con binoculares.",
+      "actividades": {
+        "mini": "Cocinita de tierra y agua, hojas y semillas para sembrar en vasito.",
+        "exploradores": "Safari de bichos con lupa, diario de explorador, huellas en yeso y una mini huerta.",
+        "constructores": "Construyen con herramientas reales un hotel de insectos que se queda en el parque de City Place."
+      },
+      "actividad_estrella": "Un hotel de insectos con placa, hecho por ellos, en el parque.",
+      "se_lleva": { "mini": "Sticker de hoja", "exploradores": "Insignia, pedazo 3 del mapa y su diario de explorador", "constructores": "Insignia y su nombre en la placa" },
+      "aliado": { "nombre": null, "pendiente": true, "placeholder": "[ALIADO TBD]" },
+      "viernes_en_familia": "Feria de la huerta e inauguración del hotel de insectos con placa.",
+      "actividad_en_familia": "Yoga o movimiento en familia",
+      "pregunta_carro": "¿Qué bicho encontraste con la lupa?",
+      "ideas_pinterest": [
+        { "titulo": "Hotel de insectos", "url": "https://www.pinterest.com/search/pins/?q=bug%20hotel%20kids%20diy" },
+        { "titulo": "Diario de explorador", "url": "https://www.pinterest.com/search/pins/?q=nature%20journal%20kids" }
+      ]
+    },
+    {
+      "n": 4,
+      "fechas": "11 al 15 de enero",
+      "fechas_corto": "11-15 ene",
+      "inicio": "2027-01-11",
+      "fin": "2027-01-15",
+      "tema": "Científicos",
+      "lema": "La ciencia es muy divertida y variada",
+      "objetivo": "Hacer preguntas, probar y sacar conclusiones.",
+      "objetivos": {
+        "mini": "Causa y efecto: qué pasa si...",
+        "exploradores": "Predecir y comprobar con experimentos cortos.",
+        "constructores": "Pistas, hipótesis y pruebas para resolver un misterio."
+      },
+      "modo": "normal",
+      "pilar": "skills",
+      "personaje": "Aparece con bata: alguien se robó la receta del laboratorio.",
+      "actividades": {
+        "mini": "Juguetes congelados en hielo para rescatar con goteros y burbujas gigantes.",
+        "exploradores": "Laboratorio de pociones con bata y gafas, volcanes y slime sin bórax.",
+        "constructores": "CSI City Place: huellas digitales, tinta y pistas por el centro. Y cohetes de botella."
+      },
+      "actividad_estrella": "Resolver el misterio de CSI City Place.",
+      "se_lleva": { "mini": "Sticker de matraz", "exploradores": "Insignia y pedazo 4 del mapa", "constructores": "Insignia y su cohete" },
+      "aliado": { "nombre": "Laboratorios San José", "taller": "Científicos de verdad", "logo": { "pendiente": true, "placeholder": "[LOGO LABORATORIOS SAN JOSÉ]" } },
+      "viernes_en_familia": "Show de experimentos, se revela al culpable frente a las familias y lanzamiento de cohetes.",
+      "actividad_en_familia": "Clase de ciencia para hermanos",
+      "pregunta_carro": "¿Quién se robó la receta?",
+      "ideas_pinterest": [
+        { "titulo": "Cohete de botella", "url": "https://www.pinterest.com/search/pins/?q=bottle%20rocket%20kids" },
+        { "titulo": "Detectives CSI", "url": "https://www.pinterest.com/search/pins/?q=kids%20detective%20science%20fingerprint%20activity" }
+      ]
+    },
+    {
+      "n": 5,
+      "fechas": "18 al 22 de enero",
+      "fechas_corto": "18-22 ene",
+      "inicio": "2027-01-18",
+      "fin": "2027-01-22",
+      "tema": "Pequeños chefs y artistas",
+      "lema": "Chefs y emprendedores in the making!",
+      "objetivo": "Crear, expresarse y entender el valor de las cosas.",
+      "objetivos": {
+        "mini": "Motricidad fina y expresión con colores y sonidos.",
+        "exploradores": "Lenguaje y números en el juego: menú, pedidos y caja.",
+        "constructores": "Costear, presentar y vender lo que crean."
+      },
+      "modo": "normal",
+      "pilar": "joy",
+      "personaje": "Abre un restaurante y necesita equipo.",
+      "actividades": {
+        "mini": "Pintar con frutas y verduras, música con ollas y cucharas.",
+        "exploradores": "Un restaurante de mentiritas con menú, meseros y caja. Y pizza individual con un aliado.",
+        "constructores": "MasterChef Build con chef de jurado, costeo de la receta y un lienzo gigante de pintura de acción."
+      },
+      "actividad_estrella": "MasterChef Build con un chef de verdad.",
+      "se_lleva": { "mini": "Sticker de cuchara", "exploradores": "Insignia, pedazo 5 del mapa y su delantal pintado", "constructores": "Insignia y su receta costeada" },
+      "aliado": { "nombre": "Sardi", "taller": "Pizza y chef de jurado", "logo": { "pendiente": true, "placeholder": "[LOGO SARDI]" } },
+      "viernes_en_familia": "Los meseros sirven a sus familias, puesto de comida de Build Co. y galería con el lienzo.",
+      "actividad_en_familia": "Clase de cocina en familia",
+      "pregunta_carro": "¿Qué había en el menú de tu restaurante?",
+      "ideas_pinterest": [
+        { "titulo": "Restaurante de mentiritas", "url": "https://www.pinterest.com/search/pins/?q=kids%20pretend%20play%20restaurant" },
+        { "titulo": "Pintura en lienzo gigante", "url": "https://www.pinterest.com/search/pins/?q=kids%20giant%20canvas%20action%20painting" }
+      ]
+    },
+    {
+      "n": 6,
+      "fechas": "25 al 29 de enero",
+      "fechas_corto": "25-29 ene",
+      "inicio": "2027-01-25",
+      "fin": "2027-01-29",
+      "tema": "Inventores",
+      "lema": "Si lo imaginás, lo podés inventar.",
+      "objetivo": "Imaginar una solución, construirla y mostrarla.",
+      "objetivos": {
+        "mini": "Causa y efecto con rampas, tubos y pelotas.",
+        "exploradores": "Planear juntos una máquina en cadena donde cada pieza importa.",
+        "constructores": "Diseñar un juego para otros y mejorarlo cuando lo prueban."
+      },
+      "modo": "normal",
+      "pilar": "community",
+      "personaje": "Encontré algo escondido en City Place, pero necesito un invento para abrirlo.",
+      "actividades": {
+        "mini": "Rampas de pelotas, tubos y cajas de causa y efecto.",
+        "exploradores": "Una máquina de Rube Goldberg entre todos: cada niño hace una pieza.",
+        "constructores": "Un arcade de cartón: cada equipo construye un juego de feria para las familias."
+      },
+      "actividad_estrella": "El arcade de cartón.",
+      "se_lleva": { "mini": "Sticker final y diploma", "exploradores": "Insignia final, el mapa completo y la llave de Build", "constructores": "Insignia final y rango de maestro" },
+      "aliado": { "nombre": "Studio Cinemas", "taller": "Tour de la cabina de proyección", "logo": { "pendiente": true, "placeholder": "[LOGO STUDIO CINEMAS]" } },
+      "viernes_en_familia": "Feria de inventores.",
+      "evento": "feria-inventores",
+      "pregunta_carro": "¿Qué abrió la llave?",
+      "ideas_pinterest": [
+        { "titulo": "Arcade de cartón", "url": "https://www.pinterest.com/search/pins/?q=cardboard%20arcade%20kids" },
+        { "titulo": "Máquina de Rube Goldberg", "url": "https://www.pinterest.com/search/pins/?q=rube%20goldberg%20machine%20kids" }
+      ]
+    }
+  ],
+
+  "eventos": [
+    {
+      "id": "navidad-city-place",
+      "nombre": "Navidad en City Place",
+      "fecha": "2026-12-18",
+      "fecha_texto": "Viernes 18 de diciembre",
+      "modo": "navidad",
+      "abierto_al_publico": true,
+      "agenda": [
+        { "hora": "16:30", "que": "Decoración de galletas y villancicos" },
+        { "hora": "18:30", "que": "Cine al aire libre en el parque, con mantas y una película navideña familiar" }
+      ],
+      "pelicula": { "pendiente": true, "placeholder": "[PELÍCULA POR CONFIRMAR]" },
+      "nota": "Llevá una mantita."
+    },
+    {
+      "id": "feria-inventores",
+      "nombre": "Feria de inventores",
+      "fecha": "2027-01-29",
+      "fecha_texto": "Viernes 29 de enero",
+      "modo": "normal",
+      "abierto_al_publico": true,
+      "agenda": [
+        { "hora": "15:00", "que": "Arcade de cartón para las familias" },
+        { "hora": "[POR CONFIRMAR]", "que": "El mapa completo lleva a la llave de Build" },
+        { "hora": "[POR CONFIRMAR]", "que": "Estreno de la película de Build Noticias en Studio Cinemas" }
+      ],
+      "cierre": "Anuncio de la apertura de Build."
+    }
+  ],
+
+  "precios": {
+    "moneda": "CRC",
+    "simbolo": "₡",
+    "formato_numeros": "es-CR (85.000)",
+    "semana": 85000,
+    "aplica_a": "Por niño por semana, todos los grupos",
+    "incluye": ["Merienda", "Almuerzo", "Materiales", "Póliza de accidentes"],
+    "paquetes": [
+      { "id": "diciembre", "nombre": "Diciembre", "semanas": [1, 2], "precio": 160000 },
+      { "id": "enero", "nombre": "Enero", "semanas": [3, 4, 5, 6], "precio": 305000 },
+      { "id": "temporada", "nombre": "Temporada completa", "semanas": [1, 2, 3, 4, 5, 6], "precio": 450000 }
+    ],
+    "dia_suelto": { "precio": 22000, "condicion": "Walk-ins bienvenidos pero sujetos a disponibilidad" },
+    "nota_calculo": "Cada paquete tiene un precio fijo (precio). El ahorro se calcula como semana x semanas - precio. Si un paquete no trae precio, se usa semana x semanas x (1 - descuento)."
+  },
+
+  "seguridad": [
+    { "titulo": "Más adultos por niño", "texto": "1 adulto cada 4 niños en Mini y 1 cada 8 en los grupos grandes." },
+    { "titulo": "Recogida autorizada", "texto": "Solo recogen las personas de la lista, con cédula y firma de salida. Una sola entrada y salida, en Plazoleta Build." },
+    { "titulo": "Perímetro y colores", "texto": "Vallas bajas en cada zona, un color de camiseta por grupo y conteo de niños en cada traslado." },
+    { "titulo": "Primeros auxilios", "texto": "Al menos 2 personas certificadas en primeros auxilios y RCP, botiquín y ficha médica de cada niño." },
+    { "titulo": "Alergias", "texto": "Merienda sin maní y alergias marcadas en cada estación de comida." },
+    { "titulo": "Sol y lluvia", "texto": "Toldos en las 3 zonas, agua cada 45 minutos y plan de lluvia en Studio Cinemas." },
+    { "titulo": "Equipo revisado", "texto": "Todo el equipo presenta hoja de delincuencia, referencias y certificación de primeros auxilios." }
+  ],
+
+  "que_llevar": ["Mochila con su nombre", "Botella de agua", "Bloqueador (lo aplicamos con tu autorización)", "Gorra", "Ropa que se pueda ensuciar", "Una muda extra (Mini: dos)"],
+
+  "faq": [
+    { "p": "¿Los papás se quedan?", "r": "No. En la mañana los niños están con nuestro equipo. El lunes, en Build Mini, te podés quedar los primeros 30 minutos para la adaptación. Y todos los viernes en la tarde la familia viene a ver lo que construyeron." },
+    { "p": "¿Qué pasa si llueve?", "r": "Nos movemos a Studio Cinemas, y Build Mini se queda en el local de Build con estaciones de mesa." },
+    { "p": "¿Y las alergias?", "r": "En la inscripción llenás la ficha médica. La merienda es sin maní y cada estación de comida tiene la lista de alergias a la vista." },
+    { "p": "¿Puede ir un solo día?", "r": "Sí, a ₡22.000, solo si hay cupo esa semana.", "pendiente_precio": true },
+    { "p": "¿Build Mini acepta pañal?", "r": "[PENDIENTE]", "pendiente": true },
+    { "p": "¿Cuál es la política de cancelación?", "r": "[PENDIENTE ABOGADO]", "pendiente": true },
+    { "p": "¿Salen fotos de mi hijo?", "r": "Solo si firmás el consentimiento de imagen en la inscripción. Sin él, no sale en fotos ni en Build Noticias." }
+  ],
+
+  "aliados": {
+    "pendiente": true,
+    "placeholder": "[ALIADO POR CONFIRMAR]",
+    "lista": [
+      { "nombre": "Expo Design", "rol": "Taller de diseño y materiales" },
+      { "nombre": "COSÌ", "rol": "Galletas y cocina" },
+      { "nombre": "Sardi", "rol": "Galletas, pizza y chef de jurado" },
+      { "nombre": "Starbucks", "rol": "Galletas; descuento para papás" },
+      { "nombre": "Natural Planet", "rol": "De dónde viene la comida" },
+      { "nombre": "Larisa Páez", "rol": "Nutrición" },
+      { "nombre": "Laboratorios San José", "rol": "Científicos de verdad" },
+      { "nombre": "Ikua", "rol": "Cocina" },
+      { "nombre": "Cuarto 37", "rol": "Galería de arte" },
+      { "nombre": "Studio Cinemas", "rol": "Plan de lluvia, cine y estreno" },
+      { "nombre": "506 Fitness", "rol": "Movimiento en familia" },
+      { "nombre": "Hilton Garden Inn", "rol": "Espacio de respaldo" }
+    ],
+    "co_marca": { "nombre": "City Place", "logo": { "src": "assets/logos/cityplace.png", "alt": "City Place, centro urbano, Santa Ana" } }
+  },
+
+  "inscripciones": {
+    "abren": "2026-11-09",
+    "abren_texto": "9 de noviembre",
+    "pendiente": true,
+    "link": { "pendiente": true, "placeholder": "[LINK ONVO]" },
+    "cupos_disponibles": {
+      "_nota": "Para la story de últimos cupos. Se actualiza a mano por semana y grupo.",
+      "1": { "mini": 8, "exploradores": 20, "constructores": 20 },
+      "2": { "mini": 8, "exploradores": 20, "constructores": 20 },
+      "3": { "mini": 8, "exploradores": 20, "constructores": 20 },
+      "4": { "mini": 8, "exploradores": 20, "constructores": 20 },
+      "5": { "mini": 8, "exploradores": 20, "constructores": 20 },
+      "6": { "mini": 8, "exploradores": 20, "constructores": 20 }
+    }
+  },
+
+  "contacto": {
+    "whatsapp": "+506 8992-6000",
+    "whatsapp_link": "https://wa.me/50689926000",
+    "whatsapp_mensaje": "Hola, quiero info del camp en City Place",
+    "web": "somosbuild.com",
+    "instagram": "@somos.build",
+    "firma": "Carlos Ramírez · Socio, Build"
+  },
+
+  "campana": {
+    "flyer": {
+      "titulares": [
+        "Las vacaciones no se esperan, se construyen.",
+        "Este diciembre, que construyan algo.",
+        "¿Y si estas vacaciones construyen algo?",
+        "Las vacaciones no se gastan, se construyen."
+      ],
+      "frases": [
+        "Tus chicos entretenidos y aprendiendo.",
+        "Cada viernes te enseñan lo que construyeron.",
+        "Vuelven a la casa con algo hecho por ellos."
+      ],
+      "titular_elegido": 3,
+      "frase_elegida": 0,
+      "direccion": "bloques City Place"
+    },
+    "hashtags": ["#SantaAna", "#CampDeVacaciones", "#CityPlaceCR", "#VacacionesCR", "#SomosBuild"],
+    "carruseles": [
+      { "id": "grupos", "orden": 1, "nombre": "Los grupos", "pilar": "family", "titular": "Un camp para cada edad.", "remate": "cada edad." },
+      { "id": "que-hacemos", "orden": 2, "nombre": "Qué hacemos", "pilar": "skills", "titular": "Acá las vacaciones se construyen.", "remate": "se construyen." },
+      { "id": "semanas", "orden": 3, "nombre": "Las 6 semanas", "pilar": "joy", "titular": "6 semanas, 6 aventuras.", "remate": "6 aventuras." },
+      { "id": "precios", "orden": 4, "nombre": "Precios", "pilar": "community", "titular": "Cuánto cuesta construir unas vacaciones.", "remate": "unas vacaciones." }
+    ]
+  },
+
+  "sitio": {
+    "url_camp": "somosbuild.com/camp",
+    "barra_anuncio": { "etiqueta": "Nuevo", "texto": "Camp de vacaciones en City Place", "cta": "Conocelo" },
+    "destacado_cta": "Ver el camp",
+    "slide_in": { "segundos": 8, "scroll": 0.5 },
+    "ctas": { "antes": "Avisame cuando abran", "despues": "Reservá tu cupo", "whatsapp": "Escribinos por WhatsApp" }
+  },
+
+  "legal_corto": {
+    "terminos": { "pendiente": true, "placeholder": "[TÉRMINOS DE INSCRIPCIÓN, PENDIENTE ABOGADO]" },
+    "consentimiento_medico": { "pendiente": true, "placeholder": "[CONSENTIMIENTO MÉDICO, PENDIENTE ABOGADO]" },
+    "consentimiento_imagen": "Autorizo que mi hijo aparezca en fotos y videos del camp (WhatsApp de las 12:00, Build Noticias y redes de Build). Es opcional.",
+    "cancelacion": { "pendiente": true, "placeholder": "[POLÍTICA DE CANCELACIÓN, PENDIENTE ABOGADO]" }
+  }
+}
