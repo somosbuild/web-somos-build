@@ -42,6 +42,7 @@
 }
 .btn:not(:disabled):active { transform: translateY(3px); box-shadow: none; }
 .btn:disabled { cursor: not-allowed; opacity: 0.45; box-shadow: none; }
+a.btn, a.btn:hover { color: var(--fg); text-decoration: none; }
 .full { width: 100%; }
 @media (max-width: 767px) { .fullMobile { width: 100%; } }
 
@@ -180,4 +181,5 @@
 .checkInput:focus-visible + .radioBox { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
 .radioDot { width: 12px; height: 12px; border-radius: 50%; background: var(--c); transform: scale(0); transition: transform var(--dur-fast) var(--ease-build); }
 .checkInput:checked + .radioBox .radioDot { transform: scale(1); }
+.fieldHint { font: 500 13px/1.3 var(--font-sans); color: var(--text-muted); }
 .fieldError { font: 600 13px/1.3 var(--font-sans); color: var(--build-orange-deep); }
