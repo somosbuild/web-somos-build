@@ -193,8 +193,13 @@ function InteresForm({ onClose, onSent }: { onClose: () => void; onSent: () => v
     }
   };
 
-  return <Dialog onClose={onClose} title="Registrate al camp" accent="var(--build-orange)" width={520}>
-    <form className={s.form} onSubmit={e => { e.preventDefault(); submit(); }}>
+  // Buttons live in the dialog's fixed footer (always visible); `form` links the submit button to the form.
+  return <Dialog onClose={onClose} title="Registrate al camp" accent="var(--build-orange)" width={520}
+    actions={<>
+      <Button variant="ghost" onClick={onClose}>Ahora no</Button>
+      <Button type="submit" form="camp-interes-form" disabled={invalid || sending}>{sending ? 'Enviando…' : 'Avisame'}</Button>
+    </>}>
+    <form id="camp-interes-form" className={s.form} onSubmit={e => { e.preventDefault(); submit(); }}>
       <p className={s.formIntro}>Las inscripciones abren el {CAMP.inscripciones.abren_texto}. Dejanos tus datos y te escribimos ese día.</p>
       <Input label="Tu nombre" name="nombre" required autoComplete="name" value={f.nombre} onChange={e => setF({ ...f, nombre: e.target.value })} autoFocus />
       <Input label="WhatsApp" name="whatsapp" type="tel" required placeholder="8888-8888" autoComplete="tel" value={f.whatsapp} onChange={e => setF({ ...f, whatsapp: e.target.value })} />
@@ -206,10 +211,6 @@ function InteresForm({ onClose, onSent }: { onClose: () => void; onSent: () => v
         {PLANES.map(p => <Checkbox key={p} checked={f.plan === p} onChange={() => setF({ ...f, plan: f.plan === p ? '' : p })} label={p} />)}
       </fieldset>
       {failed && <p className={s.formError} role="alert">No pudimos enviar tus datos. Probá de nuevo o escribinos por WhatsApp.</p>}
-      <div className={s.formActions}>
-        <Button variant="ghost" onClick={onClose}>Ahora no</Button>
-        <Button type="submit" disabled={invalid || sending}>{sending ? 'Enviando…' : 'Avisame'}</Button>
-      </div>
     </form>
   </Dialog>;
 }

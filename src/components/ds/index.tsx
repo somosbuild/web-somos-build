@@ -106,6 +106,12 @@ export function useEscape(onEscape: () => void) {
 export function Dialog({ onClose, title, children, actions, accent = 'var(--build-yellow)', width = 480 }: { onClose: () => void; title?: string; children: ReactNode; actions?: ReactNode; accent?: string; width?: number }) {
   const id = useId();
   useEscape(onClose);
+  // Keep the page behind still while the dialog is open, so scroll gestures reach the dialog.
+  useEffect(() => {
+    const html = document.documentElement, prev = html.style.overflow;
+    html.style.overflow = 'hidden';
+    return () => { html.style.overflow = prev; };
+  }, []);
   return <div className={s.scrim} onClick={onClose}>
     <div role="dialog" aria-modal="true" aria-labelledby={title ? id : undefined} className={s.dialog} style={{ '--w': px(width), '--accent': accent } as Vars} onClick={e => e.stopPropagation()}>
       <div className={s.dialogAccent} />

@@ -227,11 +227,10 @@
 
 .contact { max-width: 1200px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 32px) clamp(40px, 6vw, 72px); }
 
-.form { display: flex; flex-direction: column; gap: 16px; max-height: min(62vh, 560px); overflow-y: auto; padding: 2px 2px 4px; }
+.form { display: flex; flex-direction: column; gap: 16px; padding: 2px 2px 4px; }
 .formIntro { margin: 0; color: var(--build-ink-2); }
 .fieldset { margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 10px; }
 .legend { padding: 0; margin-bottom: 10px; font: 600 14px/1.2 var(--font-sans); }
-.formActions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; margin-top: 6px; }
 .formError { margin: 0; font: 600 14px/1.4 var(--font-sans); color: var(--build-orange-deep); }
 .toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 120; width: min(420px, calc(100% - 32px)); }
 
