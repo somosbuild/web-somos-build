@@ -3,6 +3,7 @@
 import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
 import s from './camp.module.css';
 import { Badge, Button, ButtonLink, Icon, Logo, Shape } from '@/components/ds';
+import { asset } from '@/lib/asset';
 import {
   CAMP, GRUPO_SHAPE, PILAR_SHAPE, RESERVA_LINK, WA_LINK, color, crc, deep, grupo, inscripcionesAbiertas, isPending, isPh, paquetes, type Semana,
 } from '@/lib/camp';
@@ -27,11 +28,10 @@ export function useInscripciones() {
     : { abiertas, label: ctas.antes, mode: 'form' as CtaMode, href: '#', external: false };
 }
 
-/* ---------- Group chip / dot / card ---------- */
+/* ---------- Group chip / card ---------- */
 
-export function GrupoChip({ id, variant = 'chip', size = 'md' }: { id: string; variant?: 'chip' | 'dot'; size?: 'sm' | 'md' }) {
+export function GrupoChip({ id, size = 'md' }: { id: string; size?: 'sm' | 'md' }) {
   const g = grupo(id), bg = color(g.color), shape = GRUPO_SHAPE[g.id];
-  if (variant === 'dot') return <span className={s.dot}><Shape name={shape} size={16} color={bg} />{g.nombre}</span>;
   return <span className={cx(s.chip, size === 'sm' && s.chipSm)} style={{ '--bg': bg } as Vars}>
     <span className={s.chipDot}><Shape name={shape} size={size === 'sm' ? 12 : 15} color={bg} /></span>
     <span className={s.chipName}>{g.nombre}</span>
@@ -50,7 +50,6 @@ export function GrupoCard({ id }: { id: string }) {
     <div className={s.gcardBody}>
       <div className={s.block}><span className={s.label} style={{ '--c': deep(g.color) } as Vars}>En las {CAMP.semanas.length} semanas</span><p className={s.gcardGoal}>{g.objetivo_temporada}</p></div>
       <div className={s.block}><span className={s.label} style={{ '--c': deep(g.color) } as Vars}>Por qué funciona</span><p className={s.p15}>{g.por_que}</p></div>
-      <p className={s.p15m}>{g.formato}</p>
       <div className={s.badges}><Badge color="greige">{a} adulto cada {b} niños</Badge><Badge color="greige">{g.cupo} cupos por semana</Badge></div>
     </div>
   </article>;
@@ -59,20 +58,12 @@ export function GrupoCard({ id }: { id: string }) {
 /* ---------- Timeline ---------- */
 
 type Row = { hora: string; que: string; texto?: string };
-export function Cronograma({ tipo, dot, evento: eventoId }: { tipo: 'dia' | 'semana' | 'viernes' | 'evento'; dot: string; evento?: string }) {
+export function Cronograma({ tipo, dot }: { tipo: 'dia' | 'semana'; dot: string }) {
   const rango = (a: string, b: string) => a + ' a ' + b;
   let rows: Row[] = [];
   if (tipo === 'dia') rows = CAMP.horario.dia_tipo.map(r => ({ hora: r.hora, que: r.que, texto: r.fin ? rango(r.hora, r.fin) : '' }));
   if (tipo === 'semana') rows = CAMP.arco_semana.map(r => ({ hora: r.dia, que: r.titulo, texto: r.texto }));
-  if (tipo === 'viernes') {
-    const v = CAMP.horario.viernes_en_familia;
-    rows = [
-      { hora: v.muestra.inicio, que: 'Los niños muestran lo que construyeron', texto: rango(v.muestra.inicio, v.muestra.fin) + '. ' + v.muestra.precio + '.' },
-      { hora: v.actividad_en_familia.inicio, que: 'Actividad para hacer juntos', texto: rango(v.actividad_en_familia.inicio, v.actividad_en_familia.fin) + '. ' + v.actividad_en_familia.precio + '.' },
-    ];
-  }
-  if (tipo === 'evento') rows = (CAMP.eventos.find(e => e.id === eventoId) ?? CAMP.eventos[0]).agenda.map(r => ({ hora: r.hora, que: r.que }));
-  const col = tipo === 'semana' ? '120px' : tipo === 'evento' ? '140px' : '84px';
+  const col = tipo === 'semana' ? '120px' : '84px';
   return <div className={s.tl} style={{ '--col': col, '--fs': tipo === 'semana' ? '18px' : '20px', '--dot': dot } as Vars}>
     {rows.map(r => <div key={r.hora + r.que} className={s.tlRow}>
       {/* Pending hours are left blank on the public site. */}
@@ -108,15 +99,20 @@ export function PinoBloques({ size, star = 'var(--build-yellow)', pine = 'var(--
 
 const FRAME: Record<string, string> = { orange: 'var(--build-orange)', yellow: 'var(--build-yellow)', olive: 'var(--build-olive)', celeste: 'var(--build-celeste)' };
 /** Photo slot with a brand-colour frame, scattered shapes and an optional card (logo) on top. */
-export function FotoPlaceholder({ desc, frame = 'yellow', ratio = '4 / 5', shapeSize = 72, children }: { desc: string; frame?: string; ratio?: string; shapeSize?: number; children?: ReactNode }) {
+export function FotoPlaceholder({ desc, src, frame = 'yellow', ratio = '4 / 5', shapeSize = 72, children }: { desc: string; src?: { full: string; small: string }; frame?: string; ratio?: string; shapeSize?: number; children?: ReactNode }) {
   const others = ['orange', 'celeste', 'olive', 'yellow'].filter(k => k !== frame), S = shapeSize;
   return <div className={s.photo}>
     <div className={s.photoFrame} style={{ '--frame': FRAME[frame] } as Vars}>
-      <div className={s.photoInner} style={{ '--ratio': ratio } as Vars} role="img" aria-label={'Foto: ' + desc}>
-        <Icon name="09" size={32} color="var(--build-ink-3)" />
-        <span className={s.photoLabel}>Foto</span>
-        <span className={s.photoDesc}>{desc}</span>
-      </div>
+      {src
+        ? <div className={s.photoInner} style={{ '--ratio': ratio } as Vars}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img className={s.photoImg} src={asset(src.full)} srcSet={`${asset(src.small)} 640w, ${asset(src.full)} 1024w`} sizes="(max-width: 767px) 100vw, 560px" alt={desc} width={1024} height={1024} />
+          </div>
+        : <div className={s.photoInner} style={{ '--ratio': ratio } as Vars} role="img" aria-label={'Foto: ' + desc}>
+            <Icon name="09" size={32} color="var(--build-ink-3)" />
+            <span className={s.photoLabel}>Foto</span>
+            <span className={s.photoDesc}>{desc}</span>
+          </div>}
     </div>
     <Shape name="01" size={S} color={FRAME[others[0]]} className={s.abs} style={{ right: -S * 0.35, top: -S * 0.35, transform: 'rotate(12deg)' }} />
     <Shape name="52" size={S} color={FRAME[others[1]]} className={s.abs} style={{ left: -S * 0.3, bottom: S * 0.9, transform: 'rotate(-8deg)' }} />
@@ -150,9 +146,6 @@ export function SemanaCard({ sem }: { sem: Semana }) {
       <h3 className={s.weekTema}>{sem.tema}</h3>
       <p className={s.p15m}>{sem.lema}</p>
       <div className={s.goal}><span className={s.label} style={{ '--c': deep(sem.pilar) } as Vars}>Objetivo de la semana</span><strong>{sem.objetivo}</strong></div>
-      <div className={s.weekGroups}>
-        {CAMP.grupos.map(g => <div key={g.id} className={s.weekGroup}><div><GrupoChip id={g.id} variant="dot" /></div><p className={s.p15}>{sem.objetivos[g.id]}</p></div>)}
-      </div>
       {ally && <div className={s.ally}><span className={s.label}>Aliado</span><div className={s.allyBox}>{ally}</div></div>}
     </div>
   </article>;

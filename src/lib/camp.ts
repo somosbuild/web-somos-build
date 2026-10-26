@@ -83,6 +83,8 @@ export const EDADES = 'De ' + CAMP.camp.edades.min + ' a ' + CAMP.camp.edades.ma
 export const HORARIO = CAMP.horario.dias + ', ' + CAMP.horario.inicio + ' a ' + CAMP.horario.fin;
 export const LUGAR = CAMP.lugar.nombre + ', ' + CAMP.lugar.zona;
 export const WA_LINK = CAMP.contacto.whatsapp_link + '?text=' + encodeURIComponent(CAMP.contacto.whatsapp_mensaje);
+/** Camp photo (handoff assets/fotos/hero-ciudad-carton.jpeg), as WebP in two sizes. */
+export const FOTO = { full: '/fotos/camp-ciudad-carton.webp', small: '/fotos/camp-ciudad-carton-640.webp' };
 /** Confirmed payment link (Onvo), or null while pending. */
 export const RESERVA_LINK = confirmed(CAMP.inscripciones.link);
 

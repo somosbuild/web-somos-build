@@ -3,18 +3,16 @@
 import { useRef, useState, type CSSProperties } from 'react';
 import Link from 'next/link';
 import s from './camp.module.css';
-import { Badge, Button, ButtonLink, Checkbox, Dialog, Icon, Input, Logo, PillarTag, Shape, Toast } from '@/components/ds';
+import { Button, ButtonLink, Checkbox, Dialog, Icon, Input, Logo, PillarTag, Shape, Toast } from '@/components/ds';
 import { asset } from '@/lib/asset';
-import { CAMP, EDADES, GRUPO_SHAPE, HORARIO, LUGAR, RANGO, WA_LINK, color, crc, grupo, isPh, tituloPartes } from '@/lib/camp';
+import { CAMP, EDADES, FOTO, HORARIO, LUGAR, RANGO, WA_LINK, color, crc, isPh, tituloPartes } from '@/lib/camp';
 import { BarraAnuncio } from './CampPromo';
-import { ContactoFooter, Cronograma, FotoPlaceholder, GrupoCard, GrupoChip, PinoBloques, PrecioBloque, SelloPronto, SemanaCard, Snow, useInscripciones } from './parts';
+import { ContactoFooter, Cronograma, FotoPlaceholder, GrupoCard, PrecioBloque, SelloPronto, SemanaCard, useInscripciones } from './parts';
 
 type Vars = CSSProperties & Record<`--${string}`, string>;
 const cx = (...c: (string | false | undefined)[]) => c.filter(Boolean).join(' ');
 
-const NAV: [string, string][] = [['#grupos', 'Grupos'], ['#semana', 'Un día'], ['#semanas', 'Semanas'], ['#viernes', 'Viernes'], ['#seguridad', 'Seguridad'], ['#precios', 'Precios'], ['#faq', 'Preguntas']];
-const SEG_ICON = ['07', '43', '20', '50', '17', '23', '14'];
-const EVENT_SNOW: [number, number, string, number][] = [[6, 12, '01', 14], [22, 58, '05', 8], [36, 18, '01', 10], [50, 66, '05', 6], [60, 10, '05', 9], [44, 40, '01', 8], [12, 78, '05', 7]];
+const NAV: [string, string][] = [['#grupos', 'Grupos'], ['#semana', 'Un día'], ['#semanas', 'Semanas'], ['#precios', 'Precios'], ['#faq', 'Preguntas']];
 
 // Public FAQ: pending answers are hidden; the single-day price comes from the price list.
 const FAQ = CAMP.faq
@@ -31,7 +29,6 @@ export function CampPage() {
   const openForm = () => setFormOpen(true);
   const say = (t: string) => { setToast(t); clearTimeout(timer.current); timer.current = setTimeout(() => setToast(''), 6000); };
   const tag = tituloPartes(CAMP.camp.tagline);
-  const v = CAMP.horario.viernes_en_familia;
   const n = CAMP.semanas.length;
 
   const Cta = ({ size }: { size: 'sm' | 'lg' }) => insc.mode === 'form'
@@ -66,7 +63,7 @@ export function CampPage() {
           </div>
         </div>
         <div className={s.heroPhoto}>
-          <FotoPlaceholder frame="yellow" ratio="4 / 5" desc="Niña de 5 años con casco dentro de una casa de cartón en la Plazoleta Build, luz de mañana">
+          <FotoPlaceholder frame="yellow" ratio="1 / 1" src={FOTO} desc="Niños construyendo una ciudad de cartón en la plazoleta de City Place">
             <Logo width={150} pillar="skills" />
           </FotoPlaceholder>
           {!insc.abiertas && <SelloPronto />}
@@ -77,7 +74,6 @@ export function CampPage() {
         <div className={s.about}>
           <Eyebrow c="var(--build-orange-deep)">Qué es</Eyebrow>
           <p className={s.aboutLead}>{CAMP.camp.descripcion_corta}</p>
-          <p className={s.aboutNote}>{CAMP.camp.nota_familia}</p>
         </div>
       </section>
 
@@ -108,66 +104,6 @@ export function CampPage() {
             <p className={s.lead17}>Vení una semana o todas.</p>
           </div>
           <div className={s.grid330}>{CAMP.semanas.map(w => <SemanaCard key={w.n} sem={w} />)}</div>
-        </div>
-      </section>
-
-      <section id="historias" className={cx(s.wrap, s.stack)}>
-        <div className={s.head}>
-          <Eyebrow c="var(--build-orange-deep)">Historias de temporada</Eyebrow>
-          <h2 className={s.h2}>Una historia que <strong>sigue cada semana</strong></h2>
-        </div>
-        <div className={s.grid320}>
-          {CAMP.historias_temporada.map(h => <article key={h.id} className={cx(s.card, s.story)}>
-            <Shape name={GRUPO_SHAPE[h.grupo]} size={120} color={color(grupo(h.grupo).color)} className={s.abs} style={{ right: -30, top: -34 }} />
-            <div className={s.rel} style={{ display: 'flex' }}><GrupoChip id={h.grupo} size="sm" /></div>
-            <h3 className={s.storyTitle}>{h.nombre}</h3>
-            <p className={s.p16}>{h.texto}</p>
-          </article>)}
-        </div>
-      </section>
-
-      <section id="viernes" className={s.celeste}>
-        <div className={cx(s.wrap, s.stack)}>
-          <div className={s.head}>
-            <Eyebrow>Viernes en familia</Eyebrow>
-            <h2 className={s.h2} style={{ '--c': 'var(--build-ink)' } as Vars}>Los viernes, <strong>la familia entra</strong></h2>
-            <p className={s.lead17}>{v.descripcion}</p>
-          </div>
-          <div className={cx(s.grid320, s.top)}>
-            <div className={cx(s.card, s.friday)}>
-              <Eyebrow c="var(--build-celeste-deep)">Cada viernes</Eyebrow>
-              <h3 className={s.fridayTitle}>{v.inicio} a {v.fin}</h3>
-              <Cronograma tipo="viernes" dot={color('family')} />
-            </div>
-            {CAMP.eventos.map(e => <article key={e.id} className={s.event} data-modo={e.modo}>
-              <div className={s.eventHead}>
-                {e.modo === 'navidad'
-                  ? <><Snow points={EVENT_SNOW} /><PinoBloques size={80} pine="var(--build-beige)" style={{ right: 22, bottom: -6 }} /></>
-                  : <Shape name="01" size={150} color="var(--build-beige)" className={s.abs} style={{ right: -30, bottom: -40 }} />}
-                <span className={s.datePill}>{e.fecha_texto}</span>
-                <h3 className={s.eventTitle}>{e.nombre}</h3>
-              </div>
-              <div className={s.eventBody}>
-                <Cronograma tipo="evento" evento={e.id} dot={color('joy')} />
-                {(e.nota || e.cierre) && <p className={s.eventExtra}>{e.nota || e.cierre}</p>}
-                {e.abierto_al_publico && <Badge color="olive" className={s.selfStart}>Abierto al público</Badge>}
-              </div>
-            </article>)}
-          </div>
-        </div>
-      </section>
-
-      <section id="seguridad" className={cx(s.wrap, s.stack)}>
-        <div className={s.head}>
-          <Eyebrow c="var(--build-celeste-deep)">Seguridad</Eyebrow>
-          <h2 className={s.h2}>Cuidamos <strong>cada detalle</strong></h2>
-        </div>
-        <div className={s.safetyGrid}>
-          {CAMP.seguridad.map((x, i) => <div key={x.titulo} className={cx(s.card, s.safety)}>
-            <span className={s.tile48}><Icon name={SEG_ICON[i] ?? '43'} size={26} color="var(--build-beige)" /></span>
-            <h3 className={s.safetyTitle}>{x.titulo}</h3>
-            <p className={s.p15m}>{x.texto}</p>
-          </div>)}
         </div>
       </section>
 
@@ -210,7 +146,7 @@ export function CampPage() {
       </section>
 
       <section id="contacto" className={s.contact}>
-        <ContactoFooter titulo={insc.abiertas ? '¿Confirmamos' : 'Te avisamos'} bold={insc.abiertas ? 'tu cupo?' : 'cuando abran'} cta={insc.label}
+        <ContactoFooter titulo="Construí tus vacaciones" bold="con nosotros" cta={insc.label}
           onCta={insc.mode === 'form' ? openForm : undefined} ctaHref={insc.href} />
       </section>
     </main>
@@ -231,12 +167,13 @@ function Faq() {
 }
 
 /** "Avisame cuando abran". Submissions go to Netlify Forms (form "camp-interes", declared in public/__forms.html). */
+const PLANES = ['Diciembre: 2 semanas', 'Enero: 4 semanas', 'Camp completo: 6 semanas', 'Semanas variadas: Por definir'];
+
 function InteresForm({ onClose, onSent }: { onClose: () => void; onSent: () => void }) {
-  const [f, setF] = useState({ nombre: '', whatsapp: '', edades: '', semanas: [] as number[] });
+  const [f, setF] = useState({ nombre: '', whatsapp: '', email: '', edades: '', plan: '' });
   const [sending, setSending] = useState(false);
   const [failed, setFailed] = useState(false);
   const invalid = !f.nombre.trim() || f.whatsapp.replace(/\D/g, '').length < 8;
-  const toggle = (n: number) => setF(x => ({ ...x, semanas: x.semanas.includes(n) ? x.semanas.filter(y => y !== n) : [...x.semanas, n].sort((a, b) => a - b) }));
 
   const submit = async () => {
     if (invalid) return;
@@ -245,7 +182,7 @@ function InteresForm({ onClose, onSent }: { onClose: () => void; onSent: () => v
       const res = await fetch(asset('/__forms.html'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ 'form-name': 'camp-interes', nombre: f.nombre, whatsapp: f.whatsapp, edades: f.edades, semanas: f.semanas.join(', ') }).toString(),
+        body: new URLSearchParams({ 'form-name': 'camp-interes', nombre: f.nombre, whatsapp: f.whatsapp, email: f.email, edades: f.edades, plan: f.plan }).toString(),
       });
       if (!res.ok) throw new Error(String(res.status));
       onSent();
@@ -256,15 +193,17 @@ function InteresForm({ onClose, onSent }: { onClose: () => void; onSent: () => v
     }
   };
 
-  return <Dialog onClose={onClose} title={CAMP.sitio.ctas.antes} accent="var(--build-orange)" width={520}>
+  return <Dialog onClose={onClose} title="Registrate al camp" accent="var(--build-orange)" width={520}>
     <form className={s.form} onSubmit={e => { e.preventDefault(); submit(); }}>
       <p className={s.formIntro}>Las inscripciones abren el {CAMP.inscripciones.abren_texto}. Dejanos tus datos y te escribimos ese día.</p>
       <Input label="Tu nombre" name="nombre" required autoComplete="name" value={f.nombre} onChange={e => setF({ ...f, nombre: e.target.value })} autoFocus />
       <Input label="WhatsApp" name="whatsapp" type="tel" required placeholder="8888-8888" autoComplete="tel" value={f.whatsapp} onChange={e => setF({ ...f, whatsapp: e.target.value })} />
+      <Input label="Email (opcional)" name="email" type="email" placeholder="nombre@correo.com" autoComplete="email" value={f.email} onChange={e => setF({ ...f, email: e.target.value })} />
       <Input label="Edades de tus hijos" name="edades" placeholder="Por ejemplo: 3 y 7" hint={`${EDADES}. Con eso te sugerimos el grupo.`} value={f.edades} onChange={e => setF({ ...f, edades: e.target.value })} />
       <fieldset className={s.fieldset}>
-        <legend className={s.legend}>Semanas que te interesan</legend>
-        {CAMP.semanas.map(w => <Checkbox key={w.n} checked={f.semanas.includes(w.n)} onChange={() => toggle(w.n)} label={`Semana ${w.n} · ${w.fechas_corto} · ${w.tema}`} />)}
+        <legend className={s.legend}>¿Qué te interesa?</legend>
+        {/* One choice at most; tapping the selected option clears it (as in the design). */}
+        {PLANES.map(p => <Checkbox key={p} checked={f.plan === p} onChange={() => setF({ ...f, plan: f.plan === p ? '' : p })} label={p} />)}
       </fieldset>
       {failed && <p className={s.formError} role="alert">No pudimos enviar tus datos. Probá de nuevo o escribinos por WhatsApp.</p>}
       <div className={s.formActions}>
