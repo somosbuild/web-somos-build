@@ -11,10 +11,10 @@ Next.js 16 (App Router, TypeScript) con export estático: el build genera HTML p
 
 - **Contenido:** todo sale de `src/content/camp-data.json` (fuente única del handoff de Claude Design). Para cambiar textos, fechas, precios, grupos o FAQ, editar ese archivo; no hace falta tocar componentes.
 - **Pendientes:** cualquier campo con `"pendiente": true` o con texto entre corchetes (`"[POR CONFIRMAR]"`) **no se muestra** en el sitio. Al completarlo en el JSON, aparece solo.
-- **Inscripciones:** antes de `inscripciones.abren` (9 de noviembre) el botón dice "Avisame cuando abran" y abre el formulario. Desde esa fecha dice "Reservá tu cupo" y va al link de pago (`inscripciones.link`); mientras ese link esté pendiente, va a WhatsApp. El cambio ocurre solo, en el navegador; no hace falta volver a publicar. Para previsualizar: `/camp/?simular=despues` o `?simular=antes`.
+- **Inscripciones:** antes de `inscripciones.abren` (2 de noviembre) el botón dice "Registrarme" y abre el formulario. Desde esa fecha dice "Reservá tu cupo" y va al link de pago (`inscripciones.link`); mientras ese link esté pendiente, va a WhatsApp. El cambio ocurre solo, en el navegador; no hace falta volver a publicar. Para previsualizar: `/camp/?simular=despues` o `?simular=antes`.
 - **Formulario:** Netlify Forms, formulario `camp-interes` (declarado en `public/__forms.html`, igual que `registro` de la landing).
 - **En la landing:** barra de anuncio arriba del header, bloque destacado debajo del hero y aviso flotante (a los 8 s o al 50 % del scroll, una vez por visita). Todo en `src/components/camp/CampPromo.tsx`; la landing no tiene otros cambios.
-- **Fotos:** los espacios de foto del camp son placeholders con la descripción de la foto que va.
+- **Foto:** `public/fotos/camp-ciudad-carton.webp` (y versión 640 px), usada en el hero de `/camp` y en el bloque de la landing.
 
 ## Uso
 

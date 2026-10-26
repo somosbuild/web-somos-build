@@ -10,7 +10,7 @@
     "nombre": "Build Summer Camp",
     "nombre_corto": "Build Summer Camp",
     "tagline": "Las vacaciones no se esperan, se construyen.",
-    "descripcion_corta": "Seis semanas, seis temas y una historia que sigue de lunes a viernes. Cada día mezcla estimulación, aprendizaje y STEM, con algo que se completa solo si volvés y un viernes en el que los niños enseñan lo que construyeron.",
+    "descripcion_corta": "Seis semanas, seis temas y una historia que continúa de lunes a viernes. Cada día mezcla estimulación, aprendizaje y STEM, y cada semana es una oportunidad de enseñar lo que aprendimos y construimos.",
     "edades": { "min": 2, "max": 10 },
     "nota_familia": "En la mañana los niños están con nuestro equipo. Los viernes en la tarde la familia viene a ver lo que construyeron.",
     "palabras_prohibidas": ["guardería", "cuido", "dejalos con nosotros"]
@@ -70,7 +70,7 @@
       "formato": "Zona fija y la misma rutina todos los días. El tema cambia los materiales, no la rutina.",
       "firma": { "nombre": "La cocinita de tierra y agua", "texto": "Una cocinita de juguete al aire libre, con ollas y cucharas, para cocinar con tierra, agua y hojas. Es juego sensorial libre, lo que más concentra a esta edad." },
       "adaptacion": "El lunes, el papá o la mamá se puede quedar los primeros 30 minutos.",
-      "panal": { "pendiente": true, "placeholder": "[POR CONFIRMAR SI SE ACEPTA PAÑAL]" },
+      "panal": "Se acepta pañal",
       "objetivo_temporada": "Explorar con los sentidos y el cuerpo, dentro de una rutina que les da seguridad.",
       "por_que": "A esta edad se aprende tocando, moviéndose y repitiendo. Una rutina que no cambia les da la calma para explorar.",
       "historia_temporada": null
@@ -404,10 +404,14 @@
 
   "faq": [
     { "p": "¿Los papás se quedan?", "r": "No. En la mañana los niños están con nuestro equipo. El lunes, en Build Mini, te podés quedar los primeros 30 minutos para la adaptación. Y todos los viernes en la tarde la familia viene a ver lo que construyeron." },
-    { "p": "¿Qué pasa si llueve?", "r": "Nos movemos a Studio Cinemas, y Build Mini se queda en el local de Build con estaciones de mesa." },
+    { "p": "¿Cuántos adultos hay por niño?", "r": "1 adulto cada 4 niños en Build Mini y 1 cada 8 en Exploradores y Constructores." },
+    { "p": "¿Quién puede recoger a mi hijo?", "r": "Solo las personas de la lista que nos das, con cédula y firma de salida. Hay una sola entrada y salida, en Plazoleta Build." },
+    { "p": "¿Cómo se mueven por City Place?", "r": "Cada zona tiene vallas bajas, cada grupo usa un color de camiseta y contamos a los niños en cada traslado." },
+    { "p": "¿Qué pasa si se lastima?", "r": "Siempre hay al menos 2 personas certificadas en primeros auxilios y RCP, botiquín y la ficha médica de cada niño." },
+    { "p": "¿Quién forma el equipo?", "r": "Todo el equipo presenta hoja de delincuencia, referencias y certificación de primeros auxilios." },
+    { "p": "¿Qué pasa si llueve o hace mucho sol?", "r": "Hay toldos en las 3 zonas y agua cada 45 minutos. Si llueve, nos movemos a Studio Cinemas, y Build Mini se queda en el local de Build con estaciones de mesa." },
     { "p": "¿Y las alergias?", "r": "En la inscripción llenás la ficha médica. La merienda es sin maní y cada estación de comida tiene la lista de alergias a la vista." },
     { "p": "¿Puede ir un solo día?", "r": "Sí, a ₡22.000, solo si hay cupo esa semana.", "pendiente_precio": true },
-    { "p": "¿Build Mini acepta pañal?", "r": "[PENDIENTE]", "pendiente": true },
     { "p": "¿Cuál es la política de cancelación?", "r": "[PENDIENTE ABOGADO]", "pendiente": true },
     { "p": "¿Salen fotos de mi hijo?", "r": "Solo si firmás el consentimiento de imagen en la inscripción. Sin él, no sale en fotos ni en Build Noticias." }
   ],
@@ -433,8 +437,8 @@
   },
 
   "inscripciones": {
-    "abren": "2026-11-09",
-    "abren_texto": "9 de noviembre",
+    "abren": "2026-11-02",
+    "abren_texto": "2 de noviembre",
     "pendiente": true,
     "link": { "pendiente": true, "placeholder": "[LINK ONVO]" },
     "cupos_disponibles": {
@@ -488,7 +492,7 @@
     "barra_anuncio": { "etiqueta": "Nuevo", "texto": "Camp de vacaciones en City Place", "cta": "Conocelo" },
     "destacado_cta": "Ver el camp",
     "slide_in": { "segundos": 8, "scroll": 0.5 },
-    "ctas": { "antes": "Avisame cuando abran", "despues": "Reservá tu cupo", "whatsapp": "Escribinos por WhatsApp" }
+    "ctas": { "antes": "Registrarme", "despues": "Reservá tu cupo", "whatsapp": "Escribinos por WhatsApp" }
   },
 
   "legal_corto": {

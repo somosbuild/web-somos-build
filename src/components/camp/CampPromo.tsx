@@ -6,7 +6,7 @@ import Link from 'next/link';
 import s from './camp.module.css';
 import { ButtonLink, Icon, Logo, Shape } from '@/components/ds';
 import { asset } from '@/lib/asset';
-import { CAMP, EDADES, HORARIO, LUGAR, RANGO, tituloPartes } from '@/lib/camp';
+import { CAMP, EDADES, FOTO, HORARIO, LUGAR, RANGO, tituloPartes } from '@/lib/camp';
 import { FotoPlaceholder, GrupoChip, useInscripciones } from './parts';
 
 const CAMP_HREF = '/camp/';
@@ -44,7 +44,7 @@ export function CampDestacado() {
   return <section className={s.featuredWrap} aria-labelledby="camp-destacado">
     <article className={s.featured}>
       <div className={s.featuredPhoto}>
-        <FotoPlaceholder frame="yellow" ratio="5 / 4" shapeSize={64} desc="Niño de 6 años construyendo una torre de cajas de cartón en el parque de City Place, mañana soleada">
+        <FotoPlaceholder frame="yellow" ratio="5 / 4" shapeSize={64} src={FOTO} desc="Niños construyendo una ciudad de cartón en la plazoleta de City Place">
           <Logo width={150} />
         </FotoPlaceholder>
       </div>

@@ -72,7 +72,6 @@
 .chipSm .chipDot { width: 20px; height: 20px; }
 .chipName { font-weight: 700; }
 .chipAge { font-weight: 500; }
-.dot { display: inline-flex; align-items: center; gap: 8px; color: var(--build-ink); font: 700 14px/1.2 var(--font-sans); }
 .gcard { display: flex; flex-direction: column; height: 100%; background: var(--build-white); border-radius: 24px; overflow: hidden; box-shadow: var(--shadow-soft); color: var(--build-ink); }
 .gcardHead { position: relative; overflow: hidden; background: var(--bg); padding: 24px 24px 20px; display: flex; flex-direction: column; gap: 6px; min-height: 120px; }
 .gcardAge { position: relative; font: 700 12px/1 var(--font-sans); letter-spacing: var(--tracking-label); text-transform: uppercase; }
@@ -109,9 +108,6 @@
 .weekTema { margin: 0; font: 700 28px/1.08 var(--font-display); letter-spacing: var(--tracking-display); text-wrap: pretty; }
 .goal { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; background: var(--build-beige); border-radius: 16px; }
 .goal strong { font: 700 18px/1.25 var(--font-display); text-wrap: pretty; }
-.weekGroups { display: flex; flex-direction: column; gap: 14px; }
-.weekGroup p { line-height: 1.5; }
-.weekGroup { display: flex; flex-direction: column; gap: 6px; padding-bottom: 14px; border-bottom: 2px solid var(--build-greige); }
 .ally { margin-top: auto; display: flex; align-items: center; gap: 12px; padding-top: 4px; }
 .allyBox {
   flex: 1; min-height: 52px; display: flex; align-items: center; justify-content: center; padding: 8px 12px; border: 2px dashed var(--build-ink-3);
@@ -151,6 +147,7 @@
   position: relative; width: 100%; height: 100%; aspect-ratio: var(--ratio); background: var(--build-greige); border-radius: 16px; overflow: hidden;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 24px; text-align: center;
 }
+.photoImg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 .photoLabel { font: 700 11px/1 var(--font-sans); letter-spacing: var(--tracking-label); color: var(--build-ink-2); text-transform: uppercase; }
 .photoDesc { max-width: 34ch; font: 400 14px/1.45 var(--font-sans); color: var(--build-ink-2); text-wrap: pretty; }
 .photoCard { position: absolute; left: 32px; bottom: 32px; max-width: calc(100% - 64px); background: var(--build-beige); border-radius: 24px; padding: 20px 24px; box-shadow: var(--shadow-soft); }
@@ -189,7 +186,6 @@
 .celeste { background: var(--build-celeste); }
 .about { max-width: 880px; margin: 0 auto; padding: clamp(56px, 8vw, 104px) clamp(16px, 4vw, 32px); display: flex; flex-direction: column; gap: 20px; }
 .aboutLead { margin: 0; font: 400 clamp(24px, 3.2vw, 34px)/1.3 var(--font-display); text-wrap: pretty; }
-.aboutNote { margin: 0; font: 500 18px/1.55 var(--font-sans); color: var(--build-ink-2); text-wrap: pretty; }
 .lead17 { margin: 0; font: 500 17px/1.5 var(--font-sans); text-wrap: pretty; }
 
 .grid320 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 24px; }
@@ -201,23 +197,9 @@
 .panelTitle { margin: 0; font: 400 clamp(28px, 3.6vw, 38px)/1.1 var(--font-display); color: var(--build-orange); }
 .panelTitle strong { font-weight: 700; }
 
-.story { position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 14px; padding: 28px; }
-.storyTitle { position: relative; margin: 0; font: 700 28px/1.1 var(--font-display); text-wrap: balance; }
-.p16 { margin: 0; font: 400 16px/1.55 var(--font-sans); text-wrap: pretty; }
 
-.friday { display: flex; flex-direction: column; gap: 20px; padding: 28px; }
-.fridayTitle { margin: 0; font: 700 26px/1.1 var(--font-display); }
-.event { display: flex; flex-direction: column; background: var(--build-white); border-radius: 24px; overflow: hidden; box-shadow: var(--shadow-soft); }
-.eventHead { position: relative; overflow: hidden; min-height: 150px; padding: 22px 24px; background: var(--build-olive); display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; }
-.eventTitle { position: relative; margin: 0; font: 700 30px/1.05 var(--font-display); max-width: 70%; }
-.eventBody { display: flex; flex-direction: column; gap: 16px; padding: 24px; }
-.eventExtra { margin: 0; font: 700 16px/1.4 var(--font-sans); }
 .selfStart { align-self: flex-start; }
 
-.safetyGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 16px; }
-.safety { display: flex; flex-direction: column; gap: 12px; padding: 24px; }
-.tile48 { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 16px; background: var(--build-celeste); }
-.safetyTitle { margin: 0; font: 700 20px/1.2 var(--font-display); }
 
 .faqGrid { max-width: 1200px; margin: 0 auto; padding: clamp(56px, 8vw, 104px) clamp(16px, 4vw, 32px); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: clamp(32px, 5vw, 56px); align-items: start; }
 .bring { position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 20px; padding: clamp(24px, 4vw, 36px); background: var(--build-yellow); border-radius: 24px; }
@@ -256,4 +238,4 @@
 /* The handoff renders without a global border-box reset: these boxes measure padding/border outside their
    max-width / min-height. Kept content-box so sizes match the design; DS components stay border-box. */
 .featuredWrap, .wrap, .hero, .days, .faqGrid, .allies, .contact, .about, .headerRow, .nav,
-.gcardHead, .weekHead, .eventHead, .allyName, .allyBox { box-sizing: content-box; }
+.gcardHead, .weekHead, .allyName, .allyBox { box-sizing: content-box; }
