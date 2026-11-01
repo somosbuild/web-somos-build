@@ -3,11 +3,11 @@
 import { useRef, useState, type CSSProperties } from 'react';
 import Link from 'next/link';
 import s from './camp.module.css';
-import { Button, ButtonLink, Checkbox, Dialog, Icon, Input, Logo, PillarTag, Shape, Toast } from '@/components/ds';
+import { Button, ButtonLink, Checkbox, Dialog, Icon, Input, Logo, PillarTag, Select, Shape, Toast } from '@/components/ds';
 import { asset } from '@/lib/asset';
-import { CAMP, EDADES, FOTO, HORARIO, LUGAR, RANGO, WA_LINK, color, crc, isPh, tituloPartes } from '@/lib/camp';
+import { CAMP, EDADES, FOTO, HORARIO, LUGAR, RANGO, WA_LINK, color, crc, grupoPorEdad, isPh, tituloPartes } from '@/lib/camp';
 import { BarraAnuncio } from './CampPromo';
-import { ContactoFooter, Cronograma, FotoPlaceholder, GrupoCard, PrecioBloque, SelloPronto, useInscripciones } from './parts';
+import { ContactoFooter, Cronograma, FotoPlaceholder, GrupoCard, GrupoChip, PrecioBloque, SelloPronto, useInscripciones } from './parts';
 
 type Vars = CSSProperties & Record<`--${string}`, string>;
 const cx = (...c: (string | false | undefined)[]) => c.filter(Boolean).join(' ');
@@ -169,21 +169,42 @@ function Faq() {
 
 /** "Avisame cuando abran". Submissions go to Netlify Forms (form "camp-interes", declared in public/__forms.html). */
 const PLANES = ['Diciembre: 2 semanas', 'Enero: 4 semanas', 'Camp completo: 6 semanas', 'Semanas variadas: Por definir'];
+/** How many children: "3+" collects 3 and Build follows up for the rest. */
+const CANTIDADES = [{ value: '1', n: 1 }, { value: '2', n: 2 }, { value: '3+', n: 3 }];
+const EDAD_OPTS = Array.from({ length: CAMP.camp.edades.max - CAMP.camp.edades.min + 1 }, (_, i) => {
+  const e = CAMP.camp.edades.min + i;
+  return { value: String(e), label: `${e} años` };
+});
+type Nino = { nombre: string; edad: string };
+const NINO_VACIO: Nino = { nombre: '', edad: '' };
 
 function InteresForm({ onClose, onSent }: { onClose: () => void; onSent: () => void }) {
-  const [f, setF] = useState({ nombre: '', whatsapp: '', email: '', edades: '', plan: '' });
+  const [f, setF] = useState({ nombre: '', whatsapp: '', email: '', plan: '' });
+  const [cantidad, setCantidad] = useState('1');
+  // Kept for all 3 slots, so lowering the count and raising it again doesn't lose what was typed.
+  const [ninos, setNinos] = useState<Nino[]>([NINO_VACIO, NINO_VACIO, NINO_VACIO]);
   const [sending, setSending] = useState(false);
   const [failed, setFailed] = useState(false);
-  const invalid = !f.nombre.trim() || f.whatsapp.replace(/\D/g, '').length < 8;
+  const n = CANTIDADES.find(c => c.value === cantidad)!.n;
+  const visibles = ninos.slice(0, n);
+  const invalid = !f.nombre.trim() || f.whatsapp.replace(/\D/g, '').length < 8 || visibles.some(k => !k.nombre.trim() || !k.edad);
+  const setNino = (i: number, patch: Partial<Nino>) => setNinos(list => list.map((k, j) => (j === i ? { ...k, ...patch } : k)));
 
   const submit = async () => {
     if (invalid) return;
     setSending(true); setFailed(false);
+    // Only the visible children are sent; the group is sent already resolved for the Netlify panel.
+    const data: Record<string, string> = { 'form-name': 'camp-interes', nombre: f.nombre, whatsapp: f.whatsapp, email: f.email, plan: f.plan, ninos: cantidad };
+    visibles.forEach((k, i) => {
+      data[`nino${i + 1}_nombre`] = k.nombre.trim();
+      data[`nino${i + 1}_edad`] = k.edad;
+      data[`nino${i + 1}_grupo`] = grupoPorEdad(Number(k.edad))?.nombre ?? '';
+    });
     try {
       const res = await fetch(asset('/__forms.html'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ 'form-name': 'camp-interes', nombre: f.nombre, whatsapp: f.whatsapp, email: f.email, edades: f.edades, plan: f.plan }).toString(),
+        body: new URLSearchParams(data).toString(),
       });
       if (!res.ok) throw new Error(String(res.status));
       onSent();
@@ -205,7 +226,28 @@ function InteresForm({ onClose, onSent }: { onClose: () => void; onSent: () => v
       <Input label="Tu nombre" name="nombre" required autoComplete="name" value={f.nombre} onChange={e => setF({ ...f, nombre: e.target.value })} autoFocus />
       <Input label="WhatsApp" name="whatsapp" type="tel" required placeholder="8888-8888" autoComplete="tel" value={f.whatsapp} onChange={e => setF({ ...f, whatsapp: e.target.value })} />
       <Input label="Email (opcional)" name="email" type="email" placeholder="nombre@correo.com" autoComplete="email" value={f.email} onChange={e => setF({ ...f, email: e.target.value })} />
-      <Input label="Edades de tus hijos" name="edades" placeholder="Por ejemplo: 3 y 7" hint={`${EDADES}. Con eso te sugerimos el grupo.`} value={f.edades} onChange={e => setF({ ...f, edades: e.target.value })} />
+
+      <fieldset className={s.fieldset}>
+        <legend className={s.legend}>¿Cuántos niños querés registrar?</legend>
+        <div className={s.qty} role="radiogroup" aria-label="Cantidad de niños">
+          {CANTIDADES.map(c => <button key={c.value} type="button" role="radio" aria-checked={cantidad === c.value}
+            className={cx(s.qtyBtn, cantidad === c.value && s.qtyOn)} onClick={() => setCantidad(c.value)}>{c.value}</button>)}
+        </div>
+      </fieldset>
+
+      {visibles.map((k, i) => {
+        const g = k.edad ? grupoPorEdad(Number(k.edad)) : null;
+        return <fieldset key={i} className={s.kid}>
+          <legend className={s.kidTitle}>Niño {i + 1}</legend>
+          <div className={s.kidFields}>
+            <Input label="Nombre" name={`nino${i + 1}_nombre`} required value={k.nombre} onChange={e => setNino(i, { nombre: e.target.value })} />
+            <Select label="Edad" name={`nino${i + 1}_edad`} required options={EDAD_OPTS} placeholder="Elegí" value={k.edad} onChange={e => setNino(i, { edad: e.target.value })} />
+          </div>
+          {g && <div className={s.kidGroup}><span>Grupo:</span><GrupoChip id={g.id} size="sm" /></div>}
+        </fieldset>;
+      })}
+      {cantidad === '3+' && <p className={s.kidNote}>Si son más de 3, te contactamos para completar el registro.</p>}
+
       <fieldset className={s.fieldset}>
         <legend className={s.legend}>¿Qué te interesa?</legend>
         {/* One choice at most; tapping the selected option clears it (as in the design). */}
@@ -215,4 +257,3 @@ function InteresForm({ onClose, onSent }: { onClose: () => void; onSent: () => v
     </form>
   </Dialog>;
 }
-

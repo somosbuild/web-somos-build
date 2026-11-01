@@ -69,6 +69,8 @@ export const color = (k: string) => COLOR[k] ?? COLOR.community;
 export const GRUPO_SHAPE: Record<string, string> = { mini: '53', exploradores: '52', constructores: '43' };
 
 export const grupo = (id: string) => CAMP.grupos.find(g => g.id === id) ?? CAMP.grupos[0];
+/** Group whose age range (edad_min..edad_max) contains `edad`, or null. */
+export const grupoPorEdad = (edad: number) => CAMP.grupos.find(g => edad >= g.edad_min && edad <= g.edad_max) ?? null;
 export const evento = (id: string) => CAMP.eventos.find(e => e.id === id) ?? CAMP.eventos[0];
 
 export const crc = (n: number) => '₡' + String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
