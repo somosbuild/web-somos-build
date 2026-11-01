@@ -2,10 +2,10 @@
 
 import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
 import s from './camp.module.css';
-import { Badge, Button, ButtonLink, Icon, Logo, Shape } from '@/components/ds';
+import { Button, ButtonLink, Icon, Logo, Shape } from '@/components/ds';
 import { asset } from '@/lib/asset';
 import {
-  CAMP, GRUPO_SHAPE, PILAR_SHAPE, RESERVA_LINK, WA_LINK, color, crc, deep, grupo, inscripcionesAbiertas, isPending, isPh, paquetes, type Semana,
+  CAMP, GRUPO_SHAPE, RESERVA_LINK, WA_LINK, color, crc, grupo, inscripcionesAbiertas, isPh, paquetes,
 } from '@/lib/camp';
 
 type Vars = CSSProperties & Record<`--${string}`, string | undefined>;
@@ -40,7 +40,7 @@ export function GrupoChip({ id, size = 'md' }: { id: string; size?: 'sm' | 'md' 
 }
 
 export function GrupoCard({ id }: { id: string }) {
-  const g = grupo(id), [a, b] = String(g.razon_adulto_nino).split(':');
+  const g = grupo(id);
   return <article className={s.gcard}>
     <div className={s.gcardHead} style={{ '--bg': color(g.color) } as Vars}>
       <Shape name={GRUPO_SHAPE[g.id]} size={150} color="var(--build-beige)" className={s.abs} style={{ right: -34, top: -30 }} />
@@ -48,9 +48,8 @@ export function GrupoCard({ id }: { id: string }) {
       <h3 className={s.gcardName}>{g.nombre}</h3>
     </div>
     <div className={s.gcardBody}>
-      <div className={s.block}><span className={s.label} style={{ '--c': deep(g.color) } as Vars}>En las {CAMP.semanas.length} semanas</span><p className={s.gcardGoal}>{g.objetivo_temporada}</p></div>
-      <div className={s.block}><span className={s.label} style={{ '--c': deep(g.color) } as Vars}>Por qué funciona</span><p className={s.p15}>{g.por_que}</p></div>
-      <div className={s.badges}><Badge color="greige">{a} adulto cada {b} niños</Badge><Badge color="greige">{g.cupo} cupos por semana</Badge></div>
+      <p className={s.gcardTitle}>{g.titular_web}</p>
+      <p className={s.gcardText}>{g.texto_web}</p>
     </div>
   </article>;
 }
@@ -58,13 +57,11 @@ export function GrupoCard({ id }: { id: string }) {
 /* ---------- Timeline ---------- */
 
 type Row = { hora: string; que: string; texto?: string };
-export function Cronograma({ tipo, dot }: { tipo: 'dia' | 'semana'; dot: string }) {
+export function Cronograma({ tipo, dot }: { tipo: 'dia'; dot: string }) {
   const rango = (a: string, b: string) => a + ' a ' + b;
   let rows: Row[] = [];
   if (tipo === 'dia') rows = CAMP.horario.dia_tipo.map(r => ({ hora: r.hora, que: r.que, texto: r.fin ? rango(r.hora, r.fin) : '' }));
-  if (tipo === 'semana') rows = CAMP.arco_semana.map(r => ({ hora: r.dia, que: r.titulo, texto: r.texto }));
-  const col = tipo === 'semana' ? '120px' : '84px';
-  return <div className={s.tl} style={{ '--col': col, '--fs': tipo === 'semana' ? '18px' : '20px', '--dot': dot } as Vars}>
+  return <div className={s.tl} style={{ '--col': '84px', '--fs': '20px', '--dot': dot } as Vars}>
     {rows.map(r => <div key={r.hora + r.que} className={s.tlRow}>
       {/* Pending hours are left blank on the public site. */}
       <div className={s.tlHora}>{!isPh(r.hora) && <span className={s.tlHoraTxt}>{r.hora}</span>}</div>
@@ -75,27 +72,6 @@ export function Cronograma({ tipo, dot }: { tipo: 'dia' | 'semana'; dot: string 
 }
 
 /* ---------- Decorative pieces ---------- */
-
-const SNOW: [number, number, string, number][] = [[8, 14, '01', 14], [22, 62, '05', 8], [38, 22, '01', 10], [52, 70, '05', 6], [64, 12, '05', 9], [46, 44, '01', 8], [14, 82, '05', 7], [30, 40, '05', 5]];
-export const Snow = ({ points = SNOW }: { points?: [number, number, string, number][] }) =>
-  <>{points.map(([x, y, n, sz], i) => <Shape key={i} name={n} size={sz * 1.4} color="var(--build-beige)" className={s.abs} style={{ left: x + '%', top: y + '%' }} />)}</>;
-
-/** Christmas tree stacked from square bricks + a star. */
-export function PinoBloques({ size, star = 'var(--build-yellow)', pine = 'var(--build-olive)', style }: { size: number; star?: string; pine?: string; style?: CSSProperties }) {
-  const W = size, orn = ['var(--build-orange)', 'var(--build-celeste)'];
-  const g = W * 0.045, sq = (W - 2 * g) / 3, st = sq * 1.05;
-  const y1 = st * 0.82, y2 = y1 + sq + g, y3 = y2 + sq + g, yt = y3 + sq + g, tr = sq * 0.55;
-  const P: [string, number, string, number, number][] = [
-    ['58', sq, pine, (W - sq) / 2, y1],
-    ['58', sq, pine, (W - 2 * sq - g) / 2, y2], ['58', sq, orn[0], (W - 2 * sq - g) / 2 + sq + g, y2],
-    ['58', sq, orn[1], 0, y3], ['58', sq, pine, sq + g, y3], ['58', sq, pine, 2 * (sq + g), y3],
-    ['58', tr, 'var(--build-orange-deep)', (W - tr) / 2, yt],
-    ['01', st, star, (W - st) / 2, 0],
-  ];
-  return <div aria-hidden="true" style={{ position: 'absolute', width: W, height: Math.round(yt + tr), ...style }}>
-    {P.map(([n, sz, c, x, y], i) => <Shape key={i} name={n} size={sz} color={c} className={s.abs} style={{ left: x, top: y }} />)}
-  </div>;
-}
 
 const FRAME: Record<string, string> = { orange: 'var(--build-orange)', yellow: 'var(--build-yellow)', olive: 'var(--build-olive)', celeste: 'var(--build-celeste)' };
 /** Photo slot with a brand-colour frame, scattered shapes and an optional card (logo) on top. */
@@ -128,41 +104,20 @@ export function SelloPronto() {
   </div>;
 }
 
-/* ---------- Week card ---------- */
-
-export function SemanaCard({ sem }: { sem: Semana }) {
-  const navidad = sem.modo === 'navidad';
-  // Ally: name until the logo arrives; hidden while the ally itself is pending.
-  const ally = isPending(sem.aliado) ? null : sem.aliado.nombre;
-  return <article className={s.week} data-modo={sem.modo}>
-    <div className={s.weekHead} style={{ '--bg': color(sem.pilar) } as Vars}>
-      {navidad
-        ? <><Snow /><PinoBloques size={84} star={sem.pilar === 'skills' ? 'var(--build-orange)' : 'var(--build-yellow)'} pine={sem.pilar === 'joy' ? 'var(--build-beige)' : 'var(--build-olive)'} style={{ right: 22, bottom: -6 }} /></>
-        : <Shape name={PILAR_SHAPE[sem.pilar] ?? '04'} size={170} color="var(--build-beige)" className={s.abs} style={{ right: -40, bottom: -46 }} />}
-      <span className={s.datePill}>{sem.fechas_corto}</span>
-      <div className={s.weekNum}><span className={s.weekNumWord}>Semana</span><span className={s.weekNumN}>{sem.n}</span></div>
-    </div>
-    <div className={s.weekBody}>
-      <h3 className={s.weekTema}>{sem.tema}</h3>
-      <p className={s.p15m}>{sem.lema}</p>
-      <div className={s.goal}><span className={s.label} style={{ '--c': deep(sem.pilar) } as Vars}>Objetivo de la semana</span><strong>{sem.objetivo}</strong></div>
-      {ally && <div className={s.ally}><span className={s.label}>Aliado</span><div className={s.allyBox}>{ally}</div></div>}
-    </div>
-  </article>;
-}
-
 /* ---------- Prices ---------- */
 
-export function PrecioBloque() {
+/** Week + packages as cards; with `diaAbajo` the single-day price moves to a "Walk-in" strip below. */
+export function PrecioBloque({ minCol = 230, diaAbajo = false }: { minCol?: number; diaAbajo?: boolean }) {
   const p = CAMP.precios, paqs = paquetes();
   const top = paqs.reduce((a, b) => (b.n > a.n ? b : a), paqs[0]);
+  const dia = { id: 'dia', label: 'Día suelto', nombre: 'Un día', total: crc(p.dia_suelto.precio), sub: p.dia_suelto.condicion + '.', ahorro: '' };
   const items = [
-    { id: 'dia', label: 'Día suelto', nombre: 'Un día', total: crc(p.dia_suelto.precio), sub: p.dia_suelto.condicion + '.', ahorro: '' },
+    ...(diaAbajo ? [] : [dia]),
     { id: 'semana', label: 'Por semana', nombre: 'Una semana', total: crc(p.semana), sub: p.aplica_a, ahorro: '' },
     ...paqs.map(k => ({ id: k.id, label: k.semanasTxt, nombre: k.nombre, total: k.totalTxt, sub: k.porSemanaTxt + ' por semana', ahorro: 'Ahorrás ' + k.ahorroTxt })),
   ];
   return <div className={s.prices}>
-    <div className={s.priceGrid}>
+    <div className={s.priceGrid} style={{ '--min': `${minCol}px` } as Vars}>
       {items.map(it => <div key={it.id} className={cx(s.price, it.id === top.id && s.priceTop)}>
         {it.id === top.id && <Shape name="52" size={84} color="var(--build-beige)" className={s.abs} style={{ right: -18, top: -14, transform: 'rotate(-12deg)' }} />}
         <span className={s.priceLabel}>{it.label}</span>
@@ -172,7 +127,8 @@ export function PrecioBloque() {
         {it.ahorro && <span className={s.save}>{it.ahorro}</span>}
       </div>)}
     </div>
-    <div className={s.notes}><div className={s.block}><span className={s.label} style={{ '--c': 'var(--build-orange-deep)' } as Vars}>Incluye</span><span>{p.incluye.join(', ')}.</span></div></div>
+    {diaAbajo && <div className={s.walkin}><span className={s.walkinLabel}>Walk-in</span><strong className={s.walkinPrice}>{dia.total} por día</strong><span className={s.walkinSub}>{dia.sub}</span></div>}
+    <div className={s.notes}><div className={s.notesBlock}><span className={s.notesLabel}>Incluye</span><span>{p.incluye.join(', ')}.</span></div></div>
   </div>;
 }
 
