@@ -19,6 +19,8 @@
   position: absolute; left: clamp(28px, 6vw, 80px); bottom: clamp(28px, 6vw, 80px); right: clamp(28px, 6vw, 80px);
   max-width: 560px; background: var(--build-beige); border-radius: var(--radius-lg); box-shadow: var(--shadow-lift);
   padding: clamp(24px, 4vw, 44px); display: flex; flex-direction: column; gap: 20px; z-index: 1;
+  /* As in the design: max-width is the text column; padding sits outside it. */
+  box-sizing: content-box;
 }
 .heroTitle { margin: 0; font: 400 clamp(36px, 5vw, 60px)/1.05 var(--font-display); color: var(--build-orange); letter-spacing: -0.01em; text-wrap: balance; }
 .heroText { margin: 0; font: 500 18px/1.55 var(--font-sans); color: var(--build-ink); text-wrap: pretty; }

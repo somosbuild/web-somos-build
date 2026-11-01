@@ -7,17 +7,27 @@ import { Button, ButtonLink, Checkbox, Dialog, Icon, Input, Logo, PillarTag, Sha
 import { asset } from '@/lib/asset';
 import { CAMP, EDADES, FOTO, HORARIO, LUGAR, RANGO, WA_LINK, color, crc, isPh, tituloPartes } from '@/lib/camp';
 import { BarraAnuncio } from './CampPromo';
-import { ContactoFooter, Cronograma, FotoPlaceholder, GrupoCard, PrecioBloque, SelloPronto, SemanaCard, useInscripciones } from './parts';
+import { ContactoFooter, Cronograma, FotoPlaceholder, GrupoCard, PrecioBloque, SelloPronto, useInscripciones } from './parts';
 
 type Vars = CSSProperties & Record<`--${string}`, string>;
 const cx = (...c: (string | false | undefined)[]) => c.filter(Boolean).join(' ');
 
-const NAV: [string, string][] = [['#grupos', 'Grupos'], ['#semana', 'Un día'], ['#semanas', 'Semanas'], ['#precios', 'Precios'], ['#faq', 'Preguntas']];
+const NAV: [string, string][] = [['#que-es', 'El camp'], ['#grupos', 'Grupos'], ['#precios', 'Precios'], ['#faq', 'Preguntas']];
 
-// Public FAQ: pending answers are hidden; the single-day price comes from the price list.
+// Public FAQ: pending answers are hidden; the single-day price comes from the price list;
+// `temas` and `llevar` answer with a list built from the weeks / what-to-bring data.
 const FAQ = CAMP.faq
-  .map(x => ({ p: x.p, r: x.pendiente_precio ? `Sí, a ${crc(CAMP.precios.dia_suelto.precio)}. ${CAMP.precios.dia_suelto.condicion}.` : x.r, pend: !!x.pendiente || isPh(x.r) }))
+  .map(x => {
+    let r = x.r ?? '', list: string[] | null = null;
+    if (x.temas) { r = 'Cada semana tiene su propio tema. Podés venir a una o a todas.'; list = CAMP.semanas.map(w => `${w.tema} · ${w.fechas_corto}`); }
+    if (x.llevar) { r = ''; list = CAMP.que_llevar; }
+    if (x.pendiente_precio) r = `Sí, a ${crc(CAMP.precios.dia_suelto.precio)}. ${CAMP.precios.dia_suelto.condicion}.`;
+    return { p: x.p, r, list, pend: !!x.pendiente || isPh(r) };
+  })
   .filter(x => !x.pend);
+
+/** Bolds the brand name inside a paragraph ("En BUILD creemos…"). */
+const brand = (text: string) => text.split(/(BUILD)/).map((part, i) => part === 'BUILD' ? <strong key={i}>BUILD</strong> : part);
 
 const Eyebrow = ({ children, c }: { children: string; c?: string }) => <span className={s.eyebrow} style={c ? { '--c': c } as Vars : undefined}>{children}</span>;
 
@@ -29,7 +39,7 @@ export function CampPage() {
   const openForm = () => setFormOpen(true);
   const say = (t: string) => { setToast(t); clearTimeout(timer.current); timer.current = setTimeout(() => setToast(''), 6000); };
   const tag = tituloPartes(CAMP.camp.tagline);
-  const n = CAMP.semanas.length;
+  const { que_es: queEs, manifiesto } = CAMP.camp;
 
   const Cta = ({ size }: { size: 'sm' | 'lg' }) => insc.mode === 'form'
     ? <Button size={size} onClick={openForm}>{insc.label}</Button>
@@ -40,16 +50,16 @@ export function CampPage() {
 
     <header className={s.header}>
       <div className={s.headerRow}>
-        <Link href="/" aria-label="Build, inicio"><Logo width={118} /></Link>
-        <Cta size="sm" />
+        <Link href="/" aria-label="Build, inicio" className={s.headerLogo}><Logo width={118} /></Link>
+        <nav aria-label="Secciones" className={s.nav}>{NAV.map(([href, label]) => <a key={href} href={href} className={s.navLink}>{label}</a>)}</nav>
+        <div className={s.headerCta}><Cta size="sm" /></div>
       </div>
-      <nav aria-label="Secciones" className={s.nav}>{NAV.map(([href, label]) => <a key={href} href={href} className={s.navLink}>{label}</a>)}</nav>
     </header>
 
     <main>
       <section className={s.hero}>
         <div className={s.heroCopy}>
-          <PillarTag pillar="community" size="sm" />
+          <PillarTag pillar="community" />
           <h1 className={s.h1}>{tag.a} <strong>{tag.b}</strong></h1>
           <p className={s.heroFacts}>
             <span>{RANGO}</span><Shape name="58" size={7} color="var(--build-orange)" />
@@ -73,7 +83,8 @@ export function CampPage() {
       <section id="que-es" className={s.white}>
         <div className={s.about}>
           <Eyebrow c="var(--build-orange-deep)">Qué es</Eyebrow>
-          <p className={s.aboutLead}>{CAMP.camp.descripcion_corta}</p>
+          <h2 className={s.aboutTitle}>{queEs.titulo}</h2>
+          {queEs.parrafos.map(p => <p key={p} className={s.aboutText}>{p}</p>)}
         </div>
       </section>
 
@@ -81,29 +92,21 @@ export function CampPage() {
         <div className={s.head}>
           <Eyebrow c="var(--build-celeste-deep)">Los 3 grupos</Eyebrow>
           <h2 className={s.h2}>Un camp para <strong>cada edad</strong></h2>
+          <div className={s.limited}><span>Cupos limitados</span></div>
         </div>
         <div className={s.grid320}>{CAMP.grupos.map(g => <GrupoCard key={g.id} id={g.id} />)}</div>
       </section>
 
-      <section id="semana" className={s.days}>
-        <div className={cx(s.card, s.panel)}>
-          <h2 className={s.panelTitle}>Así es <strong>una semana</strong></h2>
-          <Cronograma tipo="semana" dot={color('community')} />
-        </div>
-        <div className={cx(s.card, s.panel)}>
-          <h2 className={s.panelTitle}>Un día <strong>en el camp</strong></h2>
-          <Cronograma tipo="dia" dot={color('skills')} />
-        </div>
-      </section>
-
-      <section id="semanas" className={s.yellow}>
-        <div className={cx(s.wrap, s.stack)}>
-          <div className={s.head}>
-            <Eyebrow>{RANGO}</Eyebrow>
-            <h2 className={s.h2} style={{ '--c': 'var(--build-ink)' } as Vars}>{n} semanas, <strong>{n} aventuras</strong></h2>
-            <p className={s.lead17}>Vení una semana o todas.</p>
+      <section id="manifiesto" className={s.orange}>
+        <div className={s.manifesto}>
+          <div className={s.manifestoText}>
+            <h2 className={s.manifestoTitle}>{manifiesto.titulo}</h2>
+            {manifiesto.parrafos.map(p => <p key={p} className={s.manifestoP}>{brand(p)}</p>)}
           </div>
-          <div className={s.grid330}>{CAMP.semanas.map(w => <SemanaCard key={w.n} sem={w} />)}</div>
+          <div id="un-dia" className={cx(s.card, s.panel)}>
+            <h2 className={s.panelTitle}>Un día <strong>en el camp</strong></h2>
+            <Cronograma tipo="dia" dot={color('skills')} />
+          </div>
         </div>
       </section>
 
@@ -113,16 +116,11 @@ export function CampPage() {
             <Eyebrow c="var(--build-orange-deep)">Precios</Eyebrow>
             <h2 className={s.h2}>Precios y <strong>paquetes</strong></h2>
           </div>
-          <PrecioBloque />
+          <PrecioBloque minCol={200} diaAbajo />
         </div>
       </section>
 
-      <section id="faq" className={s.faqGrid}>
-        <div className={s.bring}>
-          <Shape name="52" size={120} color="var(--build-beige)" className={s.abs} style={{ right: -24, bottom: -30, transform: 'rotate(-10deg)' }} />
-          <h2 className={s.h2sm}>Qué <strong>llevar</strong></h2>
-          <ul className={s.bringList}>{CAMP.que_llevar.map(q => <li key={q}><span className={s.tick}><Icon name="43" size={16} color="var(--build-ink)" /></span><span>{q}</span></li>)}</ul>
-        </div>
+      <section id="faq" className={s.faqSection}>
         <div className={s.faqCol}>
           <h2 className={s.h2sm} style={{ '--c': 'var(--build-orange)' } as Vars}>Preguntas <strong>frecuentes</strong></h2>
           <Faq />
@@ -161,7 +159,10 @@ function Faq() {
   return <div className={s.faqList}>
     {FAQ.map((f, i) => <div key={f.p} className={cx(s.faqItem, open === i && s.faqOpen)}>
       <button type="button" className={s.faqQ} aria-expanded={open === i} onClick={() => setOpen(open === i ? -1 : i)}><span>{f.p}</span><span className={s.faqPlus} aria-hidden="true">+</span></button>
-      {open === i && <p className={s.faqA}>{f.r}</p>}
+      {open === i && <div className={s.faqA}>
+        {f.r && <p>{f.r}</p>}
+        {f.list && <ul className={s.faqList2}>{f.list.map(li => <li key={li}><span className={s.bullet} />{li}</li>)}</ul>}
+      </div>}
     </div>)}
   </div>;
 }

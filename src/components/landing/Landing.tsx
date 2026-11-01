@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { Badge, Button, Icon, Input, Logo, Radio, Shape } from '@/components/ds';
 import { asset } from '@/lib/asset';
 import { CONTACT } from '@/lib/data';
@@ -13,6 +13,14 @@ const EMPTY: Form = { nombre: '', correo: '', etapa: '', comentario: '' };
 
 // Mensaje prellenado para saber que la persona llegó desde la web.
 const WHATSAPP_HREF = `${CONTACT.whatsapp}?text=${encodeURIComponent('¡Hola! Vi la página de Build y quiero saber más.')}`;
+
+/** Renders landing.ts text: **bold** and \n line breaks. */
+function rich(text: string) {
+  return text.split('\n').map((line, i) => <Fragment key={i}>
+    {i > 0 && <br />}
+    {line.split(/\*\*(.+?)\*\*/).map((part, j) => j % 2 ? <strong key={j}>{part}</strong> : part)}
+  </Fragment>);
+}
 
 const scrollTo = (id: string) => {
   const el = document.getElementById(id);
@@ -41,8 +49,8 @@ export function Landing() {
           </div>
           <div className={s.heroCard}>
             <div><Badge color="orange">{HERO.badge}</Badge></div>
-            <h1 className={s.heroTitle}>La familia no ocurre por casualidad, <strong>se construye.</strong></h1>
-            <p className={s.heroText}>{HERO.text}</p>
+            <h1 className={s.heroTitle}>{rich(HERO.title)}</h1>
+            <p className={s.heroText}>{rich(HERO.text)}</p>
             <div className={s.row}>
               <Button size="lg" onClick={() => scrollTo('registro')}>Avisame cuando abran</Button>
               <Button size="lg" variant="ghost" onClick={() => scrollTo('faq')}>Preguntas frecuentes</Button>
@@ -60,7 +68,7 @@ export function Landing() {
         <h2 className={s.h2}>¿Qué es <strong>Build?</strong></h2>
         <div className={s.aboutText}>
           <p className={s.lead}>{ABOUT.lead}</p>
-          <p className={s.body}>{ABOUT.body}</p>
+          <p className={s.body}>{rich(ABOUT.body)}</p>
         </div>
       </section>
 
@@ -83,7 +91,7 @@ export function Landing() {
           <span className={s.footerSoft}>Abrimos en {OPENING}. Te esperamos.</span>
         </div>
         <div className={s.footerLinks}>
-          <a href={CONTACT.instagram} target="_blank" rel="noopener noreferrer" className={s.footerLink}><Icon name="40" size={20} color="var(--build-orange)" />@somos.build</a>
+          <a href={CONTACT.instagram} target="_blank" rel="noopener noreferrer" className={s.footerLink}><Icon name="40" size={20} color="var(--build-orange)" />{CONTACT.instagramHandle}</a>
           <a href={CONTACT.whatsapp} target="_blank" rel="noopener noreferrer" className={s.footerLink}><Icon name="42" size={20} color="var(--build-orange)" />WhatsApp {CONTACT.phone}</a>
         </div>
       </div>

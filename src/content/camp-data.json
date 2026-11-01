@@ -9,7 +9,21 @@
   "camp": {
     "nombre": "Build Summer Camp",
     "nombre_corto": "Build Summer Camp",
-    "tagline": "Las vacaciones no se esperan, se construyen.",
+    "tagline": "Las vacaciones no se cuentan, se construyen.",
+    "que_es": {
+      "titulo": "Seis semanas para imaginar, explorar y crear.",
+      "parrafos": [
+        "Cada semana, una nueva aventura. Cada día, una oportunidad para descubrir, hacer amigos y aprender jugando.",
+        "A través de experiencias creativas, retos y actividades diseñadas para cada edad, los niños desarrollan nuevas habilidades mientras construyen recuerdos que van mucho más allá del verano."
+      ]
+    },
+    "manifiesto": {
+      "titulo": "No es solo un campamento. Es un lugar para descubrir de lo que son capaces.",
+      "parrafos": [
+        "En BUILD creemos que las mejores experiencias comienzan con la curiosidad.",
+        "Por eso creamos espacios donde los niños pueden explorar libremente, desarrollar nuevas habilidades y conectar con otros, mientras las familias forman parte de cada descubrimiento."
+      ]
+    },
     "descripcion_corta": "Seis semanas, seis temas y una historia que continúa de lunes a viernes. Cada día mezcla estimulación, aprendizaje y STEM, y cada semana es una oportunidad de enseñar lo que aprendimos y construimos.",
     "edades": { "min": 2, "max": 10 },
     "nota_familia": "En la mañana los niños están con nuestro equipo. Los viernes en la tarde la familia viene a ver lo que construyeron.",
@@ -42,9 +56,9 @@
     },
     "dia_tipo": [
       { "hora": "8:00", "que": "Llegada" },
-      { "hora": "8:30", "fin": "9:45", "que": "Bloque 1: trabajo en grupos" },
+      { "hora": "8:30", "fin": "9:45", "que": "Bloque 1: actividades grupales" },
       { "hora": "9:45", "fin": "10:15", "que": "Merienda" },
-      { "hora": "10:15", "fin": "12:00", "que": "Bloque 2: trabajo en grupos" },
+      { "hora": "10:15", "fin": "12:00", "que": "Bloque 2: actividades grupales" },
       { "hora": "12:00", "fin": "12:30", "que": "Almuerzo" },
       { "hora": "12:30", "que": "Recogida" }
     ]
@@ -71,6 +85,8 @@
       "firma": { "nombre": "La cocinita de tierra y agua", "texto": "Una cocinita de juguete al aire libre, con ollas y cucharas, para cocinar con tierra, agua y hojas. Es juego sensorial libre, lo que más concentra a esta edad." },
       "adaptacion": "El lunes, el papá o la mamá se puede quedar los primeros 30 minutos.",
       "panal": "Se acepta pañal",
+      "titular_web": "Pequeños pasos, grandes descubrimientos.",
+      "texto_web": "Un espacio para descubrir el mundo a través de los sentidos, el movimiento y el juego, en un ambiente seguro y lleno de nuevas experiencias.",
       "objetivo_temporada": "Explorar con los sentidos y el cuerpo, dentro de una rutina que les da seguridad.",
       "por_que": "A esta edad se aprende tocando, moviéndose y repitiendo. Una rutina que no cambia les da la calma para explorar.",
       "historia_temporada": null
@@ -87,6 +103,8 @@
       "enfoque": "Juego guiado, arte, ciencia sencilla y movimiento.",
       "formato": "Cada día es una misión con un rol: ingenieros, duendes, exploradores, científicos, chefs, inventores.",
       "firma": { "nombre": "La ciudad de cartón", "texto": "Casas a escala de ellos, en las que se pueden meter. La ciudad crece durante la semana y el viernes la recorren las familias." },
+      "titular_web": "Grandes aventuras para pequeñas mentes curiosas.",
+      "texto_web": "A través de misiones, juegos de imaginación y desafíos en equipo, los niños descubren nuevas formas de crear, colaborar y resolver problemas.",
       "objetivo_temporada": "Jugar a ser otros: roles, misiones y reglas que se comparten.",
       "por_que": "El juego de roles pone a trabajar las funciones ejecutivas: recordar el plan, esperar el turno y ajustarse cuando el juego cambia.",
       "historia_temporada": "mapa-perdido"
@@ -103,6 +121,8 @@
       "enfoque": "STEM, retos por equipos y el proyecto de la semana.",
       "formato": "Un reto diario de ingeniería con medición: cuánto aguanta, cuánto vuela, cuánto vende.",
       "firma": { "nombre": "Herramientas reales", "texto": "Martillo, serrucho pequeño y taladro con supervisión, en una estación de 1 adulto cada 4 niños, con gafas y guantes." },
+      "titular_web": "Ideas que cobran vida.",
+      "texto_web": "Retos, experimentos y proyectos donde la creatividad se convierte en acción. Un espacio para construir, trabajar en equipo y descubrir de lo que son capaces.",
       "objetivo_temporada": "Resolver retos reales en equipo, con medición y herramientas de verdad.",
       "por_que": "Construir y medir ejercita el razonamiento espacial y matemático. Los retos con responsabilidad real construyen autonomía.",
       "historia_temporada": ["build-co", "build-noticias"]
@@ -400,19 +420,17 @@
     { "titulo": "Equipo revisado", "texto": "Todo el equipo presenta hoja de delincuencia, referencias y certificación de primeros auxilios." }
   ],
 
-  "que_llevar": ["Mochila con su nombre", "Botella de agua", "Bloqueador (lo aplicamos con tu autorización)", "Gorra", "Ropa que se pueda ensuciar", "Una muda extra (Mini: dos)"],
+  "que_llevar": ["Bulto con su nombre", "Botella de agua", "Bloqueador (lo aplicamos con tu autorización)", "Gorra", "Ropa que se pueda ensuciar", "Una muda de ropa extra (Mini: dos)"],
 
   "faq": [
-    { "p": "¿Los papás se quedan?", "r": "No. En la mañana los niños están con nuestro equipo. El lunes, en Build Mini, te podés quedar los primeros 30 minutos para la adaptación. Y todos los viernes en la tarde la familia viene a ver lo que construyeron." },
-    { "p": "¿Cuántos adultos hay por niño?", "r": "1 adulto cada 4 niños en Build Mini y 1 cada 8 en Exploradores y Constructores." },
-    { "p": "¿Quién puede recoger a mi hijo?", "r": "Solo las personas de la lista que nos das, con cédula y firma de salida. Hay una sola entrada y salida, en Plazoleta Build." },
+    { "p": "¿Los papás se quedan?", "r": "No, los chicos se quedan con nuestro equipo capacitado." },
+    { "p": "¿Qué temas se desarrollarán?", "temas": true },
+    { "p": "¿Qué tienen que llevar?", "llevar": true },
+    { "p": "¿Quién puede recoger a mi hijo?", "r": "Solo las personas de la lista que nos das, con cédula y firma de salida. Hay una sola entrada y salida." },
     { "p": "¿Cómo se mueven por City Place?", "r": "Cada zona tiene vallas bajas, cada grupo usa un color de camiseta y contamos a los niños en cada traslado." },
-    { "p": "¿Qué pasa si se lastima?", "r": "Siempre hay al menos 2 personas certificadas en primeros auxilios y RCP, botiquín y la ficha médica de cada niño." },
-    { "p": "¿Quién forma el equipo?", "r": "Todo el equipo presenta hoja de delincuencia, referencias y certificación de primeros auxilios." },
-    { "p": "¿Qué pasa si llueve o hace mucho sol?", "r": "Hay toldos en las 3 zonas y agua cada 45 minutos. Si llueve, nos movemos a Studio Cinemas, y Build Mini se queda en el local de Build con estaciones de mesa." },
-    { "p": "¿Y las alergias?", "r": "En la inscripción llenás la ficha médica. La merienda es sin maní y cada estación de comida tiene la lista de alergias a la vista." },
+    { "p": "¿Qué pasa si se lastima?", "r": "Contamos con seguro en caso de accidentes." },
+    { "p": "¿Y las alergias?", "r": "En la inscripción llenás la ficha médica." },
     { "p": "¿Puede ir un solo día?", "r": "Sí, a ₡22.000, solo si hay cupo esa semana.", "pendiente_precio": true },
-    { "p": "¿Cuál es la política de cancelación?", "r": "[PENDIENTE ABOGADO]", "pendiente": true },
     { "p": "¿Salen fotos de mi hijo?", "r": "Solo si firmás el consentimiento de imagen en la inscripción. Sin él, no sale en fotos ni en Build Noticias." }
   ],
 
@@ -439,7 +457,7 @@
   "inscripciones": {
     "abren": "2026-11-02",
     "abren_texto": "2 de noviembre",
-    "pendiente": true,
+    "pendiente": false,
     "link": { "pendiente": true, "placeholder": "[LINK ONVO]" },
     "cupos_disponibles": {
       "_nota": "Para la story de últimos cupos. Se actualiza a mano por semana y grupo.",
@@ -453,11 +471,11 @@
   },
 
   "contacto": {
-    "whatsapp": "+506 8992-6000",
-    "whatsapp_link": "https://wa.me/50689926000",
+    "whatsapp": "+506 7003-0445",
+    "whatsapp_link": "https://wa.me/50670030445",
     "whatsapp_mensaje": "Hola, quiero info del camp en City Place",
     "web": "somosbuild.com",
-    "instagram": "@somos.build",
+    "instagram": "@somos_build",
     "firma": "Carlos Ramírez · Socio, Build"
   },
 
@@ -467,7 +485,7 @@
         "Las vacaciones no se esperan, se construyen.",
         "Este diciembre, que construyan algo.",
         "¿Y si estas vacaciones construyen algo?",
-        "Las vacaciones no se gastan, se construyen."
+        "Las mejores vacaciones no se cuentan, se construyen."
       ],
       "frases": [
         "Tus chicos entretenidos y aprendiendo.",
@@ -489,7 +507,7 @@
 
   "sitio": {
     "url_camp": "somosbuild.com/camp",
-    "barra_anuncio": { "etiqueta": "Nuevo", "texto": "Camp de vacaciones en City Place", "cta": "Conocelo" },
+    "barra_anuncio": { "etiqueta": "Nuevo", "texto": "Build Summer Camp en City Place", "cta": "Conocelo" },
     "destacado_cta": "Ver el camp",
     "slide_in": { "segundos": 8, "scroll": 0.5 },
     "ctas": { "antes": "Registrarme", "despues": "Reservá tu cupo", "whatsapp": "Escribinos por WhatsApp" }

@@ -8,6 +8,8 @@ type Pend = string | null | undefined | { pendiente?: boolean; placeholder?: str
 export interface Grupo {
   id: 'mini' | 'exploradores' | 'constructores'; nombre: string; color: string; edad: string; edad_min: number; edad_max: number;
   cupo: number; razon_adulto_nino: string; enfoque: string; formato: string; objetivo_temporada: string; por_que: string;
+  /** Card copy on /camp. */
+  titular_web: string; texto_web: string;
 }
 export interface Semana {
   n: number; fechas: string; fechas_corto: string; inicio: string; fin: string; tema: string; lema: string; objetivo: string;
@@ -23,7 +25,10 @@ export interface Paquete { id: string; nombre: string; semanas: number[]; precio
 
 // The JSON mixes plain values with { pendiente } objects; this view types only what the site reads.
 export const CAMP = raw as unknown as {
-  camp: { nombre: string; tagline: string; descripcion_corta: string; nota_familia: string; edades: { min: number; max: number } };
+  camp: {
+    nombre: string; tagline: string; descripcion_corta: string; nota_familia: string; edades: { min: number; max: number };
+    que_es: { titulo: string; parrafos: string[] }; manifiesto: { titulo: string; parrafos: string[] };
+  };
   lugar: { nombre: string; zona: string };
   horario: {
     dias: string; dias_corto?: string; inicio: string; fin: string;
@@ -38,7 +43,8 @@ export const CAMP = raw as unknown as {
   grupos: Grupo[]; historias_temporada: Historia[]; semanas: Semana[]; eventos: Evento[];
   precios: { semana: number; aplica_a: string; incluye: string[]; paquetes: Paquete[]; dia_suelto: { precio: number; condicion: string } };
   seguridad: { titulo: string; texto: string }[]; que_llevar: string[];
-  faq: { p: string; r: string; pendiente?: boolean; pendiente_precio?: boolean }[];
+  /** `temas` / `llevar` answers are lists built from semanas / que_llevar. */
+  faq: { p: string; r?: string; pendiente?: boolean; pendiente_precio?: boolean; temas?: boolean; llevar?: boolean }[];
   aliados: { pendiente?: boolean; lista: { nombre: string; rol: string }[]; co_marca: { nombre: string; logo: Pend & { src?: string; alt?: string } } };
   inscripciones: { abren: string; abren_texto: string; link: Pend };
   contacto: { whatsapp: string; whatsapp_link: string; whatsapp_mensaje: string; web: string; instagram: string };
@@ -58,14 +64,7 @@ export const COLOR: Record<string, string> = {
   community: 'var(--build-orange)', skills: 'var(--build-yellow)', joy: 'var(--build-olive)', family: 'var(--build-celeste)',
   orange: 'var(--build-orange)', yellow: 'var(--build-yellow)', olive: 'var(--build-olive)', celeste: 'var(--build-celeste)',
 };
-const DEEP: Record<string, string> = {
-  community: 'var(--build-orange-deep)', skills: 'var(--build-yellow-deep)', joy: 'var(--build-olive-deep)', family: 'var(--build-celeste-deep)',
-  orange: 'var(--build-orange-deep)', yellow: 'var(--build-yellow-deep)', olive: 'var(--build-olive-deep)', celeste: 'var(--build-celeste-deep)',
-};
 export const color = (k: string) => COLOR[k] ?? COLOR.community;
-export const deep = (k: string) => DEEP[k] ?? 'var(--build-ink)';
-/** Pillar icon -> shape number (dots, arrow, asterisk, heart). */
-export const PILAR_SHAPE: Record<string, string> = { community: '04', skills: '03', joy: '01', family: '02' };
 /** Group -> its signature shape. */
 export const GRUPO_SHAPE: Record<string, string> = { mini: '53', exploradores: '52', constructores: '43' };
 
