@@ -238,3 +238,18 @@
    max-width / min-height. Kept content-box so sizes match the design; DS components stay border-box. */
 .featuredWrap, .wrap, .hero, .manifesto, .allies, .contact, .about, .headerRow,
 .gcardHead, .allyName { box-sizing: content-box; }
+
+/* ---------- Interest form: number of children + one block per child ---------- */
+.qty { display: flex; gap: 8px; }
+.qtyBtn {
+  min-width: 64px; height: 44px; padding: 0 18px; border-radius: 999px; border: 2px solid var(--build-greige);
+  background: var(--build-white); color: var(--build-ink); font: 700 16px/1 var(--font-sans); cursor: pointer;
+  transition: background var(--dur-fast), border-color var(--dur-fast), color var(--dur-fast);
+}
+.qtyOn { background: var(--build-orange); border-color: var(--build-orange); color: var(--build-white); }
+.kid { margin: 0; padding: 16px; border: 0; border-radius: 16px; background: var(--build-beige); display: flex; flex-direction: column; gap: 12px; }
+.kidTitle { float: left; width: 100%; padding: 0; font: 700 15px/1.2 var(--font-sans); color: var(--build-ink); }
+.kidFields { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 12px; }
+.kidGroup { display: flex; align-items: center; gap: 8px; font: 600 14px/1.2 var(--font-sans); color: var(--build-ink-2); }
+.kidNote { margin: -4px 0 0; font: 500 14px/1.45 var(--font-sans); color: var(--build-ink-2); }
+@media (max-width: 767px) { .kidFields { grid-template-columns: minmax(0, 1fr); } }
