@@ -15,16 +15,17 @@ const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).jo
 
 export type CtaMode = 'form' | 'link';
 /**
- * Before inscripciones.abren: "Avisame cuando abran" opens the interest form.
- * After: "Reservá tu cupo" goes to the payment link, or to WhatsApp while that link is pending.
+ * The CTA opens the registration form until a payment link (Onvo) is confirmed; only then, from
+ * inscripciones.abren on, it becomes "Reservá tu cupo" -> payment link. WhatsApp keeps its own button.
+ * `abiertas` (date) only changes copy: the stamp, the bar text and the form texts.
  * Rendered closed on the server; the date is checked in the browser. `?simular=antes|despues` previews either state.
  */
 export function useInscripciones() {
   const [abiertas, setAbiertas] = useState(false);
   useEffect(() => { setAbiertas(inscripcionesAbiertas(new Date(), new URLSearchParams(location.search).get('simular'))); }, []);
   const { ctas } = CAMP.sitio;
-  return abiertas
-    ? { abiertas, label: ctas.despues, mode: 'link' as CtaMode, href: RESERVA_LINK ?? WA_LINK, external: true }
+  return abiertas && RESERVA_LINK
+    ? { abiertas, label: ctas.despues, mode: 'link' as CtaMode, href: RESERVA_LINK, external: true }
     : { abiertas, label: ctas.antes, mode: 'form' as CtaMode, href: '#', external: false };
 }
 
