@@ -5,7 +5,7 @@ import Link from 'next/link';
 import s from './camp.module.css';
 import { Button, ButtonLink, Checkbox, Dialog, Icon, Input, Logo, PillarTag, Select, Shape, Toast } from '@/components/ds';
 import { asset } from '@/lib/asset';
-import { CAMP, EDADES, FOTO, HORARIO, LUGAR, RANGO, color, crc, grupoPorEdad, isPh, tituloPartes } from '@/lib/camp';
+import { CAMP, EDADES, FOTO, HORARIO, LUGAR, RANGO, WA_LINK, color, crc, grupoPorEdad, isPh, tituloPartes } from '@/lib/camp';
 import { BarraAnuncio } from './CampPromo';
 import { ContactoFooter, Cronograma, FotoPlaceholder, GrupoCard, GrupoChip, PrecioBloque, SelloPronto, useInscripciones } from './parts';
 
@@ -69,6 +69,7 @@ export function CampPage() {
           <p className={s.heroHours}>{HORARIO}</p>
           <div className={s.heroCtas}>
             <Cta size="lg" />
+            <ButtonLink variant="secondary" size="lg" href={WA_LINK} target="_blank" rel="noopener noreferrer">{CAMP.sitio.ctas.whatsapp}</ButtonLink>
           </div>
         </div>
         <div className={s.heroPhoto}>
@@ -257,7 +258,7 @@ function InteresForm({ abiertas, onClose, onSent }: { abiertas: boolean; onClose
         {/* One choice at most; tapping the selected option clears it (as in the design). */}
         {PLANES.map(p => <Checkbox key={p} checked={f.plan === p} onChange={() => setF({ ...f, plan: f.plan === p ? '' : p })} label={p} />)}
       </fieldset>
-      {failed && <p className={s.formError} role="alert">No pudimos enviar tus datos. Probá de nuevo en unos minutos.</p>}
+      {failed && <p className={s.formError} role="alert">No pudimos enviar tus datos. Probá de nuevo o escribinos por WhatsApp.</p>}
     </form>
   </Dialog>;
 }
