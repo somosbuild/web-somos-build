@@ -5,7 +5,7 @@ import Link from 'next/link';
 import s from './camp.module.css';
 import { Button, ButtonLink, Checkbox, Dialog, Icon, Input, Logo, PillarTag, Select, Shape, Toast } from '@/components/ds';
 import { asset } from '@/lib/asset';
-import { CAMP, EDADES, FOTO, HORARIO, LUGAR, RANGO, WA_LINK, color, crc, grupoPorEdad, isPh, tituloPartes } from '@/lib/camp';
+import { CAMP, EDADES, FOTO, HORARIO, LUGAR, RANGO, color, crc, grupoPorEdad, isPh, tituloPartes } from '@/lib/camp';
 import { BarraAnuncio } from './CampPromo';
 import { ContactoFooter, Cronograma, FotoPlaceholder, GrupoCard, GrupoChip, PrecioBloque, SelloPronto, useInscripciones } from './parts';
 
@@ -69,7 +69,6 @@ export function CampPage() {
           <p className={s.heroHours}>{HORARIO}</p>
           <div className={s.heroCtas}>
             <Cta size="lg" />
-            <ButtonLink variant="secondary" size="lg" href={WA_LINK} target="_blank" rel="noopener noreferrer">{CAMP.sitio.ctas.whatsapp}</ButtonLink>
           </div>
         </div>
         <div className={s.heroPhoto}>
@@ -149,7 +148,10 @@ export function CampPage() {
       </section>
     </main>
 
-    {formOpen && <InteresForm onClose={() => setFormOpen(false)} onSent={() => { setFormOpen(false); say(`¡Listo! Te escribimos por WhatsApp el ${CAMP.inscripciones.abren_texto}.`); }} />}
+    {formOpen && <InteresForm abiertas={insc.abiertas} onClose={() => setFormOpen(false)} onSent={() => {
+      setFormOpen(false);
+      say(insc.abiertas ? '¡Listo! Te contactamos para confirmar tu cupo.' : `¡Listo! Te contactamos el ${CAMP.inscripciones.abren_texto}.`);
+    }} />}
     {toast && <div className={s.toast}><Toast tone="success" icon={<Icon name="43" size={18} color="var(--build-beige)" />} onClose={() => setToast('')}>{toast}</Toast></div>}
   </div>;
 }
@@ -167,7 +169,7 @@ function Faq() {
   </div>;
 }
 
-/** "Avisame cuando abran". Submissions go to Netlify Forms (form "camp-interes", declared in public/__forms.html). */
+/** Camp registration (before opening day: "Avisame cuando abran"). Submissions go to Netlify Forms (form "camp-interes", declared in public/__forms.html). */
 const PLANES = ['Diciembre: 2 semanas', 'Enero: 4 semanas', 'Camp completo: 6 semanas', 'Semanas variadas: Por definir'];
 /** How many children: "3+" collects 3 and Build follows up for the rest. */
 const CANTIDADES = [{ value: '1', n: 1 }, { value: '2', n: 2 }, { value: '3+', n: 3 }];
@@ -178,7 +180,7 @@ const EDAD_OPTS = Array.from({ length: CAMP.camp.edades.max - CAMP.camp.edades.m
 type Nino = { nombre: string; edad: string };
 const NINO_VACIO: Nino = { nombre: '', edad: '' };
 
-function InteresForm({ onClose, onSent }: { onClose: () => void; onSent: () => void }) {
+function InteresForm({ abiertas, onClose, onSent }: { abiertas: boolean; onClose: () => void; onSent: () => void }) {
   const [f, setF] = useState({ nombre: '', whatsapp: '', email: '', plan: '' });
   const [cantidad, setCantidad] = useState('1');
   // Kept for all 3 slots, so lowering the count and raising it again doesn't lose what was typed.
@@ -219,12 +221,14 @@ function InteresForm({ onClose, onSent }: { onClose: () => void; onSent: () => v
   return <Dialog onClose={onClose} title="Registrate al camp" accent="var(--build-orange)" width={520}
     actions={<>
       <Button variant="ghost" onClick={onClose}>Ahora no</Button>
-      <Button type="submit" form="camp-interes-form" disabled={invalid || sending}>{sending ? 'Enviando…' : 'Avisame'}</Button>
+      <Button type="submit" form="camp-interes-form" disabled={invalid || sending}>{sending ? 'Enviando…' : abiertas ? 'Enviar registro' : 'Avisame'}</Button>
     </>}>
     <form id="camp-interes-form" className={s.form} onSubmit={e => { e.preventDefault(); submit(); }}>
-      <p className={s.formIntro}>Las inscripciones abren el {CAMP.inscripciones.abren_texto}. Dejanos tus datos y te escribimos ese día.</p>
+      <p className={s.formIntro}>{abiertas
+        ? 'Dejanos tus datos y te contactamos para confirmar los cupos y el pago.'
+        : `Las inscripciones abren el ${CAMP.inscripciones.abren_texto}. Dejanos tus datos y te contactamos ese día.`}</p>
       <Input label="Tu nombre" name="nombre" required autoComplete="name" value={f.nombre} onChange={e => setF({ ...f, nombre: e.target.value })} autoFocus />
-      <Input label="WhatsApp" name="whatsapp" type="tel" required placeholder="8888-8888" autoComplete="tel" value={f.whatsapp} onChange={e => setF({ ...f, whatsapp: e.target.value })} />
+      <Input label="Teléfono" name="whatsapp" type="tel" required placeholder="8888-8888" autoComplete="tel" value={f.whatsapp} onChange={e => setF({ ...f, whatsapp: e.target.value })} />
       <Input label="Email (opcional)" name="email" type="email" placeholder="nombre@correo.com" autoComplete="email" value={f.email} onChange={e => setF({ ...f, email: e.target.value })} />
 
       <fieldset className={s.fieldset}>
@@ -253,7 +257,7 @@ function InteresForm({ onClose, onSent }: { onClose: () => void; onSent: () => v
         {/* One choice at most; tapping the selected option clears it (as in the design). */}
         {PLANES.map(p => <Checkbox key={p} checked={f.plan === p} onChange={() => setF({ ...f, plan: f.plan === p ? '' : p })} label={p} />)}
       </fieldset>
-      {failed && <p className={s.formError} role="alert">No pudimos enviar tus datos. Probá de nuevo o escribinos por WhatsApp.</p>}
+      {failed && <p className={s.formError} role="alert">No pudimos enviar tus datos. Probá de nuevo en unos minutos.</p>}
     </form>
   </Dialog>;
 }
