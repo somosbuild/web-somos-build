@@ -65,7 +65,7 @@ export function CampDestacado() {
 
 /**
  * Bottom-right card that slides in after N seconds or X% scroll, once per visit.
- * `bottom` lifts it above the landing's WhatsApp button so they never overlap.
+ * `bottom` lifts it above a floating button, if the page has one.
  */
 export function CampSlideIn({ bottom = 16 }: { bottom?: number }) {
   const KEY = 'build-camp-slidein-visto';

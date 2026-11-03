@@ -5,7 +5,7 @@ import Link from 'next/link';
 import s from './camp.module.css';
 import { Button, ButtonLink, Checkbox, Dialog, Icon, Input, Logo, PillarTag, Select, Shape, Toast } from '@/components/ds';
 import { asset } from '@/lib/asset';
-import { CAMP, EDADES, FOTO, HORARIO, LUGAR, RANGO, WA_LINK, color, crc, grupoPorEdad, isPh, tituloPartes } from '@/lib/camp';
+import { CAMP, EDADES, FOTO, HORARIO, LUGAR, RANGO, color, crc, grupoPorEdad, isPh, tituloPartes } from '@/lib/camp';
 import { BarraAnuncio } from './CampPromo';
 import { ContactoFooter, Cronograma, FotoPlaceholder, GrupoCard, GrupoChip, PrecioBloque, SelloPronto, useInscripciones } from './parts';
 
@@ -69,7 +69,6 @@ export function CampPage() {
           <p className={s.heroHours}>{HORARIO}</p>
           <div className={s.heroCtas}>
             <Cta size="lg" />
-            <ButtonLink variant="secondary" size="lg" href={WA_LINK} target="_blank" rel="noopener noreferrer">{CAMP.sitio.ctas.whatsapp}</ButtonLink>
           </div>
         </div>
         <div className={s.heroPhoto}>
@@ -151,7 +150,7 @@ export function CampPage() {
 
     {formOpen && <InteresForm abiertas={insc.abiertas} onClose={() => setFormOpen(false)} onSent={() => {
       setFormOpen(false);
-      say(insc.abiertas ? '¡Listo! Te escribimos por WhatsApp para confirmar tu cupo.' : `¡Listo! Te escribimos por WhatsApp el ${CAMP.inscripciones.abren_texto}.`);
+      say(insc.abiertas ? '¡Listo! Te contactamos para confirmar tu cupo.' : `¡Listo! Te contactamos el ${CAMP.inscripciones.abren_texto}.`);
     }} />}
     {toast && <div className={s.toast}><Toast tone="success" icon={<Icon name="43" size={18} color="var(--build-beige)" />} onClose={() => setToast('')}>{toast}</Toast></div>}
   </div>;
@@ -226,10 +225,10 @@ function InteresForm({ abiertas, onClose, onSent }: { abiertas: boolean; onClose
     </>}>
     <form id="camp-interes-form" className={s.form} onSubmit={e => { e.preventDefault(); submit(); }}>
       <p className={s.formIntro}>{abiertas
-        ? 'Dejanos tus datos y te escribimos por WhatsApp para confirmar los cupos y el pago.'
-        : `Las inscripciones abren el ${CAMP.inscripciones.abren_texto}. Dejanos tus datos y te escribimos ese día.`}</p>
+        ? 'Dejanos tus datos y te contactamos para confirmar los cupos y el pago.'
+        : `Las inscripciones abren el ${CAMP.inscripciones.abren_texto}. Dejanos tus datos y te contactamos ese día.`}</p>
       <Input label="Tu nombre" name="nombre" required autoComplete="name" value={f.nombre} onChange={e => setF({ ...f, nombre: e.target.value })} autoFocus />
-      <Input label="WhatsApp" name="whatsapp" type="tel" required placeholder="8888-8888" autoComplete="tel" value={f.whatsapp} onChange={e => setF({ ...f, whatsapp: e.target.value })} />
+      <Input label="Teléfono" name="whatsapp" type="tel" required placeholder="8888-8888" autoComplete="tel" value={f.whatsapp} onChange={e => setF({ ...f, whatsapp: e.target.value })} />
       <Input label="Email (opcional)" name="email" type="email" placeholder="nombre@correo.com" autoComplete="email" value={f.email} onChange={e => setF({ ...f, email: e.target.value })} />
 
       <fieldset className={s.fieldset}>
@@ -258,7 +257,7 @@ function InteresForm({ abiertas, onClose, onSent }: { abiertas: boolean; onClose
         {/* One choice at most; tapping the selected option clears it (as in the design). */}
         {PLANES.map(p => <Checkbox key={p} checked={f.plan === p} onChange={() => setF({ ...f, plan: f.plan === p ? '' : p })} label={p} />)}
       </fieldset>
-      {failed && <p className={s.formError} role="alert">No pudimos enviar tus datos. Probá de nuevo o escribinos por WhatsApp.</p>}
+      {failed && <p className={s.formError} role="alert">No pudimos enviar tus datos. Probá de nuevo en unos minutos.</p>}
     </form>
   </Dialog>;
 }
