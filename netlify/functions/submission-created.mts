@@ -183,14 +183,24 @@ async function guardarEnCrm(r: Registro, cuando: Date) {
 
 /* ---------- Handler ---------- */
 
-export default async (req: Request) => {
-  let payload: { form_name?: string; data?: Data; created_at?: string };
-  try { payload = (await req.json()).payload ?? {}; } catch { return new Response('bad request', { status: 400 }); }
-  if (payload.form_name !== FORM || !payload.data) return new Response('ignored');
+/** Core logic, independent of the function format (also used by tests). */
+export async function procesar(payload: { form_name?: string; data?: Data; created_at?: string }) {
+  console.log('submission-created:', payload.form_name ?? '(sin form_name)');
+  if (payload.form_name !== FORM || !payload.data) return 'ignored';
   const r = leerRegistro(payload.data);
   const cuando = payload.created_at ? new Date(payload.created_at) : new Date();
   const [mail, crm] = await Promise.allSettled([enviarCorreo(r), guardarEnCrm(r, cuando)]);
   if (mail.status === 'rejected') console.error('Error enviando correo:', mail.reason);
+  else console.log('Correo procesado');
   if (crm.status === 'rejected') console.error('Error guardando en Notion:', crm.reason);
-  return new Response('ok');
+  else console.log('CRM procesado');
+  return 'ok';
+}
+
+// Classic (Lambda-compatible) format: the documented one for Netlify event-triggered functions.
+// The event body is JSON with { payload: { form_name, data, created_at, ... } }.
+export const handler = async (event: { body: string | null }) => {
+  let payload: { form_name?: string; data?: Data; created_at?: string };
+  try { payload = JSON.parse(event.body ?? '{}').payload ?? {}; } catch { return { statusCode: 400, body: 'bad request' }; }
+  return { statusCode: 200, body: await procesar(payload) };
 };
