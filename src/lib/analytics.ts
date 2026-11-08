@@ -15,10 +15,21 @@ declare global { interface Window { fbq?: Fbq; gtag?: Gtag } }
 export type Evento = 'Lead' | 'InitiateCheckout' | 'Purchase' | 'Contact';
 const GA4_NAME: Record<Evento, string> = { Lead: 'generate_lead', InitiateCheckout: 'begin_checkout', Purchase: 'purchase', Contact: 'contact' };
 
-/** Sends a conversion to Meta and GA4. `value` is in colones. Safe to call when a tool isn't loaded. */
+/** Runs `fn` once `ready()` is true. The tags load after the page hydrates, so an event fired on load
+ *  (e.g. Purchase on return from ONVO) waits for them, up to ~6 s. */
+function whenReady(ready: () => boolean, fn: () => void, tries = 30) {
+  if (ready()) { try { fn(); } catch {} return; }
+  if (tries > 0) setTimeout(() => whenReady(ready, fn, tries - 1), 200);
+}
+
+/** Sends a conversion to Meta and GA4 (only the tools whose ID is set). `value` is in colones. */
 export function track(evento: Evento, data: { value?: number; content_name?: string; num_items?: number } = {}) {
   if (typeof window === 'undefined') return;
   const money = data.value != null ? { value: data.value, currency: 'CRC' } : {};
-  try { window.fbq?.('track', evento, { ...money, ...(data.content_name ? { content_name: data.content_name } : {}), ...(data.num_items ? { num_items: data.num_items } : {}) }); } catch {}
-  try { window.gtag?.('event', GA4_NAME[evento], { ...money, ...(data.content_name ? { item_name: data.content_name } : {}) }); } catch {}
+  if (META_PIXEL_ID) whenReady(() => !!window.fbq, () => window.fbq!('track', evento, {
+    ...money, ...(data.content_name ? { content_name: data.content_name } : {}), ...(data.num_items ? { num_items: data.num_items } : {}),
+  }));
+  if (GA4_ID) whenReady(() => !!window.gtag, () => window.gtag!('event', GA4_NAME[evento], {
+    ...money, ...(data.content_name ? { item_name: data.content_name } : {}),
+  }));
 }
