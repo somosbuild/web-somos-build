@@ -5,6 +5,7 @@ import Link from 'next/link';
 import s from './camp.module.css';
 import { Button, ButtonLink, Checkbox, Dialog, Icon, Input, Logo, PillarTag, Select, Shape, Toast } from '@/components/ds';
 import { asset } from '@/lib/asset';
+import { track } from '@/lib/analytics';
 import { CAMP, EDADES, FOTO, HORARIO, LUGAR, RANGO, WA_LINK, color, crc, grupoPorEdad, isPh, tituloPartes } from '@/lib/camp';
 import { BarraAnuncio } from './CampPromo';
 import { ContactoFooter, Cronograma, FotoPlaceholder, GrupoCard, GrupoChip, PrecioBloque, SelloPronto, useInscripciones } from './parts';
@@ -210,6 +211,7 @@ function InteresForm({ abiertas, onClose, onSent }: { abiertas: boolean; onClose
         body: new URLSearchParams(data).toString(),
       });
       if (!res.ok) throw new Error(String(res.status));
+      track('Lead', { content_name: 'Camp' + (f.plan ? ': ' + f.plan : ''), num_items: n });
       onSent();
     } catch {
       setFailed(true);
