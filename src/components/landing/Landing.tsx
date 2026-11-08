@@ -12,6 +12,9 @@ import { BarraAnuncio, CampDestacado, CampSlideIn } from '@/components/camp/Camp
 type Form = { nombre: string; correo: string; etapa: string; comentario: string };
 const EMPTY: Form = { nombre: '', correo: '', etapa: '', comentario: '' };
 
+// Mensaje prellenado para saber que la persona llegó desde la web.
+const WHATSAPP_HREF = `${CONTACT.whatsapp}?text=${encodeURIComponent('¡Hola! Vi la página de Build y quiero saber más.')}`;
+
 /** Renders landing.ts text: **bold** and \n line breaks. */
 function rich(text: string) {
   return text.split('\n').map((line, i) => <Fragment key={i}>
@@ -91,11 +94,16 @@ export function Landing() {
         </div>
         <div className={s.footerLinks}>
           <a href={CONTACT.instagram} target="_blank" rel="noopener noreferrer" className={s.footerLink}><Icon name="40" size={20} color="var(--build-orange)" />{CONTACT.instagramHandle}</a>
+          <a href={CONTACT.whatsapp} target="_blank" rel="noopener noreferrer" className={s.footerLink}><Icon name="42" size={20} color="var(--build-orange)" />WhatsApp {CONTACT.phone}</a>
         </div>
       </div>
     </footer>
 
-    <CampSlideIn />
+    <a href={WHATSAPP_HREF} target="_blank" rel="noopener noreferrer" aria-label="Escribinos por WhatsApp" className={s.fab}>
+      <Icon name="42" size={30} color="var(--build-beige)" />
+    </a>
+    {/* Sits above the WhatsApp button (24px + 60px + 12px gap). */}
+    <CampSlideIn bottom={96} />
   </div>;
 }
 

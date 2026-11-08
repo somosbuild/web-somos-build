@@ -6,7 +6,7 @@ import s from './camp.module.css';
 import { Button, ButtonLink, Icon, Logo, Shape } from '@/components/ds';
 import { asset } from '@/lib/asset';
 import {
-  CAMP, GRUPO_SHAPE, RESERVA_LINK, color, crc, grupo, inscripcionesAbiertas, isPh, paquetes,
+  CAMP, GRUPO_SHAPE, RESERVA_LINK, WA_LINK, color, crc, grupo, inscripcionesAbiertas, isPh, paquetes,
 } from '@/lib/camp';
 
 type Vars = CSSProperties & Record<`--${string}`, string | undefined>;
@@ -17,7 +17,7 @@ const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).jo
 export type CtaMode = 'form' | 'link';
 /**
  * The CTA opens the registration form until a payment link (Onvo) is confirmed; only then, from
- * inscripciones.abren on, it becomes "Reservá tu cupo" -> payment link. Build's WhatsApp is not shown for now.
+ * inscripciones.abren on, it becomes "Reservá tu cupo" -> payment link. WhatsApp keeps its own button.
  * `abiertas` (date) only changes copy: the stamp, the bar text and the form texts.
  * Rendered closed on the server; the date is checked in the browser. `?simular=antes|despues` previews either state.
  */
@@ -139,6 +139,7 @@ export function PrecioBloque({ minCol = 230, diaAbajo = false }: { minCol?: numb
 export function ContactoFooter({ titulo, bold, cta, onCta, ctaHref }: { titulo: string; bold: string; cta: string; onCta?: () => void; ctaHref?: string }) {
   const k = CAMP.contacto;
   const items = [
+    { icon: '42', txt: k.whatsapp, href: WA_LINK },
     { icon: '40', txt: k.instagram, href: 'https://instagram.com/' + k.instagram.replace('@', '') },
     { icon: '20', txt: CAMP.lugar.nombre + ', ' + CAMP.lugar.zona },
     { icon: '01', txt: k.web, href: 'https://' + k.web },
@@ -152,6 +153,7 @@ export function ContactoFooter({ titulo, bold, cta, onCta, ctaHref }: { titulo: 
         <div className={s.ctas}>
           {onCta ? <Button variant="sunny" size="lg" onClick={onCta}>{cta}</Button>
             : <ButtonLink variant="sunny" size="lg" href={ctaHref} target="_blank" rel="noopener noreferrer">{cta}</ButtonLink>}
+          <ButtonLink variant="secondary" size="lg" href={WA_LINK} target="_blank" rel="noopener noreferrer">{CAMP.sitio.ctas.whatsapp}</ButtonLink>
         </div>
       </div>
       <ul className={s.cfList}>
