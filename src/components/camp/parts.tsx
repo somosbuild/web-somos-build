@@ -1,5 +1,6 @@
 'use client';
 
+import { AVISO_COOKIES, MEDICION_ACTIVA } from '@/lib/analytics';
 import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
 import s from './camp.module.css';
 import { Button, ButtonLink, Icon, Logo, Shape } from '@/components/ds';
@@ -162,6 +163,7 @@ export function ContactoFooter({ titulo, bold, cta, onCta, ctaHref }: { titulo: 
         </li>)}
       </ul>
     </div>
+    {MEDICION_ACTIVA && <p className={s.cfCookies}>{AVISO_COOKIES}</p>}
   </footer>;
 }
 
