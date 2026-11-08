@@ -210,7 +210,8 @@ function InteresForm({ abiertas, onClose, onSent }: { abiertas: boolean; onClose
   const [failed, setFailed] = useState<false | 'form' | 'pago'>(false);
   const n = CANTIDADES.find(c => c.value === cantidad)!.n;
   const visibles = ninos.slice(0, n);
-  const invalid = !f.nombre.trim() || f.whatsapp.replace(/\D/g, '').length < 8 || visibles.some(k => !k.nombre.trim() || !k.edad);
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email.trim());
+  const invalid = !f.nombre.trim() || f.whatsapp.replace(/\D/g, '').length < 8 || !emailOk || visibles.some(k => !k.nombre.trim() || !k.edad);
   const plan = planPago(f.plan);
   // null = no online payment (registration not open, no plan, or more children than MAX_NINOS_PAGO).
   const total = abiertas ? totalPago(f.plan, n) : null;
@@ -223,7 +224,7 @@ function InteresForm({ abiertas, onClose, onSent }: { abiertas: boolean; onClose
     setSending(true); setFailed(false);
     // Only the visible children are sent; the group is sent already resolved for the Netlify panel.
     const data: Record<string, string> = {
-      'form-name': 'camp-interes', nombre: f.nombre, whatsapp: f.whatsapp, email: f.email,
+      'form-name': 'camp-interes', nombre: f.nombre, whatsapp: f.whatsapp, email: f.email.trim(),
       plan: plan ? `${plan.label} (${crc(plan.precio)} por niño)` : '', ninos: cantidad,
       pago: enLinea ? `ONVO iniciado: ${crc(total!)}` : total != null ? `Pago pendiente (${RESERVA_HORAS} h): ${crc(total)}. Enviar link de ONVO por WhatsApp` : 'Sin pago en línea',
     };
@@ -272,7 +273,7 @@ function InteresForm({ abiertas, onClose, onSent }: { abiertas: boolean; onClose
         : `Las inscripciones abren el ${CAMP.inscripciones.abren_texto}. Dejanos tus datos y te contactamos ese día.`}</p>
       <Input label="Tu nombre" name="nombre" required autoComplete="name" value={f.nombre} onChange={e => setF({ ...f, nombre: e.target.value })} autoFocus />
       <Input label="Teléfono" name="whatsapp" type="tel" required placeholder="8888-8888" autoComplete="tel" value={f.whatsapp} onChange={e => setF({ ...f, whatsapp: e.target.value })} />
-      <Input label="Email (opcional)" name="email" type="email" placeholder="nombre@correo.com" autoComplete="email" value={f.email} onChange={e => setF({ ...f, email: e.target.value })} />
+      <Input label="Email" name="email" type="email" required placeholder="nombre@correo.com" autoComplete="email" value={f.email} onChange={e => setF({ ...f, email: e.target.value })} />
 
       <fieldset className={s.fieldset}>
         <legend className={s.legend}>¿Cuántos niños querés registrar?</legend>
