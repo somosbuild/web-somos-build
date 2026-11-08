@@ -1,6 +1,6 @@
 // Runs automatically on every verified Netlify Forms submission (event-triggered function: the file
 // name "submission-created" is what wires it up; it has no public URL). Only the camp form is handled:
-//   1. Confirmation email to the family, via Resend (env RESEND_API_KEY; domain somosbuild.com verified).
+//   1. Confirmation email to the family, via Resend (env RESEND_API_KEY; domain camp.somosbuild.com verified).
 //   2. Client record in the Notion CRM "CRM de clientes Build" (env NOTION_TOKEN; the integration must be
 //      connected to that database and to "Registro de eventos Build"). Same email = same record, updated.
 // Each step is independent: if one fails, the other still runs and the error goes to the function logs.
@@ -16,7 +16,8 @@ const CAMP = raw as unknown as {
 };
 
 const FORM = 'camp-interes';
-const FROM = 'Build Summer Camp <hola@somosbuild.com>';
+// Sent from the subdomain verified in Resend (keeps the main domain's reputation apart); replies go to the real inbox.
+const FROM = 'Build Summer Camp <hola@camp.somosbuild.com>';
 const REPLY_TO = 'hola@somosbuild.com';
 /** Inbox preview line (preheader): shown next to the subject in most email apps. */
 const PREHEADER = 'Las vacaciones no se cuentan, se construyen. Te contamos todo y cómo asegurar el cupo.';
