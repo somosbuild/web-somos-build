@@ -18,6 +18,10 @@ const CAMP = raw as unknown as {
 const FORM = 'camp-interes';
 const FROM = 'Build Summer Camp <hola@somosbuild.com>';
 const REPLY_TO = 'hola@somosbuild.com';
+/** Inbox preview line (preheader): shown next to the subject in most email apps. */
+const PREHEADER = 'Las vacaciones no se cuentan, se construyen. Te contamos todo y cómo asegurar el cupo.';
+/** Hidden copies for the Build team, from env CAMP_BCC (comma-separated). Kept out of the code: the repo is public. */
+const bccEquipo = () => (process.env.CAMP_BCC ?? '').split(',').map(e => e.trim()).filter(e => EMAIL_RE.test(e));
 /** Notion: "CRM de clientes Build" database and the "Build Summer Camp" page in "Registro de eventos Build". */
 const NOTION_CRM_DB = '41211822-0611-8069-98b8-d0f6e4153b91';
 const NOTION_EVENTO_CAMP = '41211822-0611-8074-9d7d-fa26ef8f82d6';
@@ -74,6 +78,7 @@ export function correoHtml(r: Registro): { subject: string; html: string; text: 
   const row = ([k, v]: [string, string]) =>
     `<tr><td style="padding:8px 0;color:#6b5646;font-size:14px;vertical-align:top;width:90px">${k}</td><td style="padding:8px 0;color:#3a2a1e;font-size:15px;font-weight:600">${v}</td></tr>`;
   const html = `<!doctype html><html lang="es"><body style="margin:0;background:#fcf3ea;font-family:Helvetica,Arial,sans-serif;color:#3a2a1e">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;mso-hide:all">${esc(PREHEADER)}${'&#847;&zwnj;&nbsp;'.repeat(60)}</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fcf3ea;padding:24px 12px"><tr><td align="center">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:20px;overflow:hidden">
 <tr><td style="background:#fd7e28;height:8px;font-size:0;line-height:0">&nbsp;</td></tr>
@@ -108,7 +113,7 @@ async function enviarCorreo(r: Registro) {
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ from: FROM, to: [r.email], reply_to: REPLY_TO, subject, html, text }),
+    body: JSON.stringify({ from: FROM, to: [r.email], ...(bccEquipo().length ? { bcc: bccEquipo() } : {}), reply_to: REPLY_TO, subject, html, text }),
   });
   if (!res.ok) throw new Error(`Resend ${res.status}: ${(await res.text()).slice(0, 300)}`);
 }
