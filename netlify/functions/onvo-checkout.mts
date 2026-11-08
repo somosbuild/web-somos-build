@@ -12,6 +12,22 @@ const json = (status: number, body: unknown) =>
   new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
 const texto = (v: unknown, max: number) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 
+/**
+ * ONVO (live mode) only accepts phones in international format, e.g. +50688888888.
+ * Families type "8888-8888", "8888 8888", "+506 8888-8888"... Costa Rican 8-digit numbers get +506;
+ * an explicit international number (+ or 00 prefix) is kept. Anything else -> null, and the checkout
+ * is created without phone (optional for ONVO; the number is still saved in Netlify Forms and Notion).
+ */
+export function telefonoE164(raw: string): string | null {
+  const t = raw.trim();
+  const d = t.replace(/\D/g, '');
+  if (/^[24678]\d{7}$/.test(d)) return '+506' + d;               // local CR number
+  if (/^506[24678]\d{7}$/.test(d)) return '+' + d;               // 506 prefix without +
+  if (/^00\d{8,15}$/.test(d) && t.startsWith('00')) return '+' + d.slice(2);
+  if (t.startsWith('+') && /^\d{8,15}$/.test(d)) return '+' + d; // other countries
+  return null;
+}
+
 export default async (req: Request) => {
   if (req.method !== 'POST') return json(405, { error: 'Método no permitido' });
   const key = process.env.ONVO_SECRET_KEY;
@@ -32,7 +48,7 @@ export default async (req: Request) => {
   const origin = new URL(req.url).origin;
   const payload = {
     customerName: nombre,
-    customerPhone: telefono,
+    ...(telefonoE164(telefono) ? { customerPhone: telefonoE164(telefono) } : {}),
     ...(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? { customerEmail: email } : {}),
     redirectUrl: `${origin}/camp/?pago=ok&monto=${total}&plan=${plan.id}`, // monto/plan: Purchase conversion for Meta/GA4
     lineItems: [{
