@@ -158,9 +158,10 @@ export function CampPage() {
       </section>
     </main>
 
-    {formOpen && <InteresForm abiertas={insc.abiertas} onClose={() => setFormOpen(false)} onSent={() => {
+    {formOpen && <InteresForm abiertas={insc.abiertas} onClose={() => setFormOpen(false)} onSent={pendiente => {
       setFormOpen(false);
-      say(insc.abiertas ? '¡Listo! Te contactamos para confirmar tu cupo.' : `¡Listo! Te contactamos el ${CAMP.inscripciones.abren_texto}.`);
+      say(pendiente ? `¡Listo! Te guardamos el cupo ${RESERVA_HORAS} horas. Te enviamos el link de pago por WhatsApp.`
+        : insc.abiertas ? '¡Listo! Te contactamos para confirmar tu cupo.' : `¡Listo! Te contactamos el ${CAMP.inscripciones.abren_texto}.`);
     }} />}
     {toast && <div className={s.toast}><Toast tone="success" icon={<Icon name="43" size={18} color="var(--build-beige)" />} onClose={() => setToast('')}>{toast}</Toast></div>}
   </div>;
@@ -193,8 +194,10 @@ const EDAD_OPTS = Array.from({ length: CAMP.camp.edades.max - CAMP.camp.edades.m
 });
 type Nino = { nombre: string; edad: string };
 const NINO_VACIO: Nino = { nombre: '', edad: '' };
+/** "Reservar sin pagar" holds the spot this long; Build sends the ONVO payment link by WhatsApp. */
+const RESERVA_HORAS = 24;
 
-function InteresForm({ abiertas, onClose, onSent }: { abiertas: boolean; onClose: () => void; onSent: () => void }) {
+function InteresForm({ abiertas, onClose, onSent }: { abiertas: boolean; onClose: () => void; onSent: (pendiente: boolean) => void }) {
   const [f, setF] = useState({ nombre: '', whatsapp: '', email: '', plan: '' });
   const [cantidad, setCantidad] = useState('1');
   // Kept for all 3 slots, so lowering the count and raising it again doesn't lose what was typed.
@@ -209,14 +212,16 @@ function InteresForm({ abiertas, onClose, onSent }: { abiertas: boolean; onClose
   const total = abiertas ? totalPago(f.plan, n) : null;
   const setNino = (i: number, patch: Partial<Nino>) => setNinos(list => list.map((k, j) => (j === i ? { ...k, ...patch } : k)));
 
-  const submit = async () => {
+  /** pagar=false: "reservar y pagar después" (spot held RESERVA_HORAS, Build sends an ONVO link by WhatsApp). */
+  const submit = async (pagar = true) => {
     if (invalid) return;
+    const enLinea = pagar && total != null;
     setSending(true); setFailed(false);
     // Only the visible children are sent; the group is sent already resolved for the Netlify panel.
     const data: Record<string, string> = {
       'form-name': 'camp-interes', nombre: f.nombre, whatsapp: f.whatsapp, email: f.email,
       plan: plan ? `${plan.label} (${crc(plan.precio)} por niño)` : '', ninos: cantidad,
-      pago: total != null ? `ONVO iniciado: ${crc(total)}` : 'Sin pago en línea',
+      pago: enLinea ? `ONVO iniciado: ${crc(total!)}` : total != null ? `Pago pendiente (${RESERVA_HORAS} h): ${crc(total)}. Enviar link de ONVO por WhatsApp` : 'Sin pago en línea',
     };
     visibles.forEach((k, i) => {
       data[`nino${i + 1}_nombre`] = k.nombre.trim();
@@ -233,7 +238,7 @@ function InteresForm({ abiertas, onClose, onSent }: { abiertas: boolean; onClose
     } catch {
       setFailed('form'); setSending(false); return;
     }
-    if (total == null) { setSending(false); onSent(); return; }
+    if (!enLinea) { setSending(false); onSent(total != null); return; }
     // Registration saved; now create the ONVO checkout (the server recomputes the amount) and go pay.
     try {
       const res = await fetch(asset('/api/onvo-checkout'), {
@@ -257,7 +262,7 @@ function InteresForm({ abiertas, onClose, onSent }: { abiertas: boolean; onClose
     </>}>
     <form id="camp-interes-form" className={s.form} onSubmit={e => { e.preventDefault(); submit(); }}>
       <p className={s.formIntro}>{abiertas
-        ? 'Elegí tu plan y pagá en línea con ONVO. Después te escribimos por WhatsApp para coordinar las semanas.'
+        ? 'Elegí tu plan y pagá en línea con ONVO, o reservá y pagá después. Te escribimos por WhatsApp para coordinar las semanas.'
         : `Las inscripciones abren el ${CAMP.inscripciones.abren_texto}. Dejanos tus datos y te contactamos ese día.`}</p>
       <Input label="Tu nombre" name="nombre" required autoComplete="name" value={f.nombre} onChange={e => setF({ ...f, nombre: e.target.value })} autoFocus />
       <Input label="Teléfono" name="whatsapp" type="tel" required placeholder="8888-8888" autoComplete="tel" value={f.whatsapp} onChange={e => setF({ ...f, whatsapp: e.target.value })} />
@@ -290,6 +295,11 @@ function InteresForm({ abiertas, onClose, onSent }: { abiertas: boolean; onClose
         {PLANES_PAGO.map(p => <Checkbox key={p.id} checked={f.plan === p.id} onChange={() => setF({ ...f, plan: f.plan === p.id ? '' : p.id })} label={`${p.label} · ${crc(p.precio)} por niño`} />)}
       </fieldset>
       {total != null && plan && <p className={s.formTotal}><span>{n} {n === 1 ? 'niño' : 'niños'} × {plan.label}</span><strong>{crc(total)}</strong></p>}
+      {total != null && <p className={s.payLater}>
+        Tu cupo se confirma con el pago. ¿Preferís pagar después?{' '}
+        <button type="button" className={s.payLaterBtn} disabled={invalid || sending} onClick={() => submit(false)}>Reservar sin pagar</button>
+        {' '}y te guardamos el cupo {RESERVA_HORAS} horas mientras te enviamos el link de pago por WhatsApp.
+      </p>}
       {failed === 'form' && <p className={s.formError} role="alert">No pudimos enviar tus datos. Probá de nuevo o escribinos por WhatsApp.</p>}
       {failed === 'pago' && <p className={s.formError} role="alert">Recibimos tus datos, pero no pudimos abrir el pago. Probá de nuevo o <a href={WA_LINK} target="_blank" rel="noopener noreferrer">escribinos por WhatsApp</a>.</p>}
     </form>
