@@ -6,6 +6,10 @@
 export const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID?.trim() || '';
 export const GA4_ID = process.env.NEXT_PUBLIC_GA4_ID?.trim() || '';
 export const CLARITY_ID = process.env.NEXT_PUBLIC_CLARITY_ID?.trim() || '';
+/** True if any tool is on; the footer notice only shows then. */
+export const MEDICION_ACTIVA = !!(META_PIXEL_ID || GA4_ID || CLARITY_ID);
+/** One-line cookie notice in the landing and camp footers (no banner, by client decision). */
+export const AVISO_COOKIES = 'Usamos cookies de Meta, Google Analytics y Microsoft Clarity para medir visitas, entender cómo se usa el sitio y mejorar nuestros anuncios.';
 
 type Fbq = (cmd: 'track' | 'trackCustom' | 'init', name: string, params?: Record<string, unknown>) => void;
 type Gtag = (cmd: 'event' | 'config' | 'js', name: unknown, params?: Record<string, unknown>) => void;

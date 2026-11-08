@@ -121,6 +121,7 @@
 .notesLabel { font: 800 16px/1 var(--font-sans); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--build-orange-deep); }
 
 /* ---------- Contact footer card ---------- */
+.cfCookies { position: relative; margin: 28px 0 0; max-width: 60ch; font: 500 13px/1.45 var(--font-sans); color: var(--build-ink); }
 .cf { position: relative; overflow: hidden; background: var(--build-orange); color: var(--build-ink); border-radius: 40px; padding: 48px clamp(24px, 5vw, 64px); }
 .cfGrid { position: relative; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 40px; align-items: start; }
 .cfLeft { display: flex; flex-direction: column; gap: 20px; align-items: flex-start; }

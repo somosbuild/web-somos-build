@@ -3,7 +3,7 @@
 import { Fragment, useState } from 'react';
 import { Badge, Button, Icon, Input, Logo, Radio, Shape } from '@/components/ds';
 import { asset } from '@/lib/asset';
-import { track } from '@/lib/analytics';
+import { AVISO_COOKIES, MEDICION_ACTIVA, track } from '@/lib/analytics';
 import { CONTACT } from '@/lib/data';
 import { ABOUT, ETAPAS, HERO, LANDING_FAQ, LANDING_PILLARS, OPENING } from '@/lib/landing';
 import s from './landing.module.css';
@@ -87,6 +87,7 @@ export function Landing() {
         <div className={s.footerInfo}>
           <span>City Place, Santa Ana · Costa Rica</span>
           <span className={s.footerSoft}>Abrimos en {OPENING}. Te esperamos.</span>
+          {MEDICION_ACTIVA && <span className={s.footerCookies}>{AVISO_COOKIES}</span>}
         </div>
         <div className={s.footerLinks}>
           <a href={CONTACT.instagram} target="_blank" rel="noopener noreferrer" className={s.footerLink}><Icon name="40" size={20} color="var(--build-orange)" />{CONTACT.instagramHandle}</a>
