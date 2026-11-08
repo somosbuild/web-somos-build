@@ -17,6 +17,15 @@ Next.js 16 (App Router, TypeScript) con export estático: el build genera HTML p
 - **En la landing:** barra de anuncio arriba del header, bloque destacado debajo del hero y aviso flotante (a los 8 s o al 50 % del scroll, una vez por visita). Todo en `src/components/camp/CampPromo.tsx`; la landing no tiene otros cambios.
 - **Foto:** `public/fotos/camp-ciudad-carton.webp` (y versión 640 px), usada en el hero de `/camp` y en el bloque de la landing.
 
+## Confirmación por correo y CRM (formulario del camp)
+
+`netlify/functions/submission-created.mts` corre sola con cada registro válido de Netlify Forms (función por evento: el nombre del archivo la conecta y no tiene URL pública). Solo procesa el formulario `camp-interes`:
+
+1. **Correo a la familia** con Resend, desde `hola@somosbuild.com`: resumen (niños, plan, total) y próximo paso según el campo `pago`. Requiere `RESEND_API_KEY` (secreta) y el dominio verificado en Resend (registros DNS en GoDaddy, subdominio `send`).
+2. **CRM en Notion** ("CRM de clientes Build"): busca por correo; si no existe crea la ficha (nombre, correo, teléfono, Cliente desde, Evento Origen y Eventos Asistidos = "Build Summer Camp"); si existe, actualiza teléfono y eventos. En ambos casos agrega dentro de la página un bloque "Registro web" con el detalle. Requiere `NOTION_TOKEN` (secreta) y la integración conectada a la base del CRM y a "Registro de eventos Build". IDs en las constantes del archivo.
+
+Cada paso es independiente: si uno falla, el otro corre igual. Los errores quedan en Netlify > Logs > Functions > `submission-created`.
+
 ## Medición (Meta Pixel, GA4, Clarity)
 
 Se cargan en todas las páginas desde `src/components/analytics/Analytics.tsx`. Cada herramienta se activa solo si su ID está definido como variable de entorno en Netlify (Site configuration > Environment variables; son IDs públicos, no hace falta marcarlos como secretos). Después de agregarlos o cambiarlos hay que volver a publicar (Deploys > Trigger deploy).
