@@ -17,6 +17,23 @@ Next.js 16 (App Router, TypeScript) con export estático: el build genera HTML p
 - **En la landing:** barra de anuncio arriba del header, bloque destacado debajo del hero y aviso flotante (a los 8 s o al 50 % del scroll, una vez por visita). Todo en `src/components/camp/CampPromo.tsx`; la landing no tiene otros cambios.
 - **Foto:** `public/fotos/camp-ciudad-carton.webp` (y versión 640 px), usada en el hero de `/camp` y en el bloque de la landing.
 
+## Medición (Meta Pixel, GA4, Clarity)
+
+Se cargan en todas las páginas desde `src/components/analytics/Analytics.tsx`. Cada herramienta se activa solo si su ID está definido como variable de entorno en Netlify (Site configuration > Environment variables; son IDs públicos, no hace falta marcarlos como secretos). Después de agregarlos o cambiarlos hay que volver a publicar (Deploys > Trigger deploy).
+
+| Variable | Dónde se encuentra | Ejemplo |
+|---|---|---|
+| `NEXT_PUBLIC_META_PIXEL_ID` | Meta Events Manager > Orígenes de datos | `123456789012345` |
+| `NEXT_PUBLIC_GA4_ID` | GA4 > Administrar > Flujos de datos > Web | `G-ABC123XYZ` |
+| `NEXT_PUBLIC_CLARITY_ID` | Clarity > Settings > Overview | `abcd1234ef` |
+
+Eventos (función `track()` en `src/lib/analytics.ts`; nombre en Meta → nombre en GA4):
+- `Lead` → `generate_lead`: formulario de la landing y del camp enviados.
+- `Contact` → `contact`: clic en cualquier link de WhatsApp.
+- `InitiateCheckout` → `begin_checkout` y `Purchase` → `purchase` (con monto en CRC): pago con ONVO (rama `pago-onvo-camp`).
+
+No hay aviso de cookies: los scripts cargan directo (decisión del cliente, nov 2026).
+
 ## Uso
 
 ```bash
