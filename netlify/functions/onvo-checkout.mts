@@ -5,7 +5,7 @@
 import { MAX_NINOS_PAGO, planPago, totalPago } from '../../src/lib/camp-pago';
 
 const ONVO_URL = 'https://api.onvopay.com/v1/checkout/sessions/one-time-link';
-/** ONVO amounts are in céntimos (minor units): ₡85.000 -> 8500000. Verify on the first test payment. */
+/** ONVO amounts are in céntimos (minor units): ₡85.000 -> 8500000. Confirmed with a test checkout. */
 const CENTIMOS = 100;
 
 const json = (status: number, body: unknown) =>
