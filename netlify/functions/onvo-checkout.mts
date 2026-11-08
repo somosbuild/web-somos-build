@@ -34,7 +34,7 @@ export default async (req: Request) => {
     customerName: nombre,
     customerPhone: telefono,
     ...(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? { customerEmail: email } : {}),
-    redirectUrl: `${origin}/camp/?pago=ok`,
+    redirectUrl: `${origin}/camp/?pago=ok&monto=${total}&plan=${plan.id}`, // monto/plan: Purchase conversion for Meta/GA4
     lineItems: [{
       quantity: ninos,
       unitAmount: plan.precio * CENTIMOS,

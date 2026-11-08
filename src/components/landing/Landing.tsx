@@ -3,6 +3,7 @@
 import { Fragment, useState } from 'react';
 import { Badge, Button, Icon, Input, Logo, Radio, Shape } from '@/components/ds';
 import { asset } from '@/lib/asset';
+import { track } from '@/lib/analytics';
 import { CONTACT } from '@/lib/data';
 import { ABOUT, ETAPAS, HERO, LANDING_FAQ, LANDING_PILLARS, OPENING } from '@/lib/landing';
 import s from './landing.module.css';
@@ -127,6 +128,7 @@ function Registro() {
         body: new URLSearchParams({ 'form-name': 'registro', ...form }).toString(),
       });
       if (!res.ok) throw new Error(String(res.status));
+      track('Lead', { content_name: 'Registro landing' });
       setSent(true);
     } catch {
       setFailed(true);

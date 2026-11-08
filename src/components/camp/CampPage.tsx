@@ -5,6 +5,7 @@ import Link from 'next/link';
 import s from './camp.module.css';
 import { Button, ButtonLink, Checkbox, Dialog, Icon, Input, Logo, PillarTag, Select, Shape, Toast } from '@/components/ds';
 import { asset } from '@/lib/asset';
+import { track } from '@/lib/analytics';
 import { PLANES_PAGO, planPago, totalPago } from '@/lib/camp-pago';
 import { CAMP, EDADES, FOTO, HORARIO, LUGAR, RANGO, WA_LINK, color, crc, grupoPorEdad, isPh, tituloPartes } from '@/lib/camp';
 import { BarraAnuncio } from './CampPromo';
@@ -43,8 +44,11 @@ export function CampPage() {
   useEffect(() => {
     const q = new URLSearchParams(location.search);
     if (q.get('pago') !== 'ok') return;
+    // Purchase conversion: amount and plan come from the redirect URL the server built. Removed below, so a reload doesn't count twice.
+    const monto = Number(q.get('monto')), p = planPago(q.get('plan') ?? '');
+    if (monto > 0) track('Purchase', { value: monto, content_name: 'Camp' + (p ? ': ' + p.label : '') });
     say('¡Gracias! Recibimos tu inscripción y tu pago. Te escribimos por WhatsApp para coordinar las semanas.');
-    q.delete('pago');
+    q.delete('pago'); q.delete('monto'); q.delete('plan');
     history.replaceState(null, '', location.pathname + (q.size ? '?' + q : '') + location.hash);
   }, []);
   const tag = tituloPartes(CAMP.camp.tagline);
@@ -238,8 +242,10 @@ function InteresForm({ abiertas, onClose, onSent }: { abiertas: boolean; onClose
     } catch {
       setFailed('form'); setSending(false); return;
     }
+    track('Lead', { content_name: 'Camp' + (plan ? ': ' + plan.label : ''), num_items: n, ...(total != null ? { value: total } : {}) });
     if (!enLinea) { setSending(false); onSent(total != null); return; }
     // Registration saved; now create the ONVO checkout (the server recomputes the amount) and go pay.
+    track('InitiateCheckout', { value: total!, content_name: 'Camp: ' + plan!.label, num_items: n });
     try {
       const res = await fetch(asset('/api/onvo-checkout'), {
         method: 'POST',
