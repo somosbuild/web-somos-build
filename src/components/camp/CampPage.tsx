@@ -1,10 +1,11 @@
 'use client';
 
-import { useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import Link from 'next/link';
 import s from './camp.module.css';
 import { Button, ButtonLink, Checkbox, Dialog, Icon, Input, Logo, PillarTag, Select, Shape, Toast } from '@/components/ds';
 import { asset } from '@/lib/asset';
+import { PLANES_PAGO, planPago, totalPago } from '@/lib/camp-pago';
 import { CAMP, EDADES, FOTO, HORARIO, LUGAR, RANGO, WA_LINK, color, crc, grupoPorEdad, isPh, tituloPartes } from '@/lib/camp';
 import { BarraAnuncio } from './CampPromo';
 import { ContactoFooter, Cronograma, FotoPlaceholder, GrupoCard, GrupoChip, PrecioBloque, SelloPronto, useInscripciones } from './parts';
@@ -38,6 +39,14 @@ export function CampPage() {
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const openForm = () => setFormOpen(true);
   const say = (t: string) => { setToast(t); clearTimeout(timer.current); timer.current = setTimeout(() => setToast(''), 6000); };
+  // Back from ONVO checkout (redirectUrl = /camp/?pago=ok): thank them and clean the URL.
+  useEffect(() => {
+    const q = new URLSearchParams(location.search);
+    if (q.get('pago') !== 'ok') return;
+    say('¡Gracias! Recibimos tu inscripción y tu pago. Te escribimos por WhatsApp para coordinar las semanas.');
+    q.delete('pago');
+    history.replaceState(null, '', location.pathname + (q.size ? '?' + q : '') + location.hash);
+  }, []);
   const tag = tituloPartes(CAMP.camp.tagline);
   const { que_es: queEs, manifiesto } = CAMP.camp;
 
@@ -170,8 +179,12 @@ function Faq() {
   </div>;
 }
 
-/** Camp registration (before opening day: "Avisame cuando abran"). Submissions go to Netlify Forms (form "camp-interes", declared in public/__forms.html). */
-const PLANES = ['Diciembre: 2 semanas', 'Enero: 4 semanas', 'Camp completo: 6 semanas', 'Semanas variadas: Por definir'];
+/**
+ * Camp registration (before opening day: "Avisame cuando abran"). Submissions go to Netlify Forms
+ * (form "camp-interes", declared in public/__forms.html). Once registration is open, with a plan and
+ * up to MAX_NINOS_PAGO children, the form is saved first and then the family goes to ONVO checkout
+ * (netlify/functions/onvo-checkout.mts). Plans and prices: src/lib/camp-pago.ts (from camp-data.json).
+ */
 /** How many children: "3+" collects 3 and Build follows up for the rest. */
 const CANTIDADES = [{ value: '1', n: 1 }, { value: '2', n: 2 }, { value: '3+', n: 3 }];
 const EDAD_OPTS = Array.from({ length: CAMP.camp.edades.max - CAMP.camp.edades.min + 1 }, (_, i) => {
@@ -187,17 +200,24 @@ function InteresForm({ abiertas, onClose, onSent }: { abiertas: boolean; onClose
   // Kept for all 3 slots, so lowering the count and raising it again doesn't lose what was typed.
   const [ninos, setNinos] = useState<Nino[]>([NINO_VACIO, NINO_VACIO, NINO_VACIO]);
   const [sending, setSending] = useState(false);
-  const [failed, setFailed] = useState(false);
+  const [failed, setFailed] = useState<false | 'form' | 'pago'>(false);
   const n = CANTIDADES.find(c => c.value === cantidad)!.n;
   const visibles = ninos.slice(0, n);
   const invalid = !f.nombre.trim() || f.whatsapp.replace(/\D/g, '').length < 8 || visibles.some(k => !k.nombre.trim() || !k.edad);
+  const plan = planPago(f.plan);
+  // null = no online payment (registration not open, no plan, or more children than MAX_NINOS_PAGO).
+  const total = abiertas ? totalPago(f.plan, n) : null;
   const setNino = (i: number, patch: Partial<Nino>) => setNinos(list => list.map((k, j) => (j === i ? { ...k, ...patch } : k)));
 
   const submit = async () => {
     if (invalid) return;
     setSending(true); setFailed(false);
     // Only the visible children are sent; the group is sent already resolved for the Netlify panel.
-    const data: Record<string, string> = { 'form-name': 'camp-interes', nombre: f.nombre, whatsapp: f.whatsapp, email: f.email, plan: f.plan, ninos: cantidad };
+    const data: Record<string, string> = {
+      'form-name': 'camp-interes', nombre: f.nombre, whatsapp: f.whatsapp, email: f.email,
+      plan: plan ? `${plan.label} (${crc(plan.precio)} por niño)` : '', ninos: cantidad,
+      pago: total != null ? `ONVO iniciado: ${crc(total)}` : 'Sin pago en línea',
+    };
     visibles.forEach((k, i) => {
       data[`nino${i + 1}_nombre`] = k.nombre.trim();
       data[`nino${i + 1}_edad`] = k.edad;
@@ -210,11 +230,22 @@ function InteresForm({ abiertas, onClose, onSent }: { abiertas: boolean; onClose
         body: new URLSearchParams(data).toString(),
       });
       if (!res.ok) throw new Error(String(res.status));
-      onSent();
     } catch {
-      setFailed(true);
-    } finally {
-      setSending(false);
+      setFailed('form'); setSending(false); return;
+    }
+    if (total == null) { setSending(false); onSent(); return; }
+    // Registration saved; now create the ONVO checkout (the server recomputes the amount) and go pay.
+    try {
+      const res = await fetch(asset('/api/onvo-checkout'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan: f.plan, ninos: n, nombre: f.nombre, whatsapp: f.whatsapp, email: f.email, nombres_ninos: visibles.map(k => k.nombre.trim()) }),
+      });
+      const out = await res.json().catch(() => ({})) as { url?: string };
+      if (!res.ok || !out.url) throw new Error(String(res.status));
+      location.href = out.url;
+    } catch {
+      setFailed('pago'); setSending(false);
     }
   };
 
@@ -222,11 +253,11 @@ function InteresForm({ abiertas, onClose, onSent }: { abiertas: boolean; onClose
   return <Dialog onClose={onClose} title="Registrate al camp" accent="var(--build-orange)" width={520}
     actions={<>
       <Button variant="ghost" onClick={onClose}>Ahora no</Button>
-      <Button type="submit" form="camp-interes-form" disabled={invalid || sending}>{sending ? 'Enviando…' : abiertas ? 'Enviar registro' : 'Avisame'}</Button>
+      <Button type="submit" form="camp-interes-form" disabled={invalid || sending}>{sending ? (total != null ? 'Abriendo pago…' : 'Enviando…') : total != null ? `Pagar ${crc(total)} con ONVO` : abiertas ? 'Enviar registro' : 'Avisame'}</Button>
     </>}>
     <form id="camp-interes-form" className={s.form} onSubmit={e => { e.preventDefault(); submit(); }}>
       <p className={s.formIntro}>{abiertas
-        ? 'Dejanos tus datos y te contactamos para confirmar los cupos y el pago.'
+        ? 'Elegí tu plan y pagá en línea con ONVO. Después te escribimos por WhatsApp para coordinar las semanas.'
         : `Las inscripciones abren el ${CAMP.inscripciones.abren_texto}. Dejanos tus datos y te contactamos ese día.`}</p>
       <Input label="Tu nombre" name="nombre" required autoComplete="name" value={f.nombre} onChange={e => setF({ ...f, nombre: e.target.value })} autoFocus />
       <Input label="Teléfono" name="whatsapp" type="tel" required placeholder="8888-8888" autoComplete="tel" value={f.whatsapp} onChange={e => setF({ ...f, whatsapp: e.target.value })} />
@@ -251,14 +282,16 @@ function InteresForm({ abiertas, onClose, onSent }: { abiertas: boolean; onClose
           {g && <div className={s.kidGroup}><span>Grupo:</span><GrupoChip id={g.id} size="sm" /></div>}
         </fieldset>;
       })}
-      {cantidad === '3+' && <p className={s.kidNote}>Si son más de 3, te contactamos para completar el registro.</p>}
+      {cantidad === '3+' && <p className={s.kidNote}>Con 3 o más niños te contactamos para completar el registro y el pago.</p>}
 
       <fieldset className={s.fieldset}>
         <legend className={s.legend}>¿Qué te interesa?</legend>
         {/* One choice at most; tapping the selected option clears it (as in the design). */}
-        {PLANES.map(p => <Checkbox key={p} checked={f.plan === p} onChange={() => setF({ ...f, plan: f.plan === p ? '' : p })} label={p} />)}
+        {PLANES_PAGO.map(p => <Checkbox key={p.id} checked={f.plan === p.id} onChange={() => setF({ ...f, plan: f.plan === p.id ? '' : p.id })} label={`${p.label} · ${crc(p.precio)} por niño`} />)}
       </fieldset>
-      {failed && <p className={s.formError} role="alert">No pudimos enviar tus datos. Probá de nuevo o escribinos por WhatsApp.</p>}
+      {total != null && plan && <p className={s.formTotal}><span>{n} {n === 1 ? 'niño' : 'niños'} × {plan.label}</span><strong>{crc(total)}</strong></p>}
+      {failed === 'form' && <p className={s.formError} role="alert">No pudimos enviar tus datos. Probá de nuevo o escribinos por WhatsApp.</p>}
+      {failed === 'pago' && <p className={s.formError} role="alert">Recibimos tus datos, pero no pudimos abrir el pago. Probá de nuevo o <a href={WA_LINK} target="_blank" rel="noopener noreferrer">escribinos por WhatsApp</a>.</p>}
     </form>
   </Dialog>;
 }

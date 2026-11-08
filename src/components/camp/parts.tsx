@@ -15,8 +15,8 @@ const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).jo
 
 export type CtaMode = 'form' | 'link';
 /**
- * The CTA opens the registration form until a payment link (Onvo) is confirmed; only then, from
- * inscripciones.abren on, it becomes "Reservá tu cupo" -> payment link. WhatsApp keeps its own button.
+ * The CTA opens the registration form, which takes payment through ONVO checkout once registration is open
+ * (see InteresForm). A fixed inscripciones.link, if ever set, would replace the form with that link.
  * `abiertas` (date) only changes copy: the stamp, the bar text and the form texts.
  * Rendered closed on the server; the date is checked in the browser. `?simular=antes|despues` previews either state.
  */
