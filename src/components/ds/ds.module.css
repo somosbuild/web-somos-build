@@ -107,6 +107,18 @@ a.btn, a.btn:hover { color: var(--fg); text-decoration: none; }
   /* Never taller than the visible screen (dvh accounts for mobile browser bars). */
   max-height: calc(100vh - 48px); max-height: calc(100dvh - 48px); display: flex; flex-direction: column;
 }
+.dialog { position: relative; }
+.dialogClose { position: absolute; top: 18px; right: 14px; width: 40px; height: 40px; border: 0; border-radius: 999px; background: transparent; color: var(--text-heading); font: 400 30px/1 var(--font-sans); cursor: pointer; display: grid; place-items: center; }
+.dialogClose:hover { background: var(--build-beige); }
+.dialogClose:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.dialogFootnote { margin: -2px 0 0; font: 500 13px/1.4 var(--font-sans); color: var(--text-body); text-align: right; }
+.dialogAccent { height: 10px; background: var(--accent); flex: none; }
+.dialogBody { padding: 26px 28px 24px; display: flex; flex-direction: column; gap: 12px; min-height: 0; flex: 1; }
+.dialogTitle { margin: 0; font: 700 28px/1.1 var(--font-display); color: var(--text-heading); }
+/* Only the content scrolls; title and actions stay in view. */
+.dialogContent { font: 400 16px/1.55 var(--font-sans); color: var(--text-body); min-height: 0; overflow-y: auto; overscroll-behavior: contain; margin: 0 -4px; padding: 0 4px; }
+.dialogActions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; margin-top: 4px; padding-top: 14px; border-top: 2px solid var(--build-beige); flex: none; }
+/* Mobile overrides go after the base rules so they win. */
 @media (max-width: 767px) {
   .scrim { padding: 12px; }
   .dialog { max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px); }
@@ -114,12 +126,6 @@ a.btn, a.btn:hover { color: var(--fg); text-decoration: none; }
   .dialogActions { flex-wrap: nowrap; gap: 6px; }
   .dialogActions > * { padding: 0 18px; }
 }
-.dialogAccent { height: 10px; background: var(--accent); flex: none; }
-.dialogBody { padding: 26px 28px 24px; display: flex; flex-direction: column; gap: 12px; min-height: 0; flex: 1; }
-.dialogTitle { margin: 0; font: 700 28px/1.1 var(--font-display); color: var(--text-heading); }
-/* Only the content scrolls; title and actions stay in view. */
-.dialogContent { font: 400 16px/1.55 var(--font-sans); color: var(--text-body); min-height: 0; overflow-y: auto; overscroll-behavior: contain; margin: 0 -4px; padding: 0 4px; }
-.dialogActions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; margin-top: 4px; padding-top: 14px; border-top: 2px solid var(--build-beige); flex: none; }
 
 /* ---------- Toast ---------- */
 .toast {
@@ -193,3 +199,4 @@ a.btn, a.btn:hover { color: var(--fg); text-decoration: none; }
 .checkInput:checked + .radioBox .radioDot { transform: scale(1); }
 .fieldHint { font: 500 13px/1.3 var(--font-sans); color: var(--text-muted); }
 .fieldError { font: 600 13px/1.3 var(--font-sans); color: var(--build-orange-deep); }
+.dialogClose ~ .dialogBody .dialogTitle { padding-right: 36px; }

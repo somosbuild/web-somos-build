@@ -40,16 +40,12 @@ export function CampPage() {
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const openForm = () => setFormOpen(true);
   const say = (t: string) => { setToast(t); clearTimeout(timer.current); timer.current = setTimeout(() => setToast(''), 6000); };
-  // Back from ONVO checkout (redirectUrl = /camp/?pago=ok): thank them and clean the URL.
+  // Old ONVO return address (/camp/?pago=ok, checkouts created before /camp/gracias existed): forward there.
   useEffect(() => {
     const q = new URLSearchParams(location.search);
     if (q.get('pago') !== 'ok') return;
-    // Purchase conversion: amount and plan come from the redirect URL the server built. Removed below, so a reload doesn't count twice.
-    const monto = Number(q.get('monto')), p = planPago(q.get('plan') ?? '');
-    if (monto > 0) track('Purchase', { value: monto, content_name: 'Camp' + (p ? ': ' + p.label : '') });
-    say('¡Gracias! Recibimos tu inscripción y tu pago. Te escribimos por WhatsApp para coordinar las semanas.');
-    q.delete('pago'); q.delete('monto'); q.delete('plan');
-    history.replaceState(null, '', location.pathname + (q.size ? '?' + q : '') + location.hash);
+    q.delete('pago');
+    location.replace(asset('/camp/gracias/') + (q.size ? '?' + q : ''));
   }, []);
   const tag = tituloPartes(CAMP.camp.tagline);
   const { que_es: queEs, manifiesto } = CAMP.camp;
@@ -200,6 +196,8 @@ type Nino = { nombre: string; edad: string };
 const NINO_VACIO: Nino = { nombre: '', edad: '' };
 /** "Reservar sin pagar" holds the spot this long; Build sends the ONVO payment link by WhatsApp. */
 const RESERVA_HORAS = 24;
+/** Last abandoned-form data saved in this visit (so closing and reopening doesn't save the same twice). */
+let ultimoIncompleto = '';
 
 function InteresForm({ abiertas, onClose, onSent }: { abiertas: boolean; onClose: () => void; onSent: (pendiente: boolean) => void }) {
   const [f, setF] = useState({ nombre: '', whatsapp: '', email: '', plan: '' });
@@ -216,6 +214,47 @@ function InteresForm({ abiertas, onClose, onSent }: { abiertas: boolean; onClose
   // null = no online payment (registration not open, no plan, or more children than MAX_NINOS_PAGO).
   const total = abiertas ? totalPago(f.plan, n) : null;
   const setNino = (i: number, patch: Partial<Nino>) => setNinos(list => list.map((k, j) => (j === i ? { ...k, ...patch } : k)));
+
+  // Abandoned form: if they typed a name plus a valid phone or email and leave without sending
+  // (×, "Ahora no", tap outside, Esc, close the tab or switch apps), save what they typed in a separate
+  // Netlify form "camp-incompleto". No email to the family and nothing in Notion. Not sent once the
+  // full registration went out; the same data is never saved twice.
+  const enviado = useRef(false);
+  const snapshot = useRef<Record<string, string> | null>(null);
+  const faltan = [
+    !f.nombre.trim() && 'nombre', f.whatsapp.replace(/\D/g, '').length < 8 && 'teléfono', !emailOk && 'correo',
+    ...visibles.flatMap((k, i) => [!k.nombre.trim() && `nombre del niño ${i + 1}`, !k.edad && `edad del niño ${i + 1}`]),
+    abiertas && !f.plan && 'plan',
+  ].filter(Boolean) as string[];
+  snapshot.current = f.nombre.trim() && (f.whatsapp.replace(/\D/g, '').length >= 8 || emailOk) ? {
+    nombre: f.nombre.trim(), whatsapp: f.whatsapp.trim(), email: f.email.trim(),
+    plan: plan ? `${plan.label} (${crc(plan.precio)} por niño)` : '', ninos: cantidad,
+    ninos_detalle: visibles.map(k => [k.nombre.trim(), k.edad && `${k.edad} años`].filter(Boolean).join(', ')).filter(Boolean).join(' | '),
+    total: total != null ? crc(total) : '',
+    faltaba: faltan.length ? faltan.join(', ') : 'Nada: llenó todo pero no envió',
+  } : null;
+  const guardarIncompleto = (momento: string) => {
+    const d = snapshot.current;
+    if (enviado.current || !d) return;
+    const clave = JSON.stringify(d);
+    if (clave === ultimoIncompleto) return;
+    ultimoIncompleto = clave;
+    const body = new URLSearchParams({ 'form-name': 'camp-incompleto', ...d, momento }).toString();
+    const url = asset('/__forms.html');
+    try {
+      if (navigator.sendBeacon?.(url, new Blob([body], { type: 'application/x-www-form-urlencoded' }))) return;
+    } catch {}
+    fetch(url, { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body }).catch(() => {});
+  };
+  const cerrar = () => { guardarIncompleto('Cerró el formulario'); onClose(); };
+  useEffect(() => {
+    const salir = () => guardarIncompleto('Salió de la página');
+    const oculta = () => { if (document.visibilityState === 'hidden') guardarIncompleto('Cambió de app o pestaña'); };
+    window.addEventListener('pagehide', salir);
+    document.addEventListener('visibilitychange', oculta);
+    return () => { window.removeEventListener('pagehide', salir); document.removeEventListener('visibilitychange', oculta); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /** pagar=false: "reservar y pagar después" (spot held RESERVA_HORAS, Build sends an ONVO link by WhatsApp). */
   const submit = async (pagar = true) => {
@@ -243,6 +282,7 @@ function InteresForm({ abiertas, onClose, onSent }: { abiertas: boolean; onClose
     } catch {
       setFailed('form'); setSending(false); return;
     }
+    enviado.current = true;
     track('Lead', { content_name: 'Camp' + (plan ? ': ' + plan.label : ''), num_items: n, ...(total != null ? { value: total } : {}) });
     if (!enLinea) { setSending(false); onSent(total != null); return; }
     // Registration saved; now create the ONVO checkout (the server recomputes the amount) and go pay.
@@ -262,10 +302,15 @@ function InteresForm({ abiertas, onClose, onSent }: { abiertas: boolean; onClose
   };
 
   // Buttons live in the dialog's fixed footer (always visible); `form` links the submit button to the form.
-  return <Dialog onClose={onClose} title="Registrate al camp" accent="var(--build-orange)" width={520}
+  // With online payment: "Pagar después" next to "Pagar ₡X ahora" (closing is the × in the corner).
+  const conPago = total != null;
+  return <Dialog onClose={cerrar} title="Registrate al camp" accent="var(--build-orange)" width={520} closeButton={conPago}
+    footnote={conPago ? `Pagar después: te guardamos el cupo ${RESERVA_HORAS} h y te enviamos el link de pago por WhatsApp.` : undefined}
     actions={<>
-      <Button variant="ghost" onClick={onClose}>Ahora no</Button>
-      <Button type="submit" form="camp-interes-form" disabled={invalid || sending}>{sending ? (total != null ? 'Abriendo pago…' : 'Enviando…') : total != null ? `Pagar ${crc(total)} con ONVO` : abiertas ? 'Enviar registro' : 'Avisame'}</Button>
+      {conPago
+        ? <Button variant="secondary" className={s.payBtn} disabled={invalid || sending} onClick={() => submit(false)}>Pagar después</Button>
+        : <Button variant="ghost" onClick={cerrar}>Ahora no</Button>}
+      <Button type="submit" form="camp-interes-form" className={conPago ? s.payBtn : undefined} disabled={invalid || sending}>{sending ? (conPago ? 'Un momento…' : 'Enviando…') : conPago ? <>Pagar {crc(total)}<span className={s.payNow}> ahora</span></> : abiertas ? 'Enviar registro' : 'Avisame'}</Button>
     </>}>
     <form id="camp-interes-form" className={s.form} onSubmit={e => { e.preventDefault(); submit(); }}>
       <p className={s.formIntro}>{abiertas
@@ -302,11 +347,7 @@ function InteresForm({ abiertas, onClose, onSent }: { abiertas: boolean; onClose
         {PLANES_PAGO.map(p => <Checkbox key={p.id} checked={f.plan === p.id} onChange={() => setF({ ...f, plan: f.plan === p.id ? '' : p.id })} label={`${p.label} · ${crc(p.precio)} por niño`} />)}
       </fieldset>
       {total != null && plan && <p className={s.formTotal}><span>{n} {n === 1 ? 'niño' : 'niños'} × {plan.label}</span><strong>{crc(total)}</strong></p>}
-      {total != null && <p className={s.payLater}>
-        Tu cupo se confirma con el pago. ¿Preferís pagar después?{' '}
-        <button type="button" className={s.payLaterBtn} disabled={invalid || sending} onClick={() => submit(false)}>Reservar sin pagar</button>
-        {' '}y te guardamos el cupo {RESERVA_HORAS} horas mientras te enviamos el link de pago por WhatsApp.
-      </p>}
+      <p className={s.formPrivacy}>Guardamos tus datos de contacto solo para ayudarte con tu inscripción.</p>
       {failed === 'form' && <p className={s.formError} role="alert">No pudimos enviar tus datos. Probá de nuevo o escribinos por WhatsApp.</p>}
       {failed === 'pago' && <p className={s.formError} role="alert">Recibimos tus datos, pero no pudimos abrir el pago. Probá de nuevo o <a href={WA_LINK} target="_blank" rel="noopener noreferrer">escribinos por WhatsApp</a>.</p>}
     </form>

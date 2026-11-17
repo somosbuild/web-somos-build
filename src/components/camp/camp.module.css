@@ -234,9 +234,7 @@
 .legend { padding: 0; margin-bottom: 10px; font: 600 14px/1.2 var(--font-sans); }
 .formTotal { margin: 0; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 12px 14px; border-radius: 16px; background: var(--build-beige); font: 500 15px/1.4 var(--font-sans); color: var(--build-ink-2); }
 .formTotal strong { font: 700 20px/1 var(--font-sans); color: var(--build-ink); }
-.payLater { margin: -4px 0 0; font: 500 14px/1.5 var(--font-sans); color: var(--build-ink-2); }
-.payLaterBtn { padding: 0; border: 0; background: none; font: 700 14px/1.5 var(--font-sans); color: var(--build-orange-deep); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
-.payLaterBtn:disabled { color: var(--build-ink-2); opacity: .55; cursor: not-allowed; }
+.formPrivacy { margin: 0; font: 500 12.5px/1.4 var(--font-sans); color: var(--build-ink-2); }
 .formError { margin: 0; font: 600 14px/1.4 var(--font-sans); color: var(--build-orange-deep); }
 .toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 120; width: min(420px, calc(100% - 32px)); }
 
@@ -259,3 +257,19 @@
 .kidGroup { display: flex; align-items: center; gap: 8px; font: 600 14px/1.2 var(--font-sans); color: var(--build-ink-2); }
 .kidNote { margin: -4px 0 0; font: 500 14px/1.45 var(--font-sans); color: var(--build-ink-2); }
 @media (max-width: 767px) { .kidFields { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- Thank-you page (/camp/gracias) ---------- */
+.gracias { position: relative; overflow: hidden; min-height: 100vh; min-height: 100dvh; display: grid; place-items: center; padding: 32px 16px; background: var(--build-beige); box-sizing: border-box; }
+.graciasCard { position: relative; width: min(560px, 100%); box-sizing: border-box; background: var(--build-white); border-radius: 32px; padding: clamp(28px, 6vw, 48px); display: flex; flex-direction: column; align-items: flex-start; gap: 18px; box-shadow: var(--shadow-lift); }
+.graciasLogo { display: inline-flex; margin-bottom: 8px; }
+.graciasIcon { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 999px; background: var(--build-olive); }
+.graciasTitle { margin: 0; font: 400 clamp(32px, 6vw, 44px)/1.08 var(--font-display); letter-spacing: var(--tracking-display); color: var(--text-heading); text-wrap: balance; }
+.graciasTitle strong { font-weight: 700; display: block; }
+.graciasText { margin: 0; font: 500 17px/1.5 var(--font-sans); color: var(--build-ink-2); }
+
+/* Camp form footer with online payment: "Pagar después" and "Pagar ₡X ahora" share the row. */
+.payBtn { flex: 1 1 0; min-width: 0; white-space: nowrap; }
+@media (max-width: 420px) {
+  .payBtn { font-size: 15px; padding: 0 10px !important; }
+  .payNow { display: none; }
+}

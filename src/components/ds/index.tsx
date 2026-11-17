@@ -103,7 +103,9 @@ export function useEscape(onEscape: () => void) {
   }, [onEscape]);
 }
 
-export function Dialog({ onClose, title, children, actions, accent = 'var(--build-yellow)', width = 480 }: { onClose: () => void; title?: string; children: ReactNode; actions?: ReactNode; accent?: string; width?: number }) {
+/** `closeButton`: shows a "×" in the corner (use it when the actions have no cancel button).
+ *  `footnote`: a short line under the actions, always visible. */
+export function Dialog({ onClose, title, children, actions, footnote, closeButton, accent = 'var(--build-yellow)', width = 480 }: { onClose: () => void; title?: string; children: ReactNode; actions?: ReactNode; footnote?: ReactNode; closeButton?: boolean; accent?: string; width?: number }) {
   const id = useId();
   useEscape(onClose);
   // Keep the page behind still while the dialog is open, so scroll gestures reach the dialog.
@@ -115,10 +117,12 @@ export function Dialog({ onClose, title, children, actions, accent = 'var(--buil
   return <div className={s.scrim} onClick={onClose}>
     <div role="dialog" aria-modal="true" aria-labelledby={title ? id : undefined} className={s.dialog} style={{ '--w': px(width), '--accent': accent } as Vars} onClick={e => e.stopPropagation()}>
       <div className={s.dialogAccent} />
+      {closeButton && <button type="button" onClick={onClose} aria-label="Cerrar" title="Cerrar" className={s.dialogClose}>×</button>}
       <div className={s.dialogBody}>
         {title && <h3 id={id} className={s.dialogTitle}>{title}</h3>}
         <div className={s.dialogContent}>{children}</div>
         {actions && <div className={s.dialogActions}>{actions}</div>}
+        {footnote && <p className={s.dialogFootnote}>{footnote}</p>}
       </div>
     </div>
   </div>;
