@@ -13,8 +13,9 @@ Next.js 16 (App Router, TypeScript) con export estático: el build genera HTML p
 - **Pendientes:** cualquier campo con `"pendiente": true` o con texto entre corchetes (`"[POR CONFIRMAR]"`) **no se muestra** en el sitio. Al completarlo en el JSON, aparece solo.
 - **Inscripciones:** antes de `inscripciones.abren` (2 de noviembre 2026) el botón dice "Registrarme" y abre el formulario. Desde esa fecha dice "Reservá tu cupo" y va al link de pago (`inscripciones.link`); mientras ese link esté pendiente, va a WhatsApp. El cambio ocurre solo, en el navegador; no hace falta volver a publicar. Para previsualizar: `/camp/?simular=despues` o `?simular=antes`.
 - **Formulario:** Netlify Forms, formulario `camp-interes` (declarado en `public/__forms.html`, igual que `registro` de la landing).
-- **Pago con ONVO:** con inscripciones abiertas, plan elegido y 1 o 2 niños, el botón del formulario dice "Pagar ₡X con ONVO". Primero guarda el registro en Netlify Forms (campo `pago`) y después llama a `/api/onvo-checkout` (`netlify/functions/onvo-checkout.mts`), que recalcula el monto en el servidor, crea un link de pago de ONVO (`POST /v1/checkout/sessions/one-time-link`) y redirige. Al pagar, ONVO vuelve a `/camp/?pago=ok` y se muestra un mensaje. Con 3 o más niños no hay pago en línea: Build da seguimiento.
-  - **Reservar sin pagar:** debajo del total hay un enlace "Reservar sin pagar". Guarda el registro con `pago` = "Pago pendiente (24 h): ₡X. Enviar link de ONVO por WhatsApp" y no llama a ONVO. Build crea el link en el panel de ONVO y lo manda por WhatsApp; si no se paga en 24 h, el cupo se libera. El plazo es `RESERVA_HORAS` en `CampPage.tsx`.
+- **Pago con ONVO:** con inscripciones abiertas, plan elegido y 1 o 2 niños, el pie del formulario muestra "Pagar después" y "Pagar ₡X ahora" (en celular, "Pagar ₡X"), y una × para cerrar. Primero guarda el registro en Netlify Forms (campo `pago`) y después llama a `/api/onvo-checkout` (`netlify/functions/onvo-checkout.mts`), que recalcula el monto en el servidor, crea un link de pago de ONVO (`POST /v1/checkout/sessions/one-time-link`) y redirige. Al pagar, ONVO vuelve a `/camp/gracias/?monto=…&plan=…` (`src/app/camp/gracias`, `Gracias.tsx`): página de agradecimiento que envía la conversión `Purchase` una sola vez y limpia la URL. La dirección vieja `/camp/?pago=ok` redirige ahí. Con 3 o más niños no hay pago en línea: Build da seguimiento.
+  - **Pagar después:** botón al lado de "Pagar ahora". Guarda el registro con `pago` = "Pago pendiente (24 h): ₡X. Enviar link de ONVO por WhatsApp" y no llama a ONVO. Build crea el link en el panel de ONVO y lo manda por WhatsApp; si no se paga en 24 h, el cupo se libera. El plazo es `RESERVA_HORAS` en `CampPage.tsx`.
+  - **Formularios incompletos:** si la persona escribió nombre y un teléfono o correo válido y se va sin enviar (cierra el formulario, la pestaña o cambia de app), se guarda lo que llenó en el formulario `camp-incompleto` de Netlify Forms (campos `faltaba` y `momento`). No manda correo ni va a Notion. Cuenta para el límite mensual de envíos de Netlify Forms.
   - **Planes y precios:** `src/lib/camp-pago.ts`, que lee `precios` de `camp-data.json` (1 semana = `precios.semana`; Diciembre, Enero y Temporada = `paquetes`). Total = precio del plan × niños.
   - **Llave:** variable de entorno `ONVO_SECRET_KEY` en Netlify (Site configuration > Environment variables). Nunca en el repo. Con `onvo_test_secret_key_...` los pagos son de prueba; para cobrar de verdad, cambiarla por `onvo_live_secret_key_...` y volver a publicar.
   - **Montos:** se envían en céntimos (`CENTIMOS = 100` en la función), confirmado con un checkout de prueba.
@@ -40,11 +41,13 @@ Se cargan en todas las páginas desde `src/components/analytics/Analytics.tsx`. 
 | `NEXT_PUBLIC_META_PIXEL_ID` | Meta Events Manager > Orígenes de datos | `123456789012345` |
 | `NEXT_PUBLIC_GA4_ID` | GA4 > Administrar > Flujos de datos > Web | `G-ABC123XYZ` |
 | `NEXT_PUBLIC_CLARITY_ID` | Clarity > Settings > Overview | `abcd1234ef` |
+| `NEXT_PUBLIC_GOOGLE_ADS_ID` | Google Ads > Objetivos > Conversiones > "Compra camp" > Configuración de la etiqueta (`send_to`, antes de la `/`) | `AW-123456789` |
+| `NEXT_PUBLIC_GOOGLE_ADS_COMPRA_LABEL` | Mismo `send_to`, después de la `/` | `AbCdEfGhIjK` |
 
 Eventos (función `track()` en `src/lib/analytics.ts`; nombre en Meta → nombre en GA4):
 - `Lead` → `generate_lead`: formulario de la landing y del camp enviados.
 - `Contact` → `contact`: clic en cualquier link de WhatsApp.
-- `InitiateCheckout` → `begin_checkout` y `Purchase` → `purchase` (con monto en CRC): pago con ONVO (rama `pago-onvo-camp`).
+- `InitiateCheckout` → `begin_checkout` y `Purchase` → `purchase` (con monto en CRC): pago con ONVO; `Purchase` se envía en `/camp/gracias` y además va a Google Ads como conversión "Compra" si están las dos variables de Ads.
 
 No hay aviso de cookies: los scripts cargan directo (decisión del cliente, nov 2026).
 

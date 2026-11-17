@@ -1,15 +1,19 @@
-// Marketing measurement: Meta Pixel, GA4 and Microsoft Clarity.
+// Marketing measurement: Meta Pixel, GA4, Google Ads and Microsoft Clarity.
 // IDs come from Netlify environment variables (public IDs, not secrets). Each tool loads only if its ID is set:
 //   NEXT_PUBLIC_META_PIXEL_ID   e.g. 123456789012345
 //   NEXT_PUBLIC_GA4_ID          e.g. G-ABC123XYZ
 //   NEXT_PUBLIC_CLARITY_ID      e.g. abcd1234ef
+//   NEXT_PUBLIC_GOOGLE_ADS_ID            e.g. AW-123456789
+//   NEXT_PUBLIC_GOOGLE_ADS_COMPRA_LABEL  e.g. AbCdEfGhIjK (the part after "/" in send_to of the "Compra" conversion)
 export const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID?.trim() || '';
 export const GA4_ID = process.env.NEXT_PUBLIC_GA4_ID?.trim() || '';
 export const CLARITY_ID = process.env.NEXT_PUBLIC_CLARITY_ID?.trim() || '';
+export const ADS_ID = (process.env.NEXT_PUBLIC_GOOGLE_ADS_ID?.trim() || '').replace(/^(\d)/, 'AW-$1'); // accepts "123456789" too
+const ADS_COMPRA_LABEL = process.env.NEXT_PUBLIC_GOOGLE_ADS_COMPRA_LABEL?.trim().replace(/^.*\//, '') || '';
 /** True if any tool is on; the footer notice only shows then. */
-export const MEDICION_ACTIVA = !!(META_PIXEL_ID || GA4_ID || CLARITY_ID);
+export const MEDICION_ACTIVA = !!(META_PIXEL_ID || GA4_ID || ADS_ID || CLARITY_ID);
 /** One-line cookie notice in the landing and camp footers (no banner, by client decision). */
-export const AVISO_COOKIES = 'Usamos cookies de Meta, Google Analytics y Microsoft Clarity para medir visitas, entender cómo se usa el sitio y mejorar nuestros anuncios.';
+export const AVISO_COOKIES = 'Usamos cookies de Meta, Google (Analytics y Ads) y Microsoft Clarity para medir visitas, entender cómo se usa el sitio y mejorar nuestros anuncios.';
 
 type Fbq = (cmd: 'track' | 'trackCustom' | 'init', name: string, params?: Record<string, unknown>) => void;
 type Gtag = (cmd: 'event' | 'config' | 'js', name: unknown, params?: Record<string, unknown>) => void;
@@ -26,7 +30,7 @@ function whenReady(ready: () => boolean, fn: () => void, tries = 30) {
   if (tries > 0) setTimeout(() => whenReady(ready, fn, tries - 1), 200);
 }
 
-/** Sends a conversion to Meta and GA4 (only the tools whose ID is set). `value` is in colones. */
+/** Sends a conversion to Meta, GA4 and, for Purchase, Google Ads (only the tools whose ID is set). `value` is in colones. */
 export function track(evento: Evento, data: { value?: number; content_name?: string; num_items?: number } = {}) {
   if (typeof window === 'undefined') return;
   const money = data.value != null ? { value: data.value, currency: 'CRC' } : {};
@@ -35,5 +39,8 @@ export function track(evento: Evento, data: { value?: number; content_name?: str
   }));
   if (GA4_ID) whenReady(() => !!window.gtag, () => window.gtag!('event', GA4_NAME[evento], {
     ...money, ...(data.content_name ? { item_name: data.content_name } : {}),
+  }));
+  if (evento === 'Purchase' && ADS_ID && ADS_COMPRA_LABEL) whenReady(() => !!window.gtag, () => window.gtag!('event', 'conversion', {
+    send_to: `${ADS_ID}/${ADS_COMPRA_LABEL}`, ...money,
   }));
 }
