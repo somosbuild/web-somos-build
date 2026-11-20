@@ -8,6 +8,7 @@ import { ButtonLink, Icon, Logo, Shape } from '@/components/ds';
 import { asset } from '@/lib/asset';
 import { CAMP, EDADES, FOTO, HORARIO, LUGAR, RANGO, tituloPartes } from '@/lib/camp';
 import { FotoPlaceholder, GrupoChip, useInscripciones } from './parts';
+import PAGINA from '@/content/camp-pagina.json';
 
 const CAMP_HREF = '/camp/';
 const ss = {
@@ -24,7 +25,23 @@ export function BarraAnuncio({ variant = 'landing', onCta }: { variant?: 'landin
   if (cerrada) return null;
   const b = CAMP.sitio.barra_anuncio;
   const enCamp = variant === 'camp';
-  const texto = !enCamp ? b.texto + ' · ' + RANGO : insc.abiertas ? 'Inscripciones abiertas · ' + RANGO : 'Inscripciones abren el ' + CAMP.inscripciones.abren_texto;
+  // Registration open (both pages): "INSCRIPCIONES ABIERTAS · Primera semana: … · Cupos limitados por grupo · Registrarme →".
+  // In /camp the button opens the form; in the landing it goes to the form section of /camp.
+  if (insc.abiertas) {
+    const ab = PAGINA.barra_abiertas;
+    const cta = ab.cta + ' →';
+    return <div role="region" aria-label="Anuncio" className={s.bar}>
+      <div className={s.barInner}>
+        <span className={s.barTagOpen}>{ab.etiqueta}</span>
+        <span className={s.barText}>Primera semana: {CAMP.semanas[0].fechas}<span className={s.barSep}> · </span><span className={s.barCupos}>{ab.cupos}</span></span>
+        {!enCamp ? <Link href={CAMP_HREF + '#registro'} className={s.barLink}>{cta}</Link>
+          : insc.mode === 'form' ? <button type="button" className={s.barLink} onClick={onCta}>{cta}</button>
+          : <a href={insc.href} target="_blank" rel="noopener noreferrer" className={s.barLink}>{cta}</a>}
+        <button type="button" aria-label="Cerrar anuncio" className={s.barClose} onClick={() => { ss.set(KEY); setCerrada(true); }}>×</button>
+      </div>
+    </div>;
+  }
+  const texto = !enCamp ? b.texto + ' · ' + RANGO : 'Inscripciones abren el ' + CAMP.inscripciones.abren_texto;
   const cta = (enCamp ? insc.label : b.cta) + ' →';
   return <div role="region" aria-label="Anuncio" className={s.bar}>
     <div className={s.barInner}>

@@ -2,7 +2,7 @@
 // The secret key lives only in Netlify (Site settings > Environment variables > ONVO_SECRET_KEY);
 // it is never sent to the browser. The amount is recomputed here from camp-data.json.
 // API: POST https://api.onvopay.com/v1/checkout/sessions/one-time-link (Bearer secret key).
-import { MAX_NINOS_PAGO, planPago, totalPago } from '../../src/lib/camp-pago';
+import { MAX_NINOS_PAGO, describirSeleccion, leerSeleccion, precioPorNino, seleccionId, totalPago } from '../../src/lib/camp-pago';
 
 const ONVO_URL = 'https://api.onvopay.com/v1/checkout/sessions/one-time-link';
 /** ONVO amounts are in céntimos (minor units): ₡85.000 -> 8500000. Confirmed with a test checkout. */
@@ -36,9 +36,11 @@ export default async (req: Request) => {
   let body: Record<string, unknown>;
   try { body = await req.json(); } catch { return json(400, { error: 'Datos inválidos' }); }
 
-  const planId = texto(body.plan, 20), ninos = Number(body.ninos);
-  const plan = planPago(planId), total = totalPago(planId, ninos);
-  if (!plan || total == null) return json(400, { error: `Plan o cantidad de niños inválida (máximo ${MAX_NINOS_PAGO})` });
+  // seleccion: "s1-2-3" (weeks) or "d2026-12-08" (single day); validated and priced here.
+  const sel = leerSeleccion(texto(body.seleccion, 40)), ninos = Number(body.ninos);
+  const total = totalPago(sel, ninos);
+  if (!sel || total == null) return json(400, { error: `Semanas, día o cantidad de niños inválida (máximo ${MAX_NINOS_PAGO})` });
+  const selId = seleccionId(sel), desc = describirSeleccion(sel);
 
   const nombre = texto(body.nombre, 80), telefono = texto(body.whatsapp, 30), email = texto(body.email, 120);
   if (!nombre || telefono.replace(/\D/g, '').length < 8) return json(400, { error: 'Faltan nombre o teléfono' });
@@ -50,14 +52,14 @@ export default async (req: Request) => {
     customerName: nombre,
     ...(telefonoE164(telefono) ? { customerPhone: telefonoE164(telefono) } : {}),
     ...(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? { customerEmail: email } : {}),
-    redirectUrl: `${origin}/camp/gracias/?monto=${total}&plan=${plan.id}`, // thank-you page; monto/plan: Purchase conversion (Meta, GA4, Google Ads)
+    redirectUrl: `${origin}/camp/gracias/?monto=${total}&plan=${selId}`, // thank-you page; monto/plan: Purchase conversion (Meta, GA4, Google Ads)
     lineItems: [{
       quantity: ninos,
-      unitAmount: plan.precio * CENTIMOS,
+      unitAmount: precioPorNino(sel) * CENTIMOS,
       currency: 'CRC',
-      description: `Build Summer Camp · ${plan.label} (por niño)`,
+      description: `Build Summer Camp · ${desc} (por niño)`,
     }],
-    metadata: { origen: 'web-camp', plan: plan.id, ninos: String(ninos), ninos_nombres: nombresNinos, total_crc: String(total) },
+    metadata: { origen: 'web-camp', plan: selId, detalle: desc, ninos: String(ninos), ninos_nombres: nombresNinos, total_crc: String(total) },
   };
 
   try {
