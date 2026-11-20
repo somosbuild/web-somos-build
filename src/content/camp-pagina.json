@@ -1,0 +1,117 @@
+{
+  "barra_abiertas": {
+    "etiqueta": "Inscripciones abiertas",
+    "cupos": "Cupos limitados por grupo",
+    "cta": "Registrarme"
+  },
+  "hero_globos": [
+    {
+      "pilar": "family",
+      "texto": "Equipo liderado por una psicóloga"
+    },
+    {
+      "pilar": "community",
+      "texto": "Merienda y almuerzo incluidos"
+    }
+  ],
+  "calendario": {
+    "eyebrow": "Calendario",
+    "titulo_a": "Seis semanas, seis aventuras.",
+    "titulo_b": "Vení a una o a todas.",
+    "texto": "Cada semana tiene su propia temática. Elegí las que mejor calcen con tus vacaciones.",
+    "pausa": {
+      "titulo": "Pausa de fin de año",
+      "texto": "No hay camp en estas fechas."
+    }
+  },
+  "seguridad": {
+    "eyebrow": "Seguridad y cuidado",
+    "titulo_a": "Tu hijo, cuidado",
+    "titulo_b": "en cada momento.",
+    "tarjetas": [
+      {
+        "pilar": "community",
+        "titulo": "Retiro solo con cédula",
+        "texto": "Solo las personas de tu lista, con cédula y firma de salida."
+      },
+      {
+        "pilar": "skills",
+        "titulo": "Una sola entrada y salida",
+        "texto": "Zonas delimitadas con vallas bajas."
+      },
+      {
+        "pilar": "joy",
+        "titulo": "Camiseta por grupo",
+        "texto": "Un color por grupo y supervisamos a los niños en cada traslado."
+      },
+      {
+        "pilar": "community",
+        "titulo": "Ficha médica",
+        "texto": "Alergias y cuidados especiales, registrados en la inscripción."
+      },
+      {
+        "pilar": "skills",
+        "titulo": "Consentimiento de imagen",
+        "texto": "Sin tu firma, tu hijo no aparece en fotos."
+      }
+    ]
+  },
+  "quien_cuida": {
+    "eyebrow": "¿Quién cuida a tus hijos?",
+    "titulo_a": "Un equipo liderado por",
+    "titulo_b": "una psicóloga.",
+    "nombre": "Marisol Sánchez",
+    "rol": "Psicóloga y cofundadora de Build",
+    "parrafos": [
+      "Marisol Sánchez, psicóloga y cofundadora de Build, guía al equipo que acompaña a los niños cada mañana."
+    ],
+    "_frase": "Pendiente: frase de Marisol sobre cómo cuidan a los niños en el camp (en la propuesta de la consultora es un placeholder). Cuando esté, agregar en 'frase'.",
+    "frase": ""
+  },
+  "inscripcion": {
+    "eyebrow": "Cómo funciona la inscripción",
+    "titulo_a": "Cuatro pasos y",
+    "titulo_b": "tu cupo está listo.",
+    "pasos": [
+      {
+        "titulo": "Te registrás",
+        "texto": "Elegís tus semanas y los datos de cada niño."
+      },
+      {
+        "titulo": "Te escribimos",
+        "texto": "Por WhatsApp, para confirmar fechas y grupo."
+      },
+      {
+        "titulo": "Confirmás con el pago",
+        "texto": "En línea con ONVO: ahora mismo o con el link que te enviamos por WhatsApp."
+      },
+      {
+        "titulo": "Llenás la ficha",
+        "texto": "Ficha médica y consentimiento de imagen."
+      }
+    ]
+  },
+  "donde": {
+    "eyebrow": "Dónde es",
+    "titulo_a": "En City Place,",
+    "titulo_b": "Santa Ana.",
+    "texto": "Actividades en las plazoletas y el parque de City Place, y alianzas con comercios del centro, como Studio Cinemas.",
+    "mapa_q": "City Place Santa Ana Costa Rica",
+    "aliados_titulo": "Con los vecinos de City Place",
+    "aliados": [
+      "Studio Cinemas",
+      "Ikua",
+      "Vine por Vino",
+      "506 Fitness"
+    ],
+    "punto": {
+      "titulo": "Punto de entrega y recogida",
+      "texto": "Plazoleta Build, City Place"
+    }
+  },
+  "faq_portada": [
+    "¿Qué tienen que llevar?",
+    "¿Los papás se quedan?",
+    "¿Puede ir un solo día?"
+  ]
+}

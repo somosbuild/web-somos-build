@@ -400,7 +400,7 @@
     "formato_numeros": "es-CR (85.000)",
     "semana": 85000,
     "aplica_a": "Por niño por semana, todos los grupos",
-    "incluye": ["Merienda", "Almuerzo", "Materiales", "Póliza de accidentes"],
+    "incluye": ["Merienda", "Almuerzo", "Materiales"],
     "paquetes": [
       { "id": "diciembre", "nombre": "Diciembre", "semanas": [1, 2], "precio": 160000 },
       { "id": "enero", "nombre": "Enero", "semanas": [3, 4, 5, 6], "precio": 305000 },
@@ -428,7 +428,6 @@
     { "p": "¿Qué tienen que llevar?", "llevar": true },
     { "p": "¿Quién puede recoger a mi hijo?", "r": "Solo las personas de la lista que nos das, con cédula y firma de salida. Hay una sola entrada y salida." },
     { "p": "¿Cómo se mueven por City Place?", "r": "Cada zona tiene vallas bajas, cada grupo usa un color de camiseta y contamos a los niños en cada traslado." },
-    { "p": "¿Qué pasa si se lastima?", "r": "Contamos con seguro en caso de accidentes." },
     { "p": "¿Y las alergias?", "r": "En la inscripción llenás la ficha médica." },
     { "p": "¿Puede ir un solo día?", "r": "Sí, a ₡22.000, solo si hay cupo esa semana.", "pendiente_precio": true },
     { "p": "¿Salen fotos de mi hijo?", "r": "Solo si firmás el consentimiento de imagen en la inscripción. Sin él, no sale en fotos ni en Build Noticias." }
