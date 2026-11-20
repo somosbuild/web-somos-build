@@ -399,6 +399,8 @@
     "simbolo": "₡",
     "formato_numeros": "es-CR (85.000)",
     "semana": 85000,
+    "por_cantidad_semanas": { "1": 85000, "2": 160000, "3": 230000, "4": 305000, "5": 380000, "6": 450000 },
+    "nota_por_cantidad": "Precio por niño según cuántas semanas elige, sea cual sea la combinación (decisión nov 2026).",
     "aplica_a": "Por niño por semana, todos los grupos",
     "incluye": ["Merienda", "Almuerzo", "Materiales"],
     "paquetes": [

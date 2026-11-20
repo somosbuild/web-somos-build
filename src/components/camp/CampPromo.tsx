@@ -34,7 +34,7 @@ export function BarraAnuncio({ variant = 'landing', onCta }: { variant?: 'landin
       <div className={s.barInner}>
         <span className={s.barTagOpen}>{ab.etiqueta}</span>
         <span className={s.barText}>Primera semana: {CAMP.semanas[0].fechas}<span className={s.barSep}> · </span><span className={s.barCupos}>{ab.cupos}</span></span>
-        {!enCamp ? <Link href={CAMP_HREF + '#inscripcion'} className={s.barLink}>{cta}</Link>
+        {!enCamp ? <Link href={CAMP_HREF + '#registro'} className={s.barLink}>{cta}</Link>
           : insc.mode === 'form' ? <button type="button" className={s.barLink} onClick={onCta}>{cta}</button>
           : <a href={insc.href} target="_blank" rel="noopener noreferrer" className={s.barLink}>{cta}</a>}
         <button type="button" aria-label="Cerrar anuncio" className={s.barClose} onClick={() => { ss.set(KEY); setCerrada(true); }}>×</button>

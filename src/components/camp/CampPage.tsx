@@ -3,10 +3,12 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import Link from 'next/link';
 import s from './camp.module.css';
-import { Button, ButtonLink, Checkbox, Dialog, Input, Logo, PillarTag, Select, Shape } from '@/components/ds';
+import { Button, ButtonLink, Input, Logo, PillarTag, Select, Shape } from '@/components/ds';
 import { asset } from '@/lib/asset';
 import { track } from '@/lib/analytics';
-import { PLANES_PAGO, planPago, totalPago } from '@/lib/camp-pago';
+import {
+  PRECIO_DIA, PRECIO_TEMPORADA, SEMANAS, describirSeleccion, diaDeCamp, precioPorNino, precioSemanas, seleccionId, totalPago, type Seleccion,
+} from '@/lib/camp-pago';
 import { CAMP, FOTO, WA_LINK, crc, grupoPorEdad, tituloPartes } from '@/lib/camp';
 import PAGINA from '@/content/camp-pagina.json';
 import { BarraAnuncio } from './CampPromo';
@@ -37,6 +39,7 @@ const Eyebrow = ({ children, c }: { children: string; c?: string }) => <span cla
 /** Pillar mark as a small icon: community = dots, skills = arrow, joy = asterisk, family = heart (brand shapes). */
 const PILAR: Record<string, [string, string]> = {
   community: ['04', 'var(--build-orange)'], skills: ['03', 'var(--build-yellow)'], joy: ['01', 'var(--build-olive)'], family: ['02', 'var(--build-celeste)'],
+  lego: ['52', 'var(--build-orange-deep)'],
 };
 const Pilar = ({ k, size = 26 }: { k: string; size?: number }) => { const [n, c] = PILAR[k] ?? PILAR.community; return <Shape name={n} size={size} color={c} className={s.pilarIcon} />; };
 
@@ -50,6 +53,8 @@ const dia = (iso: string, delta = 0) => { const d = new Date(iso + 'T12:00:00Z')
 const corto = (d: Date) => `${d.getUTCDate()} ${MES[d.getUTCMonth()]}`;
 /** "7 – 11 dic" (or "29 dic – 2 ene" across months). */
 const rangoSemana = (a: string, b: string) => { const x = dia(a), y = dia(b); return x.getUTCMonth() === y.getUTCMonth() ? `${x.getUTCDate()} – ${corto(y)}` : `${corto(x)} – ${corto(y)}`; };
+/** Photo of Sol Sánchez (who leads the camp), as WebP in two sizes. */
+const FOTO_SOL = { full: '/fotos/sol-sanchez.webp', small: '/fotos/sol-sanchez-480.webp' };
 const SEMANA_COLOR = ['var(--build-celeste)', 'var(--build-olive)', 'var(--build-yellow)'];
 const MESES = CAMP.semanas.reduce<{ mes: string; semanas: typeof CAMP.semanas }[]>((acc, w) => {
   const mes = MES_LARGO[dia(w.inicio).getUTCMonth()];
@@ -60,8 +65,13 @@ const MESES = CAMP.semanas.reduce<{ mes: string; semanas: typeof CAMP.semanas }[
 
 export function CampPage() {
   const insc = useInscripciones();
-  const [formOpen, setFormOpen] = useState(false);
-  const openForm = () => setFormOpen(true);
+  // Every "Registrarme" button scrolls to the registration form (no pop-up: the full form is easier to fill).
+  const openForm = () => {
+    const el = document.getElementById('registro');
+    if (!el) return;
+    el.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+    setTimeout(() => (el.querySelector('input') as HTMLInputElement | null)?.focus({ preventScroll: true }), 500);
+  };
   // Old ONVO return address (/camp/?pago=ok, checkouts created before /camp/gracias existed): forward there.
   useEffect(() => {
     const q = new URLSearchParams(location.search);
@@ -201,7 +211,7 @@ export function CampPage() {
       <section id="equipo" className={s.white}>
         <div className={s.quien}>
           <div className={s.quienFoto}>
-            <FotoPlaceholder frame="celeste" ratio="4 / 5" desc={`${P.quien_cuida.nombre}, ${P.quien_cuida.rol}`} />
+            <FotoPlaceholder frame="celeste" ratio="3 / 4" src={FOTO_SOL} desc={`${P.quien_cuida.nombre}, ${P.quien_cuida.rol}`} />
           </div>
           <div className={s.quienCopy}>
             <Eyebrow c="var(--build-orange-deep)">{P.quien_cuida.eyebrow}</Eyebrow>
@@ -241,9 +251,9 @@ export function CampPage() {
             </ol>
           </div>
           {insc.mode === 'form'
-            ? <div className={cx(s.card, s.inscForm)}>
+            ? <div id="registro" className={cx(s.card, s.inscForm)}>
                 <h3 className={s.inscFormTitle}>Registrate al camp</h3>
-                <InteresForm abiertas={insc.abiertas} modo="inline" />
+                <InteresForm abiertas={insc.abiertas} />
               </div>
             : <div className={s.heroCtas}><Cta size="lg" /></div>}
         </div>
@@ -268,7 +278,10 @@ export function CampPage() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={asset('/brand/logos/cityplace.png')} alt="City Place, centro urbano, Santa Ana" width={304} height={65} className={s.cityLogo} />
             </div>
-            <ul className={s.aliados}>{P.donde.aliados.map(a => <li key={a}>{a}</li>)}</ul>
+            <ul className={s.aliados}>{P.donde.aliados.map(a => <li key={a.nombre} className={cx(a.logo && s.aliadoLogo, a.oscuro && s.aliadoOscuro)}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              {a.logo ? <img src={asset(a.logo)} alt={a.nombre} /> : a.nombre}
+            </li>)}</ul>
           </div>
           <div id="preguntas" className={s.faqCol}>
             <h2 className={s.h2sm} style={{ '--c': 'var(--build-orange)' } as Vars}>Preguntas <strong>frecuentes</strong></h2>
@@ -283,7 +296,6 @@ export function CampPage() {
       </section>
     </main>
 
-    {formOpen && <InteresForm abiertas={insc.abiertas} modo="dialog" onClose={() => setFormOpen(false)} />}
   </div>;
 }
 
@@ -301,57 +313,67 @@ function Faq() {
 }
 
 /**
- * Camp registration (before opening day: "Avisame cuando abran"). Submissions go to Netlify Forms
- * (form "camp-interes", declared in public/__forms.html). Once registration is open, with a plan and
- * up to MAX_NINOS_PAGO children, the form is saved first and then the family goes to ONVO checkout
- * (netlify/functions/onvo-checkout.mts). Plans and prices: src/lib/camp-pago.ts (from camp-data.json).
+ * Camp registration form, always open in the "Inscripción" section (every "Registrarme" button scrolls here).
+ * Submissions go to Netlify Forms (form "camp-interes", declared in public/__forms.html). Once registration
+ * is open, with weeks (or a single day) chosen and up to MAX_NINOS_PAGO children, the form is saved first
+ * and then the family pays with ONVO (netlify/functions/onvo-checkout.mts) or chooses "Pagar después"
+ * (/camp/gracias2). Prices: src/lib/camp-pago.ts (from camp-data.json).
  */
-/** How many children: "3+" collects 3 and Build follows up for the rest. */
-const CANTIDADES = [{ value: '1', n: 1 }, { value: '2', n: 2 }, { value: '3+', n: 3 }];
 const EDAD_OPTS = Array.from({ length: CAMP.camp.edades.max - CAMP.camp.edades.min + 1 }, (_, i) => {
-  const e = CAMP.camp.edades.min + i;
-  return { value: String(e), label: `${e} años` };
+  const e = CAMP.camp.edades.min + i, g = grupoPorEdad(e);
+  return { value: String(e), label: `${e} años${g ? ' · ' + g.nombre : ''}` };
 });
 type Nino = { nombre: string; edad: string };
 const NINO_VACIO: Nino = { nombre: '', edad: '' };
-/** "Reservar sin pagar" holds the spot this long; Build sends the ONVO payment link by WhatsApp. */
+/** Up to 3 children in the form; with 3, Build follows up for payment (MAX_NINOS_PAGO = 2). */
+const MAX_NINOS_FORM = 3;
+/** "Pagar después" holds the spot this long; Build sends the ONVO payment link by WhatsApp. */
 const RESERVA_HORAS = 24;
-/** Last abandoned-form data saved in this visit (so closing and reopening doesn't save the same twice). */
+/** Last abandoned-form data saved in this visit (so the same data is never saved twice). */
 let ultimoIncompleto = '';
+const TODAS = SEMANAS.map(w => w.n);
+const FECHA_MIN = SEMANAS[0].inicio, FECHA_MAX = SEMANAS[SEMANAS.length - 1].fin;
 
-/** modo "dialog": the pop-up (buttons in its fixed footer, × to close). modo "inline": always open inside the page. */
-function InteresForm({ abiertas, modo, onClose }: { abiertas: boolean; modo: 'dialog' | 'inline'; onClose?: () => void }) {
-  const formId = `camp-interes-form-${modo}`;
-  const [f, setF] = useState({ nombre: '', whatsapp: '', email: '', plan: '' });
-  const [cantidad, setCantidad] = useState('1');
-  // Kept for all 3 slots, so lowering the count and raising it again doesn't lose what was typed.
-  const [ninos, setNinos] = useState<Nino[]>([NINO_VACIO, NINO_VACIO, NINO_VACIO]);
+function InteresForm({ abiertas }: { abiertas: boolean }) {
+  const formId = 'camp-interes-form';
+  const [f, setF] = useState({ nombre: '', whatsapp: '', email: '' });
+  const [ninos, setNinos] = useState<Nino[]>([NINO_VACIO]);
+  // Selection: some weeks (all = full season) or a single day (date shown only then).
+  const [semanas, setSemanas] = useState<number[]>([]);
+  const [diaSuelto, setDiaSuelto] = useState(false);
+  const [fecha, setFecha] = useState('');
   const [sending, setSending] = useState(false);
   const [failed, setFailed] = useState<false | 'form' | 'pago'>(false);
-  const n = CANTIDADES.find(c => c.value === cantidad)!.n;
-  const visibles = ninos.slice(0, n);
+  const n = ninos.length;
   const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email.trim());
-  const invalid = !f.nombre.trim() || f.whatsapp.replace(/\D/g, '').length < 8 || !emailOk || visibles.some(k => !k.nombre.trim() || !k.edad);
-  const plan = planPago(f.plan);
-  // null = no online payment (registration not open, no plan, or more children than MAX_NINOS_PAGO).
-  const total = abiertas ? totalPago(f.plan, n) : null;
+  const fechaOk = !diaSuelto || diaDeCamp(fecha);
+  const sel: Seleccion | null = diaSuelto ? (diaDeCamp(fecha) ? { tipo: 'dia', fecha } : null)
+    : semanas.length ? { tipo: 'semanas', semanas: [...semanas].sort((a, b) => a - b) } : null;
+  const invalid = !f.nombre.trim() || f.whatsapp.replace(/\D/g, '').length < 8 || !emailOk
+    || ninos.some(k => !k.nombre.trim() || !k.edad) || (diaSuelto && !fechaOk);
+  // null = no online payment (registration not open, nothing chosen, or more children than MAX_NINOS_PAGO).
+  const total = abiertas ? totalPago(sel, n) : null;
+  const detalle = sel ? `${describirSeleccion(sel)} (${crc(precioPorNino(sel))} por niño)` : '';
+  const temporada = !diaSuelto && semanas.length === TODAS.length;
   const setNino = (i: number, patch: Partial<Nino>) => setNinos(list => list.map((k, j) => (j === i ? { ...k, ...patch } : k)));
+  const toggleSemana = (w: number) => { setDiaSuelto(false); setSemanas(s => s.includes(w) ? s.filter(x => x !== w) : [...s, w]); };
+  const toggleTemporada = () => { setDiaSuelto(false); setSemanas(temporada ? [] : TODAS); };
+  const toggleDia = () => { setSemanas([]); setDiaSuelto(d => !d); };
 
-  // Abandoned form: if they typed a name plus a valid phone or email and leave without sending
-  // (×, "Ahora no", tap outside, Esc, close the tab or switch apps), save what they typed in a separate
-  // Netlify form "camp-incompleto". No email to the family and nothing in Notion. Not sent once the
-  // full registration went out; the same data is never saved twice.
+  // Abandoned form: if they typed a name plus a valid phone or email and leave the page without sending
+  // (close the tab or switch apps), save what they typed in a separate Netlify form "camp-incompleto".
+  // No email to the family and nothing in Notion. Not sent once the full registration went out.
   const enviado = useRef(false);
   const snapshot = useRef<Record<string, string> | null>(null);
   const faltan = [
     !f.nombre.trim() && 'nombre', f.whatsapp.replace(/\D/g, '').length < 8 && 'teléfono', !emailOk && 'correo',
-    ...visibles.flatMap((k, i) => [!k.nombre.trim() && `nombre del niño ${i + 1}`, !k.edad && `edad del niño ${i + 1}`]),
-    abiertas && !f.plan && 'plan',
+    ...ninos.flatMap((k, i) => [!k.nombre.trim() && `nombre del niño ${i + 1}`, !k.edad && `edad del niño ${i + 1}`]),
+    abiertas && !sel && (diaSuelto ? 'fecha del día suelto' : 'semanas'),
   ].filter(Boolean) as string[];
   snapshot.current = f.nombre.trim() && (f.whatsapp.replace(/\D/g, '').length >= 8 || emailOk) ? {
     nombre: f.nombre.trim(), whatsapp: f.whatsapp.trim(), email: f.email.trim(),
-    plan: plan ? `${plan.label} (${crc(plan.precio)} por niño)` : '', ninos: cantidad,
-    ninos_detalle: visibles.map(k => [k.nombre.trim(), k.edad && `${k.edad} años`].filter(Boolean).join(', ')).filter(Boolean).join(' | '),
+    plan: detalle, ninos: String(n),
+    ninos_detalle: ninos.map(k => [k.nombre.trim(), k.edad && `${k.edad} años`].filter(Boolean).join(', ')).filter(Boolean).join(' | '),
     total: total != null ? crc(total) : '',
     faltaba: faltan.length ? faltan.join(', ') : 'Nada: llenó todo pero no envió',
   } : null;
@@ -368,7 +390,6 @@ function InteresForm({ abiertas, modo, onClose }: { abiertas: boolean; modo: 'di
     } catch {}
     fetch(url, { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body }).catch(() => {});
   };
-  const cerrar = () => { guardarIncompleto('Cerró el formulario'); onClose?.(); };
   useEffect(() => {
     const salir = () => guardarIncompleto('Salió de la página');
     const oculta = () => { if (document.visibilityState === 'hidden') guardarIncompleto('Cambió de app o pestaña'); };
@@ -378,18 +399,18 @@ function InteresForm({ abiertas, modo, onClose }: { abiertas: boolean; modo: 'di
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  /** pagar=false: "reservar y pagar después" (spot held RESERVA_HORAS, Build sends an ONVO link by WhatsApp). */
+  /** pagar=false: "Pagar después" (spot held RESERVA_HORAS, Build sends an ONVO link by WhatsApp). */
   const submit = async (pagar = true) => {
     if (invalid) return;
     const enLinea = pagar && total != null;
     setSending(true); setFailed(false);
-    // Only the visible children are sent; the group is sent already resolved for the Netlify panel.
     const data: Record<string, string> = {
       'form-name': 'camp-interes', nombre: f.nombre, whatsapp: f.whatsapp, email: f.email.trim(),
-      plan: plan ? `${plan.label} (${crc(plan.precio)} por niño)` : '', ninos: cantidad,
+      plan: detalle, semanas: sel?.tipo === 'semanas' ? sel.semanas.join(', ') : '', dia: sel?.tipo === 'dia' ? sel.fecha : '',
+      ninos: n >= MAX_NINOS_FORM ? `${MAX_NINOS_FORM}+` : String(n),
       pago: enLinea ? `ONVO iniciado: ${crc(total!)}` : total != null ? `Pago pendiente (${RESERVA_HORAS} h): ${crc(total)}. Enviar link de ONVO por WhatsApp` : 'Sin pago en línea',
     };
-    visibles.forEach((k, i) => {
+    ninos.forEach((k, i) => {
       data[`nino${i + 1}_nombre`] = k.nombre.trim();
       data[`nino${i + 1}_edad`] = k.edad;
       data[`nino${i + 1}_grupo`] = grupoPorEdad(Number(k.edad))?.nombre ?? '';
@@ -405,23 +426,24 @@ function InteresForm({ abiertas, modo, onClose }: { abiertas: boolean; modo: 'di
       setFailed('form'); setSending(false); return;
     }
     enviado.current = true;
+    const nombreEvento = 'Camp' + (sel ? ': ' + describirSeleccion(sel) : '');
     if (!enLinea) {
       // "Pagar después" (or no online payment): thank-you page /camp/gracias2, which also sends the Lead
       // conversion (sent there, not here, so leaving this page can't drop it).
       const q = new URLSearchParams({ tipo: total != null ? 'reserva' : 'registro', ninos: String(n) });
       if (total != null) q.set('monto', String(total));
-      if (plan) q.set('plan', plan.id);
+      if (sel) q.set('plan', seleccionId(sel));
       location.href = asset('/camp/gracias2/') + '?' + q;
       return;
     }
-    track('Lead', { content_name: 'Camp' + (plan ? ': ' + plan.label : ''), num_items: n, ...(total != null ? { value: total } : {}) });
+    track('Lead', { content_name: nombreEvento, num_items: n, value: total! });
     // Registration saved; now create the ONVO checkout (the server recomputes the amount) and go pay.
-    track('InitiateCheckout', { value: total!, content_name: 'Camp: ' + plan!.label, num_items: n });
+    track('InitiateCheckout', { value: total!, content_name: nombreEvento, num_items: n });
     try {
       const res = await fetch(asset('/api/onvo-checkout'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan: f.plan, ninos: n, nombre: f.nombre, whatsapp: f.whatsapp, email: f.email, nombres_ninos: visibles.map(k => k.nombre.trim()) }),
+        body: JSON.stringify({ seleccion: seleccionId(sel!), ninos: n, nombre: f.nombre, whatsapp: f.whatsapp, email: f.email, nombres_ninos: ninos.map(k => k.nombre.trim()) }),
       });
       const out = await res.json().catch(() => ({})) as { url?: string };
       if (!res.ok || !out.url) throw new Error(String(res.status));
@@ -431,64 +453,67 @@ function InteresForm({ abiertas, modo, onClose }: { abiertas: boolean; modo: 'di
     }
   };
 
-  // With online payment: "Pagar después" next to "Pagar ₡X ahora". In the pop-up they live in its fixed footer
-  // (always visible; `form` links the submit button to the form) and closing is the × in the corner.
   const conPago = total != null;
-  const nota = conPago ? `Pagar después: te guardamos el cupo ${RESERVA_HORAS} h y te enviamos el link de pago por WhatsApp.` : undefined;
-  const botones = <>
-    {conPago
-      ? <Button variant="secondary" className={s.payBtn} disabled={invalid || sending} onClick={() => submit(false)}>Pagar después</Button>
-      : modo === 'dialog' && <Button variant="ghost" onClick={cerrar}>Ahora no</Button>}
-    <Button type="submit" form={formId} className={conPago || modo === 'inline' ? s.payBtn : undefined} disabled={invalid || sending}>{sending ? (conPago ? 'Un momento…' : 'Enviando…') : conPago ? <>Pagar {crc(total)}<span className={s.payNow}> ahora</span></> : abiertas ? 'Enviar registro' : 'Avisame'}</Button>
-  </>;
-  const formulario = <>
+  return <div className={s.inlineForm}>
     <form id={formId} className={s.form} onSubmit={e => { e.preventDefault(); submit(); }}>
-      {modo === 'dialog' && <p className={s.formIntro}>{abiertas
-        ? 'Elegí tu plan y pagá en línea con ONVO, o reservá y pagá después. Te escribimos por WhatsApp para coordinar las semanas.'
-        : `Las inscripciones abren el ${CAMP.inscripciones.abren_texto}. Dejanos tus datos y te contactamos ese día.`}</p>}
-      <Input label="Tu nombre" name="nombre" required autoComplete="name" value={f.nombre} onChange={e => setF({ ...f, nombre: e.target.value })} autoFocus={modo === 'dialog'} />
-      <Input label="Teléfono" name="whatsapp" type="tel" required placeholder="8888-8888" autoComplete="tel" value={f.whatsapp} onChange={e => setF({ ...f, whatsapp: e.target.value })} />
+      {!abiertas && <p className={s.formIntro}>Las inscripciones abren el {CAMP.inscripciones.abren_texto}. Dejanos tus datos y te contactamos ese día.</p>}
+      <div className={s.pair}>
+        <Input label="Tu nombre" name="nombre" required placeholder="Nombre y apellido" autoComplete="name" value={f.nombre} onChange={e => setF({ ...f, nombre: e.target.value })} />
+        <Input label="WhatsApp" name="whatsapp" type="tel" required placeholder="8888-8888" autoComplete="tel" value={f.whatsapp} onChange={e => setF({ ...f, whatsapp: e.target.value })} />
+      </div>
       <Input label="Email" name="email" type="email" required placeholder="nombre@correo.com" autoComplete="email" value={f.email} onChange={e => setF({ ...f, email: e.target.value })} />
 
-      <fieldset className={s.fieldset}>
-        <legend className={s.legend}>¿Cuántos niños querés registrar?</legend>
-        <div className={s.qty} role="radiogroup" aria-label="Cantidad de niños">
-          {CANTIDADES.map(c => <button key={c.value} type="button" role="radio" aria-checked={cantidad === c.value}
-            className={cx(s.qtyBtn, cantidad === c.value && s.qtyOn)} onClick={() => setCantidad(c.value)}>{c.value}</button>)}
-        </div>
-      </fieldset>
-
-      {visibles.map((k, i) => {
+      {ninos.map((k, i) => {
         const g = k.edad ? grupoPorEdad(Number(k.edad)) : null;
-        return <fieldset key={i} className={s.kid}>
-          <legend className={s.kidTitle}>Niño {i + 1}</legend>
+        return <fieldset key={i} className={s.kidRow}>
+          <legend className={s.srOnly}>Niño {i + 1}</legend>
           <div className={s.kidFields}>
-            <Input label="Nombre" name={`nino${i + 1}_nombre`} required value={k.nombre} onChange={e => setNino(i, { nombre: e.target.value })} />
+            <Input label={n > 1 ? `Nombre del niño o niña ${i + 1}` : 'Nombre del niño o niña'} name={`nino${i + 1}_nombre`} required placeholder="Nombre" value={k.nombre} onChange={e => setNino(i, { nombre: e.target.value })} />
             <Select label="Edad" name={`nino${i + 1}_edad`} required options={EDAD_OPTS} placeholder="Elegí" value={k.edad} onChange={e => setNino(i, { edad: e.target.value })} />
           </div>
-          {g && <div className={s.kidGroup}><span>Grupo:</span><GrupoChip id={g.id} size="sm" /></div>}
+          {(g || i > 0) && <div className={s.kidMeta}>
+            {g && <span className={s.kidGroup}><span>Grupo:</span><GrupoChip id={g.id} size="sm" /></span>}
+            {i > 0 && <button type="button" className={s.linkBtn} onClick={() => setNinos(list => list.filter((_, j) => j !== i))}>Quitar</button>}
+          </div>}
         </fieldset>;
       })}
-      {cantidad === '3+' && <p className={s.kidNote}>Con 3 o más niños te contactamos para completar el registro y el pago.</p>}
+      {n < MAX_NINOS_FORM && <button type="button" className={cx(s.linkBtn, s.addKid)} onClick={() => setNinos(list => [...list, NINO_VACIO])}>+ Agregar otro niño</button>}
+      {n >= MAX_NINOS_FORM && <p className={s.kidNote}>Con 3 o más niños te contactamos por WhatsApp para completar el registro y el pago.</p>}
 
       <fieldset className={s.fieldset}>
-        <legend className={s.legend}>¿Qué te interesa?</legend>
-        {/* One choice at most; tapping the selected option clears it (as in the design). */}
-        {PLANES_PAGO.map(p => <Checkbox key={p.id} checked={f.plan === p.id} onChange={() => setF({ ...f, plan: f.plan === p.id ? '' : p.id })} label={`${p.label} · ${crc(p.precio)} por niño`} />)}
+        <legend className={s.legend}>¿Qué semanas o días te interesan?</legend>
+        <div className={s.opciones}>
+          <label className={cx(s.opcion, s.opcionTop, temporada && s.opcionOn)}>
+            <input type="checkbox" checked={temporada} onChange={toggleTemporada} />
+            <span><strong>Temporada completa</strong> · {TODAS.length} semanas · {crc(PRECIO_TEMPORADA)}</span>
+          </label>
+          {SEMANAS.map(w => <label key={w.n} className={cx(s.opcion, !diaSuelto && semanas.includes(w.n) && s.opcionOn)}>
+            <input type="checkbox" checked={!diaSuelto && semanas.includes(w.n)} onChange={() => toggleSemana(w.n)} />
+            <span><strong>{w.tema}</strong> · {w.fechas_corto}</span>
+          </label>)}
+          <label className={cx(s.opcion, s.opcionDia, diaSuelto && s.opcionOn)}>
+            <input type="checkbox" checked={diaSuelto} onChange={toggleDia} />
+            <span><strong>Día suelto</strong> · {crc(PRECIO_DIA)} · sujeto a disponibilidad</span>
+          </label>
+        </div>
+        {!diaSuelto && semanas.length > 0 && !temporada && <p className={s.opcionNota}>{semanas.length} {semanas.length === 1 ? 'semana' : 'semanas'}: {crc(precioSemanas(semanas.length))} por niño. Mientras más semanas, menos pagás por semana.</p>}
+        {diaSuelto && <div className={s.diaPick}>
+          <Input label="¿Qué día?" name="dia" type="date" required min={FECHA_MIN} max={FECHA_MAX} value={fecha} onChange={e => setFecha(e.target.value)} />
+          {fecha && !fechaOk && <p className={s.formError} role="alert">Elegí un día de lunes a viernes dentro de las semanas del camp (no hay camp del 21 dic al 1 ene).</p>}
+        </div>}
       </fieldset>
-      {total != null && plan && <p className={s.formTotal}><span>{n} {n === 1 ? 'niño' : 'niños'} × {plan.label}</span><strong>{crc(total)}</strong></p>}
+
+      {total != null && sel && <p className={s.formTotal}><span>{n} {n === 1 ? 'niño' : 'niños'} × {describirSeleccion(sel)}</span><strong>{crc(total)}</strong></p>}
       <p className={s.formPrivacy}>Guardamos tus datos de contacto solo para ayudarte con tu inscripción.</p>
       {failed === 'form' && <p className={s.formError} role="alert">No pudimos enviar tus datos. Probá de nuevo o escribinos por WhatsApp.</p>}
       {failed === 'pago' && <p className={s.formError} role="alert">Recibimos tus datos, pero no pudimos abrir el pago. Probá de nuevo o <a href={WA_LINK} target="_blank" rel="noopener noreferrer">escribinos por WhatsApp</a>.</p>}
     </form>
-  </>;
-
-  if (modo === 'inline') return <div className={s.inlineForm}>
-    {formulario}
-    <div className={s.inlineActions}>{botones}</div>
-    {nota && <p className={s.inlineNota}>{nota}</p>}
+    <div className={s.inlineActions}>
+      {conPago && <Button variant="secondary" className={s.payBtn} disabled={invalid || sending} onClick={() => submit(false)}>Pagar después</Button>}
+      <Button type="submit" form={formId} className={s.payBtn} disabled={invalid || sending}>{sending ? (conPago ? 'Un momento…' : 'Enviando…') : conPago ? <>Pagar {crc(total)}<span className={s.payNow}> ahora</span></> : abiertas ? 'Enviar registro' : 'Avisame'}</Button>
+    </div>
+    <p className={s.inlineNota}>{conPago
+      ? `Pagar después: te guardamos el cupo ${RESERVA_HORAS} h y te enviamos el link de pago por WhatsApp.`
+      : 'Tu cupo queda reservado al confirmar el pago. Te escribimos por WhatsApp para coordinar.'}</p>
   </div>;
-  return <Dialog onClose={cerrar} title="Registrate al camp" accent="var(--build-orange)" width={520} closeButton={conPago} footnote={nota} actions={botones}>
-    {formulario}
-  </Dialog>;
 }

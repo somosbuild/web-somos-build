@@ -12,7 +12,7 @@ import s from './camp.module.css';
 import { ButtonLink, Icon, Logo, Shape } from '@/components/ds';
 import { asset } from '@/lib/asset';
 import { track } from '@/lib/analytics';
-import { planPago } from '@/lib/camp-pago';
+import { describirSeleccion, leerSeleccion } from '@/lib/camp-pago';
 import { WA_LINK } from '@/lib/camp';
 
 const TEXTOS = {
@@ -25,8 +25,8 @@ export function Gracias({ variante = 'pago' }: { variante?: 'pago' | 'pendiente'
   const [tipo, setTipo] = useState<keyof typeof TEXTOS>(variante === 'pago' ? 'pago' : 'reserva');
   useEffect(() => {
     const q = new URLSearchParams(location.search);
-    const monto = Number(q.get('monto')), planId = q.get('plan') ?? '', p = planPago(planId);
-    const nombre = 'Camp' + (p ? ': ' + p.label : '');
+    const monto = Number(q.get('monto')), sel = leerSeleccion(q.get('plan') ?? '');
+    const nombre = 'Camp' + (sel ? ': ' + describirSeleccion(sel) : '');
     if (variante === 'pendiente' && q.get('tipo') === 'registro') setTipo('registro');
     if (q.size) {
       const clave = `build-${variante}:${location.search}`;

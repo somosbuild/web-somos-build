@@ -45,12 +45,12 @@
         "texto": "Un color por grupo y supervisamos a los niños en cada traslado."
       },
       {
-        "pilar": "community",
+        "pilar": "family",
         "titulo": "Ficha médica",
         "texto": "Alergias y cuidados especiales, registrados en la inscripción."
       },
       {
-        "pilar": "skills",
+        "pilar": "lego",
         "titulo": "Consentimiento de imagen",
         "texto": "Sin tu firma, tu hijo no aparece en fotos."
       }
@@ -60,10 +60,10 @@
     "eyebrow": "¿Quién cuida a tus hijos?",
     "titulo_a": "Un equipo liderado por",
     "titulo_b": "una psicóloga.",
-    "nombre": "Marisol Sánchez",
+    "nombre": "Sol Sánchez",
     "rol": "Psicóloga y cofundadora de Build",
     "parrafos": [
-      "Marisol Sánchez, psicóloga y cofundadora de Build, guía al equipo que acompaña a los niños cada mañana."
+      "Sol es cofundadora de Build, psicóloga y máster en neurociencias aplicadas a la pedagogía. Una mamá apasionada del bienestar integral de los chicos."
     ],
     "_frase": "Pendiente: frase de Marisol sobre cómo cuidan a los niños en el camp (en la propuesta de la consultora es un placeholder). Cuando esté, agregar en 'frase'.",
     "frase": ""
@@ -78,15 +78,15 @@
         "texto": "Elegís tus semanas y los datos de cada niño."
       },
       {
-        "titulo": "Te escribimos",
-        "texto": "Por WhatsApp, para confirmar fechas y grupo."
-      },
-      {
         "titulo": "Confirmás con el pago",
         "texto": "En línea con ONVO: ahora mismo o con el link que te enviamos por WhatsApp."
       },
       {
-        "titulo": "Llenás la ficha",
+        "titulo": "Te escribimos",
+        "texto": "Por WhatsApp, para confirmar fechas y grupo."
+      },
+      {
+        "titulo": "Llenás la ficha de registro",
         "texto": "Ficha médica y consentimiento de imagen."
       }
     ]
@@ -99,10 +99,22 @@
     "mapa_q": "City Place Santa Ana Costa Rica",
     "aliados_titulo": "Con los vecinos de City Place",
     "aliados": [
-      "Studio Cinemas",
-      "Ikua",
-      "Vine por Vino",
-      "506 Fitness"
+      {
+        "nombre": "Studio Cinemas",
+        "logo": "/brand/aliados/studio-cinemas.webp",
+        "oscuro": true
+      },
+      {
+        "nombre": "Ikua",
+        "logo": "/brand/aliados/ikua.webp"
+      },
+      {
+        "nombre": "Vine por Vino"
+      },
+      {
+        "nombre": "506 Fitness",
+        "logo": "/brand/aliados/506-fit.webp"
+      }
     ],
     "punto": {
       "titulo": "Punto de entrega y recogida",
