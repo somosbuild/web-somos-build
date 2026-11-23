@@ -394,3 +394,28 @@
 .aliados li.aliadoLogo { display: flex; align-items: center; justify-content: center; height: 64px; padding: 8px 16px; background: var(--build-white); border: 2px solid var(--build-beige); }
 .aliados li.aliadoOscuro { background: var(--build-ink); border-color: var(--build-ink); }
 .aliadoLogo img { display: block; height: 44px; width: auto; max-width: 140px; object-fit: contain; }
+
+/* ---------- Welcome form (/welcome-form): ficha de ingreso ---------- */
+.ficha { position: relative; overflow: hidden; min-height: 100vh; background: var(--build-beige); padding: clamp(24px, 5vw, 56px) 16px clamp(40px, 6vw, 72px); box-sizing: border-box; }
+.fichaWrap { position: relative; width: min(720px, 100%); margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+.fichaTitle { margin: 8px 0 0; font: 400 clamp(32px, 6vw, 48px)/1.06 var(--font-display); letter-spacing: var(--tracking-display); color: var(--text-heading); text-wrap: balance; }
+.fichaTitle strong { display: block; font-weight: 700; color: var(--build-orange); }
+.fichaLead { margin: 0 0 8px; font: 500 17px/1.5 var(--font-sans); color: var(--build-ink-2); max-width: 60ch; }
+.fichaCard { gap: 28px; background: var(--build-white); border-radius: 28px; padding: clamp(20px, 5vw, 40px); box-shadow: var(--shadow-lift); box-sizing: border-box; }
+.fichaSec { display: flex; flex-direction: column; gap: 14px; }
+.fichaSec + .fichaSec { padding-top: 24px; border-top: 2px solid var(--build-beige); }
+.fichaH { margin: 0; font: 700 22px/1.15 var(--font-display); color: var(--build-ink); }
+.fichaNota { margin: -6px 0 0; font: 500 14.5px/1.45 var(--font-sans); color: var(--build-ink-2); }
+.fichaPersona { display: flex; flex-direction: column; gap: 6px; }
+.fichaQuitar { align-self: flex-end; }
+.fichaAdd { align-self: stretch; padding: 14px 18px; border: 2px dashed var(--build-orange); border-radius: 16px; background: var(--build-white); cursor: pointer; font: 700 16px/1.2 var(--font-sans); color: var(--build-orange-deep); transition: background var(--dur-fast); }
+.fichaAdd:hover { background: var(--build-orange-light); }
+.fichaAdd:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+.fichaRadios { display: flex; flex-wrap: wrap; gap: 12px 28px; }
+.fichaAcepto { font: 500 14.5px/1.45 var(--font-sans); color: var(--build-ink); }
+.taField { display: flex; flex-direction: column; gap: 6px; }
+.taLabel { font: 600 14px/1.2 var(--font-sans); color: var(--text-body); }
+.ta { width: 100%; box-sizing: border-box; min-height: 64px; padding: 12px 18px; border: 2px solid var(--build-greige); border-radius: var(--radius-md); background: var(--build-white); font: 500 16px/1.4 var(--font-sans); color: var(--text-body); resize: vertical; }
+.ta:focus-visible { outline: 0; border-color: var(--build-orange); box-shadow: 0 0 0 4px rgba(253, 126, 40, 0.15); }
+.taHint { font: 500 13px/1.3 var(--font-sans); color: var(--text-muted); }
+@media (max-width: 900px) { .fichaShape { display: none; } }

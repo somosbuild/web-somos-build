@@ -20,8 +20,8 @@ type Gtag = (cmd: 'event' | 'config' | 'js', name: unknown, params?: Record<stri
 declare global { interface Window { fbq?: Fbq; gtag?: Gtag } }
 
 /** Conversion events, named as Meta standard events. Each maps to its GA4 counterpart. */
-export type Evento = 'Lead' | 'InitiateCheckout' | 'Purchase' | 'Contact';
-const GA4_NAME: Record<Evento, string> = { Lead: 'generate_lead', InitiateCheckout: 'begin_checkout', Purchase: 'purchase', Contact: 'contact' };
+export type Evento = 'Lead' | 'InitiateCheckout' | 'Purchase' | 'Contact' | 'CompleteRegistration';
+const GA4_NAME: Record<Evento, string> = { Lead: 'generate_lead', InitiateCheckout: 'begin_checkout', Purchase: 'purchase', Contact: 'contact', CompleteRegistration: 'sign_up' };
 
 /** Runs `fn` once `ready()` is true. The tags load after the page hydrates, so an event fired on load
  *  (e.g. Purchase on return from ONVO) waits for them, up to ~6 s. */
