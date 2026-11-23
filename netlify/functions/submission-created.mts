@@ -1,5 +1,6 @@
 // Runs automatically on every verified Netlify Forms submission (event-triggered function: the file
-// name "submission-created" is what wires it up; it has no public URL). Only the camp form is handled:
+// name "submission-created" is what wires it up; it has no public URL). Two camp forms are handled,
+// "camp-interes" (registration, /camp) and "camp-ficha" (ficha de ingreso, /welcome-form); for each:
 //   1. Confirmation email to the family, via Resend (env RESEND_API_KEY; domain camp.somosbuild.com verified).
 //   2. Client record in the Notion CRM "CRM de clientes Build" (env NOTION_TOKEN; the integration must be
 //      connected to that database and to "Registro de eventos Build"). Same email = same record, updated.
@@ -16,6 +17,8 @@ const CAMP = raw as unknown as {
 };
 
 const FORM = 'camp-interes';
+/** Welcome form (/welcome-form): medical info, emergency contact and pick-up list. */
+const FORM_FICHA = 'camp-ficha';
 // Sent from the subdomain verified in Resend (keeps the main domain's reputation apart); replies go to the real inbox.
 const FROM = 'Build Summer Camp <hola@camp.somosbuild.com>';
 const REPLY_TO = 'hola@somosbuild.com';
@@ -106,18 +109,20 @@ export function correoHtml(r: Registro): { subject: string; html: string; text: 
   return { subject: `Recibimos tu registro al ${CAMP.camp.nombre}`, html, text };
 }
 
-async function enviarCorreo(r: Registro) {
+/** Sends one email via Resend to the family, with the team in hidden copy (CAMP_BCC). */
+async function enviarResend(to: string, m: { subject: string; html: string; text: string }) {
   const key = process.env.RESEND_API_KEY;
   if (!key) { console.warn('Correo omitido: falta RESEND_API_KEY'); return; }
-  if (!EMAIL_RE.test(r.email)) { console.warn('Correo omitido: email inválido'); return; }
-  const { subject, html, text } = correoHtml(r);
+  if (!EMAIL_RE.test(to)) { console.warn('Correo omitido: email inválido'); return; }
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ from: FROM, to: [r.email], ...(bccEquipo().length ? { bcc: bccEquipo() } : {}), reply_to: REPLY_TO, subject, html, text }),
+    body: JSON.stringify({ from: FROM, to: [to], ...(bccEquipo().length ? { bcc: bccEquipo() } : {}), reply_to: REPLY_TO, ...m }),
   });
   if (!res.ok) throw new Error(`Resend ${res.status}: ${(await res.text()).slice(0, 300)}`);
 }
+
+const enviarCorreo = (r: Registro) => enviarResend(r.email, correoHtml(r));
 
 /* ---------- Notion CRM ---------- */
 
@@ -151,7 +156,8 @@ export function bloquesRegistro(r: Registro, cuando: Date) {
   ];
 }
 
-async function guardarEnCrm(r: Registro, cuando: Date) {
+/** Appends blocks to the family's page in the CRM (found by email; created if it doesn't exist). */
+async function guardarEnCrm(r: { nombre: string; email: string; whatsapp: string }, cuando: Date, bloques: unknown[]) {
   if (!process.env.NOTION_TOKEN) { console.warn('CRM omitido: falta NOTION_TOKEN'); return; }
   if (!EMAIL_RE.test(r.email)) { console.warn('CRM omitido: email inválido'); return; }
   const q = await notion(`/databases/${NOTION_CRM_DB}/query`, 'POST', { filter: { property: 'Correo', email: { equals: r.email } }, page_size: 1 });
@@ -179,7 +185,90 @@ async function guardarEnCrm(r: Registro, cuando: Date) {
     });
     pageId = nueva.id;
   }
-  await notion(`/blocks/${pageId}/children`, 'PATCH', { children: bloquesRegistro(r, cuando) });
+  await notion(`/blocks/${pageId}/children`, 'PATCH', { children: bloques });
+}
+
+/* ---------- Ficha de ingreso (/welcome-form) ---------- */
+
+export interface Ficha {
+  nombre: string; email: string; whatsapp: string;
+  ninos: { nombre: string; nacimiento: string; alergias: string; condiciones: string }[];
+  emergencia: { nombre: string; telefono: string; parentesco: string };
+  retira: { nombre: string; cedula: string }[];
+  fotos: string;
+}
+
+export function leerFicha(d: Data): Ficha {
+  return {
+    nombre: t(d.nombre, 80), email: t(d.email, 120).toLowerCase(), whatsapp: t(d.whatsapp, 30),
+    ninos: [1, 2, 3].map(i => ({
+      nombre: t(d[`nino${i}_nombre`], 80), nacimiento: t(d[`nino${i}_nacimiento`], 10),
+      alergias: t(d[`nino${i}_alergias`], 600), condiciones: t(d[`nino${i}_condiciones`], 600),
+    })).filter(k => k.nombre),
+    emergencia: { nombre: t(d.emergencia_nombre, 80), telefono: t(d.emergencia_telefono, 30), parentesco: t(d.emergencia_parentesco, 40) },
+    retira: [1, 2, 3].map(i => ({ nombre: t(d[`retira${i}_nombre`], 80), cedula: t(d[`retira${i}_cedula`], 30) })).filter(p => p.nombre),
+    fotos: t(d.fotos, 5),
+  };
+}
+
+const fechaNac = (iso: string) => /^\d{4}-\d{2}-\d{2}$/.test(iso) ? `${fechaLarga(iso)} de ${iso.slice(0, 4)}` : iso || '—';
+const FOTOS_TXT = (v: string) => v === 'Sí' ? 'Sí autoriza fotos y videos en redes' : v === 'No' ? 'No autoriza fotos ni videos en redes' : 'Sin respuesta';
+
+/** Sections of the ficha as [title, rows] (shared by the email and the text version). */
+function seccionesFicha(fi: Ficha): [string, [string, string][]][] {
+  return [
+    ...fi.ninos.map((k, i): [string, [string, string][]] => [fi.ninos.length > 1 ? `Niño ${i + 1}: ${k.nombre}` : k.nombre, [
+      ['Nacimiento', fechaNac(k.nacimiento)], ['Alergias', k.alergias || '—'], ['Condiciones médicas', k.condiciones || '—'],
+    ]]),
+    ['Contacto de emergencia', [['Nombre', `${fi.emergencia.nombre} (${fi.emergencia.parentesco})`], ['Teléfono', fi.emergencia.telefono]]],
+    ['Autorizados a retirar', fi.retira.map(p => [p.nombre, `Cédula ${p.cedula}`] as [string, string])],
+    ['Fotos y videos', [['Consentimiento', FOTOS_TXT(fi.fotos)]]],
+  ];
+}
+
+export function correoFicha(fi: Ficha): { subject: string; html: string; text: string } {
+  const primer = fi.nombre.split(/\s+/)[0] || fi.nombre;
+  const secs = seccionesFicha(fi);
+  const row = ([k, v]: [string, string]) =>
+    `<tr><td style="padding:6px 12px 6px 0;color:#6b5646;font-size:14px;vertical-align:top;width:150px">${esc(k)}</td><td style="padding:6px 0;color:#3a2a1e;font-size:15px;font-weight:600;white-space:pre-line">${esc(v)}</td></tr>`;
+  const bloques = secs.map(([titulo, filas]) =>
+    `<p style="margin:20px 0 4px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:#c2530c;font-weight:700">${esc(titulo)}</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:2px solid #fcf3ea">${filas.map(row).join('')}</table>`).join('\n');
+  const html = `<!doctype html><html lang="es"><body style="margin:0;background:#fcf3ea;font-family:Helvetica,Arial,sans-serif;color:#3a2a1e">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fcf3ea;padding:24px 12px"><tr><td align="center">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:20px;overflow:hidden">
+<tr><td style="background:#fd7e28;height:8px;font-size:0;line-height:0">&nbsp;</td></tr>
+<tr><td style="padding:28px 28px 8px">
+<p style="margin:0 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#c2530c;font-weight:700">${esc(CAMP.camp.nombre)}</p>
+<h1 style="margin:0 0 14px;font-family:Georgia,serif;font-size:28px;line-height:1.15;color:#fd7e28">¡Gracias, ${esc(primer)}! Recibimos la ficha.</h1>
+<p style="margin:0 0 4px;font-size:16px;line-height:1.55">Esta es una copia de lo que nos enviaste. Si algo cambia antes del camp, respondé este correo o escribinos por WhatsApp.</p>
+${bloques}
+<p style="margin:24px 0 22px"><a href="${CAMP.contacto.whatsapp_link}" style="display:inline-block;background:#fd7e28;color:#ffffff;text-decoration:none;font-weight:700;font-size:15px;padding:12px 22px;border-radius:999px">Escribinos por WhatsApp</a></p>
+</td></tr>
+<tr><td style="background:#fcf3ea;padding:18px 28px;font-size:14px;line-height:1.6;color:#6b5646">
+<strong style="color:#3a2a1e">${esc(CAMP.camp.nombre)}</strong><br>${FECHAS} · ${HORARIO}<br>${LUGAR} · WhatsApp ${CAMP.contacto.whatsapp}
+</td></tr></table>
+<p style="margin:14px 0 0;font-size:12px;color:#6b5646">Recibiste este correo porque llenaste la ficha de ingreso del camp en somosbuild.com.</p>
+</td></tr></table></body></html>`;
+  const text = [
+    `¡Gracias, ${primer}! Recibimos la ficha.`, '',
+    ...secs.flatMap(([titulo, filas]) => [titulo.toUpperCase(), ...filas.map(([k, v]) => `${k}: ${v}`), '']),
+    `${CAMP.camp.nombre} · ${FECHAS} · ${HORARIO} · ${LUGAR}`, `WhatsApp: ${CAMP.contacto.whatsapp} (${CAMP.contacto.whatsapp_link})`,
+  ].join('\n');
+  return { subject: `Ficha de ingreso recibida · ${CAMP.camp.nombre}`, html, text };
+}
+
+/** Collapsible "Ficha de ingreso" heading on the client page, with one list per section. */
+export function bloquesFicha(fi: Ficha, cuando: Date) {
+  const li = (s: string) => ({ object: 'block', type: 'bulleted_list_item', bulleted_list_item: { rich_text: txt(s) } });
+  const hijos = seccionesFicha(fi).flatMap(([titulo, filas]) => [
+    { object: 'block', type: 'paragraph', paragraph: { rich_text: [{ type: 'text', text: { content: titulo.slice(0, 1900) }, annotations: { bold: true } }] } },
+    ...filas.map(([k, v]) => li(`${k}: ${v}`)),
+  ]);
+  return [{
+    object: 'block', type: 'heading_3',
+    heading_3: { rich_text: txt(`Ficha de ingreso · ${CAMP.camp.nombre} · ${ahoraTxt(cuando)}`), is_toggleable: true, children: hijos },
+  }];
 }
 
 /* ---------- Handler ---------- */
@@ -187,10 +276,17 @@ async function guardarEnCrm(r: Registro, cuando: Date) {
 /** Core logic, independent of the function format (also used by tests). */
 export async function procesar(payload: { form_name?: string; data?: Data; created_at?: string }) {
   console.log('submission-created:', payload.form_name ?? '(sin form_name)');
-  if (payload.form_name !== FORM || !payload.data) return 'ignored';
-  const r = leerRegistro(payload.data);
+  if (!payload.data || (payload.form_name !== FORM && payload.form_name !== FORM_FICHA)) return 'ignored';
   const cuando = payload.created_at ? new Date(payload.created_at) : new Date();
-  const [mail, crm] = await Promise.allSettled([enviarCorreo(r), guardarEnCrm(r, cuando)]);
+  let tareas: [Promise<void>, Promise<void>];
+  if (payload.form_name === FORM_FICHA) {
+    const fi = leerFicha(payload.data);
+    tareas = [enviarResend(fi.email, correoFicha(fi)), guardarEnCrm(fi, cuando, bloquesFicha(fi, cuando))];
+  } else {
+    const r = leerRegistro(payload.data);
+    tareas = [enviarCorreo(r), guardarEnCrm(r, cuando, bloquesRegistro(r, cuando))];
+  }
+  const [mail, crm] = await Promise.allSettled(tareas);
   if (mail.status === 'rejected') console.error('Error enviando correo:', mail.reason);
   else console.log('Correo procesado');
   if (crm.status === 'rejected') console.error('Error guardando en Notion:', crm.reason);
