@@ -108,8 +108,9 @@ export function SelloPronto() {
 
 /* ---------- Prices ---------- */
 
-/** Week + packages as cards; with `diaAbajo` the single-day price moves to a "Walk-in" strip below. */
-export function PrecioBloque({ minCol = 230, diaAbajo = false }: { minCol?: number; diaAbajo?: boolean }) {
+/** Week + packages as cards; with `diaAbajo` the single-day price moves to a "Walk-in" strip below.
+ *  `sinIncluye` hides the "Incluye" note (the camp page shows it above the cards). */
+export function PrecioBloque({ minCol = 230, diaAbajo = false, sinIncluye = false }: { minCol?: number; diaAbajo?: boolean; sinIncluye?: boolean }) {
   const p = CAMP.precios, paqs = paquetes();
   const top = paqs.reduce((a, b) => (b.n > a.n ? b : a), paqs[0]);
   const dia = { id: 'dia', label: 'Día suelto', nombre: 'Un día', total: crc(p.dia_suelto.precio), sub: p.dia_suelto.condicion + '.', ahorro: '' };
@@ -130,7 +131,7 @@ export function PrecioBloque({ minCol = 230, diaAbajo = false }: { minCol?: numb
       </div>)}
     </div>
     {diaAbajo && <div className={s.walkin}><span className={s.walkinLabel}>Walk-in</span><strong className={s.walkinPrice}>{dia.total} por día</strong><span className={s.walkinSub}>{dia.sub}</span></div>}
-    <div className={s.notes}><div className={s.notesBlock}><span className={s.notesLabel}>Incluye</span><span>{p.incluye.join(', ')}.</span></div></div>
+    {!sinIncluye && <div className={s.notes}><div className={s.notesBlock}><span className={s.notesLabel}>Incluye</span><span>{p.incluye.join(', ')}.</span></div></div>}
   </div>;
 }
 
